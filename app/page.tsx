@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { ElementType, ReactNode } from 'react';
+import Link from 'next/link';
 import {
   ArrowRight,
   Ban,
@@ -404,6 +405,10 @@ function DesktopSidebar({
         <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
           匿名探索、双向揭晓、举报拉黑常驻。Heart+ 不能绕过同意。
         </p>
+        <Link className="reset-demo-button mt-4" href="/beta">
+          <Sparkles className="h-4 w-4" />
+          Private Beta
+        </Link>
         <button className="reset-demo-button mt-4" onClick={onReset}>
           <RefreshCw className="h-4 w-4" />
           Reset Demo
@@ -465,10 +470,16 @@ function OnboardingFlow({
             <p>
               第一次不用理解很多规则。回答一个问题，拿到一只盲盒，如果那个人让你有点好奇，就留下一段回声。
             </p>
-            <button className="pill-primary" onClick={() => onStep('age')}>
-              开始第一次体验
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button className="pill-primary" onClick={() => onStep('age')}>
+                开始第一次体验
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <Link className="pill-secondary" href="/beta">
+                查看 Private Beta
+                <Sparkles className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         )}
         {step === 'age' && (
@@ -1518,6 +1529,17 @@ function MineView({
           </div>
         </Panel>
         <Panel className="p-5">
+          <p className="eyebrow">Private beta</p>
+          <h3 className="mt-2 text-xl font-semibold">邀请真实用户试用</h3>
+          <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
+            内测页说明适合谁、怎么测试、反馈重点，以及当前 Demo 的边界。
+          </p>
+          <Link className="pill-secondary mt-4 w-full" href="/beta">
+            打开 Private Beta 页面
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Panel>
+        <Panel className="p-5">
           <p className="eyebrow">Safety settings</p>
           <div className="mt-4 space-y-3 text-sm leading-6 text-[var(--soft-ink)]">
             <p>
@@ -1601,6 +1623,13 @@ function ContextPanel({
           </p>
         </Panel>
       )}
+      <Panel className="p-5">
+        <p className="eyebrow">Private beta</p>
+        <h3 className="mt-2 text-xl font-semibold">准备给真实用户测试</h3>
+        <Link className="pill-secondary mt-4 w-full" href="/beta">
+          查看内测页
+        </Link>
+      </Panel>
       <Panel className="p-5">
         <p className="eyebrow">Invite</p>
         <h3 className="mt-2 text-xl font-semibold">

@@ -864,6 +864,268 @@ button {
     font-weight: 800;
   }
 
+  .beta-shell {
+    position: relative;
+    min-height: 100svh;
+    overflow-x: hidden;
+    background: var(--cream);
+    color: var(--ink);
+  }
+
+  .beta-frame {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 1220px);
+    margin: 0 auto;
+    padding: max(1rem, env(safe-area-inset-top)) 1rem
+      max(2rem, env(safe-area-inset-bottom));
+  }
+
+  .beta-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0 1.25rem;
+  }
+
+  .beta-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid rgba(93, 20, 40, 0.1);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.56);
+    padding: 0.7rem 0.95rem;
+    color: var(--wine);
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  .beta-hero {
+    display: grid;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .beta-hero-copy,
+  .beta-panel,
+  .beta-invite-card {
+    min-width: 0;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 28px;
+    box-shadow: 0 24px 70px rgb(80 20 35 / 10%);
+    backdrop-filter: blur(24px);
+  }
+
+  .beta-hero-copy {
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    background:
+      linear-gradient(
+        145deg,
+        rgba(93, 20, 40, 0.08),
+        rgba(236, 212, 216, 0.38)
+      ),
+      rgba(255, 255, 255, 0.48);
+    padding: clamp(1.2rem, 5vw, 3rem);
+  }
+
+  .beta-hero-copy h1 {
+    max-width: 780px;
+    color: var(--wine);
+    font-size: clamp(2.25rem, 7vw, 5.2rem);
+    font-weight: 780;
+    letter-spacing: 0;
+    line-height: 0.98;
+  }
+
+  .beta-hero-copy p,
+  .beta-panel p {
+    max-width: 680px;
+    color: var(--soft-ink);
+    line-height: 1.75;
+  }
+
+  .beta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.4rem;
+  }
+
+  .beta-invite-card {
+    display: grid;
+    align-content: space-between;
+    min-height: 390px;
+    overflow: hidden;
+    background:
+      linear-gradient(155deg, rgba(93, 20, 40, 0.96), rgba(157, 36, 68, 0.72)),
+      var(--wine);
+    padding: clamp(1.2rem, 4vw, 2rem);
+    color: white;
+  }
+
+  .beta-invite-card h2 {
+    max-width: 420px;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    font-weight: 760;
+    letter-spacing: 0;
+    line-height: 1.02;
+  }
+
+  .beta-invite-card p {
+    max-width: 420px;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.8;
+  }
+
+  .beta-envelope-mini {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.55rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 0.78rem 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 800;
+  }
+
+  .beta-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .beta-panel {
+    background: rgba(255, 255, 255, 0.46);
+    padding: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  .beta-panel h2 {
+    margin-top: 0.45rem;
+    color: var(--wine);
+    font-size: clamp(1.7rem, 4vw, 2.6rem);
+    font-weight: 760;
+    line-height: 1.08;
+  }
+
+  .beta-list {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1rem;
+  }
+
+  .beta-list p {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.55);
+    padding: 0.85rem;
+  }
+
+  .beta-list svg {
+    flex: 0 0 auto;
+    color: var(--berry);
+  }
+
+  .beta-flow-panel {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .beta-flow {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .beta-flow article,
+  .beta-feedback-grid div {
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.56);
+    padding: 1rem;
+  }
+
+  .beta-flow span {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--wine);
+    color: white;
+    font-weight: 800;
+  }
+
+  .beta-flow h3 {
+    margin-top: 0.8rem;
+    color: var(--wine);
+    font-size: 1.15rem;
+    font-weight: 760;
+  }
+
+  .beta-flow p {
+    margin-top: 0.35rem;
+  }
+
+  .beta-join {
+    display: grid;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .beta-form {
+    display: grid;
+    gap: 0.75rem;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.58);
+    padding: 1rem;
+  }
+
+  .beta-form label {
+    color: var(--wine);
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  .beta-form div {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid rgba(93, 20, 40, 0.1);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    padding: 0.78rem 1rem;
+  }
+
+  .beta-form input {
+    min-width: 0;
+    flex: 1;
+    background: transparent;
+    outline: none;
+  }
+
+  .beta-success {
+    border-radius: 18px;
+    background: rgba(236, 212, 216, 0.38);
+    padding: 0.8rem;
+    color: var(--wine) !important;
+    font-size: 0.9rem;
+  }
+
+  .beta-feedback-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    color: var(--soft-ink);
+    line-height: 1.6;
+  }
+
   .invite-steps {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1289,6 +1551,17 @@ button {
     .modal-backdrop {
       place-items: center;
     }
+
+    .beta-frame {
+      padding-right: 1.5rem;
+      padding-left: 1.5rem;
+    }
+
+    .beta-grid,
+    .beta-flow,
+    .beta-feedback-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (min-width: 1180px) {
@@ -1342,6 +1615,23 @@ button {
       height: min(72vh, 760px);
       overflow: auto;
     }
+
+    .beta-hero {
+      grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+    }
+
+    .beta-flow-panel,
+    .beta-join {
+      grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+    }
+
+    .beta-flow {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .beta-feedback-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
 
   @media (min-width: 1440px) {
@@ -1375,6 +1665,44 @@ button {
   }
 
   @media (max-width: 520px) {
+    .beta-frame {
+      padding-right: 0.85rem;
+      padding-left: 0.85rem;
+    }
+
+    .beta-nav {
+      align-items: flex-start;
+    }
+
+    .beta-back-link {
+      padding: 0.62rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .beta-hero-copy,
+    .beta-panel,
+    .beta-invite-card {
+      border-radius: 24px;
+    }
+
+    .beta-hero-copy h1 {
+      font-size: 2.18rem;
+    }
+
+    .beta-actions .pill-primary,
+    .beta-actions .pill-secondary,
+    .beta-form .pill-primary {
+      width: 100%;
+    }
+
+    .beta-invite-card {
+      min-height: 350px;
+    }
+
+    .beta-invite-card h2 {
+      font-size: 2.05rem;
+    }
+
     .onboarding-shell {
       place-items: stretch;
       padding-right: 0.75rem;
