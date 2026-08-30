@@ -5,6 +5,7 @@ import type { ElementType, ReactNode } from "react";
 import {
   ArrowRight,
   Ban,
+  Check,
   ChevronLeft,
   Copy,
   Flag,
@@ -61,6 +62,7 @@ function cx(...classes: Array<string | false | null | undefined>) {
 
 export default function Home() {
   const [view, setView] = useState<AppView>("discover");
+  const [onboardingStep, setOnboardingStep] = useState<"age" | "prompt" | "card" | "ready" | "done">("age");
   const [selectedBoxId, setSelectedBoxId] = useState(blindBoxes[0].id);
   const [openingState, setOpeningState] = useState<"sealed" | "opening" | "first" | "second" | "echo" | "matched">("sealed");
   const [freeOpens, setFreeOpens] = useState(initialWallet.dailyFreeOpensRemaining);
@@ -85,6 +87,8 @@ export default function Home() {
   const conversation: Conversation = conversations.find((item) => item.relationshipId === selectedRelationship.id) ?? conversations[0];
 
   const sensitive = useMemo(() => /(微信|vx|wechat|手机号|电话|\d{11})/i.test(messageDraft), [messageDraft]);
+
+  const onboarded = onboardingStep === "done";
 
   function switchView(next: AppView) {
     setView(next);
@@ -145,6 +149,22 @@ export default function Home() {
   return (
     <main id="heartbox-shell" className="min-h-screen bg-[var(--cream)] text-[var(--ink)]">
       <div className="grain" />
+      {!onboarded ? (
+        <OnboardingFlow
+          step={onboardingStep}
+          fragmentDraft={fragmentDraft}
+          onDraft={setFragmentDraft}
+          onStep={setOnboardingStep}
+          onFinish={() => {
+            if (fragmentDraft.trim()) {
+              publishFragment();
+            }
+            setFreeOpens(initialWallet.dailyFreeOpensLimit);
+            setOnboardingStep("done");
+            setView("discover");
+          }}
+        />
+      ) : (
       <div className="app-frame">
         <DesktopSidebar view={view} onSwitch={switchView} />
         <section className="main-stage">
@@ -239,7 +259,8 @@ export default function Home() {
           onInvite={() => switchView("create")}
         />
       </div>
-      <MobileNav view={view} onSwitch={switchView} />
+      )}
+      {onboarded && <MobileNav view={view} onSwitch={switchView} />}
       {showConversion && (
         <ConversionModal
           hearts={hearts}
@@ -299,6 +320,108 @@ function DesktopSidebar({ view, onSwitch }: { view: AppView; onSwitch: (view: Ap
         </p>
       </div>
     </aside>
+  );
+}
+
+function OnboardingFlow({
+  step,
+  fragmentDraft,
+  onDraft,
+  onStep,
+  onFinish,
+}: {
+  step: "age" | "prompt" | "card" | "ready" | "done";
+  fragmentDraft: string;
+  onDraft: (value: string) => void;
+  onStep: (step: "age" | "prompt" | "card" | "ready" | "done") => void;
+  onFinish: () => void;
+}) {
+  const steps = [
+    { id: "age", label: "18+" },
+    { id: "prompt", label: "碎片" },
+    { id: "card", label: "人格卡" },
+    { id: "ready", label: "拆盒" },
+  ] as const;
+  return (
+    <section className="onboarding-shell">
+      <div className="onboarding-card">
+        <div className="brand-lockup">
+          <span className="brand-mark">Hb</span>
+          <span>
+            <span className="block text-base font-semibold">Heartbox</span>
+            <span className="block text-xs text-[var(--muted-ink)]">先拆开人格，再靠近关系</span>
+          </span>
+        </div>
+        <div className="onboarding-progress">
+          {steps.map((item) => (
+            <span key={item.id} className={cx("onboarding-step", step === item.id && "onboarding-step-active")}>
+              {item.label}
+            </span>
+          ))}
+        </div>
+        {step === "age" && (
+          <div className="onboarding-pane">
+            <p className="eyebrow">Adults only</p>
+            <h1>这是一个 18+ 的匿名关系探索空间</h1>
+            <p>
+              Heartbox 不面向未成年人。这里先保护边界，再制造好奇：不公开精确定位，不鼓励过早交换联系方式，揭晓必须双方同意。
+            </p>
+            <button className="pill-primary" onClick={() => onStep("prompt")}>
+              我已满 18 岁，继续
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+        {step === "prompt" && (
+          <div className="onboarding-pane">
+            <p className="eyebrow">Daily prompt</p>
+            <h1>{dailyPrompt.title}</h1>
+            <p>先写一个真实片刻，不需要完整介绍自己。它会成为你的第一张人格碎片，也会帮助系统推荐更有回声的盲盒。</p>
+            <textarea
+              value={fragmentDraft}
+              onChange={(event) => onDraft(event.target.value)}
+              className="onboarding-textarea"
+              placeholder="比如：下班路上有人把伞往陌生人那边偏了一点。"
+            />
+            <button className="pill-primary" disabled={!fragmentDraft.trim()} onClick={() => onStep("card")}>
+              生成人格碎片
+              <Sparkles className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+        {step === "card" && (
+          <div className="onboarding-pane">
+            <p className="eyebrow">Personality card</p>
+            <h1>基础人格卡已生成</h1>
+            <p>第一版只需要匿名昵称、年龄段、城市和几个兴趣。你可以之后再慢慢补充，不用一开始就填满资料。</p>
+            <div className="onboarding-mini-card">
+              <span>月台来信</span>
+              <strong>慢热观察者</strong>
+              <small>25-29 · 上海 · 独立电影 / 城市散步 / 边界感</small>
+            </div>
+            <button className="pill-primary" onClick={() => onStep("ready")}>
+              领取今日免费拆盒
+              <Gift className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+        {step === "ready" && (
+          <div className="onboarding-pane">
+            <p className="eyebrow">Ready</p>
+            <h1>你获得了 3 次今日免费拆盒</h1>
+            <p>现在可以进入发现页。第一只盲盒会先露出封条、主题和模糊人格碎片，拆开后再决定要不要继续探索。</p>
+            <div className="state-strip success-state">
+              <Check className="h-4 w-4" />
+              人格碎片已进入此刻，盲盒推荐已准备好。
+            </div>
+            <button className="pill-primary" onClick={onFinish}>
+              去拆第一个盲盒
+              <PackageOpen className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -381,6 +504,11 @@ function DiscoverView(props: {
               <p className="mt-4 max-w-2xl text-[var(--soft-ink)]">
                 拆盒前只看到信封、封条和模糊人格碎片。你先对表达产生好奇，再决定是否靠近。
               </p>
+              <div className="mt-5 grid gap-2 sm:grid-cols-3">
+                <StateChip label="未拆" body="只露出封条和模糊线索" />
+                <StateChip label="拆开" body="先出现第一层人格" />
+                <StateChip label="回声" body="感兴趣不是立刻揭晓" />
+              </div>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center sm:min-w-[310px]">
               <MiniStat label="免费" value={`${props.freeOpens}/3`} />
@@ -389,7 +517,16 @@ function DiscoverView(props: {
             </div>
           </div>
         </Panel>
-        <UnboxingSurface {...props} />
+        {props.boxes.length === 0 ? (
+          <EmptyState
+            title="今晚还没有合适的盲盒"
+            body="系统会保留你的免费次数，并在新的投递进入后提醒你。"
+            action="去此刻发现人格碎片"
+            onAction={props.onNeedMore}
+          />
+        ) : (
+          <UnboxingSurface {...props} />
+        )}
       </section>
       <aside className="space-y-5">
         <Panel className="p-5">
@@ -409,6 +546,12 @@ function DiscoverView(props: {
         <Panel className="p-5">
           <p className="eyebrow">Recommended</p>
           <div className="mt-4 space-y-3">
+            {props.boxes.length === 0 && (
+              <div className="state-strip waiting-state">
+                <RefreshCw className="h-4 w-4" />
+                正在等待新的同频盲盒进入池子。
+              </div>
+            )}
             {props.boxes.map((box) => (
               <button key={box.id} className="box-list-item" onClick={() => props.onSelectBox(box.id)}>
                 <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--wine)] text-white">
@@ -459,9 +602,10 @@ function UnboxingSurface({
           <div className="seal-line" />
           <div className="wax-seal"><Heart className="h-7 w-7" /></div>
           <div className="envelope-copy">
-            <p className="text-sm text-[var(--muted-ink)]">{box.theme} · {box.seal}</p>
+            <p className="text-sm text-[var(--muted-ink)]">未拆封 · {box.theme} · {box.seal}</p>
             <h3>{box.title}</h3>
             <p>{box.cityHint} · {box.ageHint} · {box.hiddenTags.slice(0, 2).join(" / ")}</p>
+            <div className="sealed-hint">封条下藏着一段人格碎片</div>
           </div>
         </div>
         {opened && (
@@ -479,6 +623,10 @@ function UnboxingSurface({
             <blockquote className="mt-5 rounded-[24px] bg-white/65 p-5 text-lg leading-8">
               “{box.firstLayer.fragment}”
             </blockquote>
+            <div className="state-strip waiting-state mt-4">
+              <LockKeyhole className="h-4 w-4" />
+              真实身份、联系方式和精确位置仍被保护。继续探索只会解锁更多人格片段。
+            </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {box.firstLayer.interests.map((item) => (
                 <span key={item} className="chip">{item}</span>
@@ -494,7 +642,7 @@ function UnboxingSurface({
             {(openingState === "echo" || openingState === "matched") && (
               <div className="echo-result">
                 <HeartHandshake className="h-5 w-5" />
-                <span>{openingState === "matched" ? "对方也回应了你的回声，匿名关系已建立。" : "你的回声已发出，等待对方回应。"}</span>
+                <span>{openingState === "matched" ? "对方也回应了你的回声。不是匹配成功这么简单，而是你们可以从陌生阶段慢慢长出关系。" : "你的回声已发出。TA 不会看到你的真实身份，只会知道有人被这段人格打动。"}</span>
               </div>
             )}
           </div>
@@ -510,15 +658,15 @@ function UnboxingSurface({
         {openingState === "opening" && <button className="pill-secondary">封条正在打开...</button>}
         {openingState === "first" && (
           <>
-            <button className="pill-primary" onClick={onSecondLayer}>继续探索第二层</button>
-            <button className="pill-secondary" onClick={onEcho}>感兴趣，发送回声</button>
-            <button className="pill-secondary" onClick={onLater}>稍后再看</button>
+            <button className="pill-primary" onClick={onSecondLayer}>继续翻开第二层</button>
+            <button className="pill-secondary" onClick={onEcho}>我有一点回声</button>
+            <button className="pill-secondary" onClick={onLater}>先放回盒子</button>
           </>
         )}
         {openingState === "second" && (
           <>
             <button className="pill-primary" onClick={onEcho}>感兴趣，发送回声</button>
-            <button className="pill-secondary" onClick={onPass}>暂不继续</button>
+            <button className="pill-secondary" onClick={onPass}>暂不继续，保护边界</button>
           </>
         )}
         {openingState === "echo" && (
@@ -557,6 +705,10 @@ function CircleView({
         <p className="eyebrow">Daily prompt</p>
         <h2 className="mt-3 text-2xl font-semibold leading-tight">{dailyPrompt.title}</h2>
         <p className="mt-3 text-[var(--soft-ink)]">{dailyPrompt.helper}</p>
+        <div className="state-strip success-state mt-4">
+          <Sparkles className="h-4 w-4" />
+          回答会同时进入人格卡、此刻和盲盒推荐线索。
+        </div>
         <div className="mt-5 space-y-2">
           {dailyPrompt.examples.map((item) => (
             <div key={item} className="rounded-2xl bg-white/55 p-3 text-sm text-[var(--soft-ink)]">{item}</div>
@@ -598,7 +750,8 @@ function FragmentCard({
     <Panel className="fragment-card p-5 sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-[var(--berry)]">{fragment.prompt}</p>
+          <p className="text-sm font-semibold text-[var(--berry)]">人格碎片 · {fragment.createdAt}</p>
+          <p className="mt-2 text-sm text-[var(--muted-ink)]">{fragment.prompt}</p>
           <p className="mt-3 text-xl leading-8 sm:text-2xl">“{fragment.answer}”</p>
         </div>
         <span className="w-fit rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm text-[var(--berry)]">{fragment.mood}</span>
@@ -616,6 +769,10 @@ function FragmentCard({
         <button className="soft-command">
           <MessageCircle className="h-4 w-4" />
           {fragment.comments}
+        </button>
+        <button className="soft-command">
+          查看人格卡
+          <UserRound className="h-4 w-4" />
         </button>
         <button className="soft-command" onClick={onExplore}>
           从碎片探索 TA
@@ -653,8 +810,14 @@ function CreateView({
           onChange={(event) => onDraft(event.target.value)}
           placeholder="不用像简介，也不用讨好谁。写一个真实片刻就好。"
         />
+        {!fragmentDraft.trim() && (
+          <div className="state-strip disabled-state mt-4">
+            <ShieldAlert className="h-4 w-4" />
+            先写下一段真实片刻，才能生成人格碎片。
+          </div>
+        )}
         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-          <button className="pill-primary" onClick={onPublish}>生成人格碎片</button>
+          <button className="pill-primary" disabled={!fragmentDraft.trim()} onClick={onPublish}>生成人格碎片</button>
           <button className="pill-secondary" onClick={onCircle}>去此刻看看</button>
         </div>
       </Panel>
@@ -699,15 +862,18 @@ function InviteFlow({
             <p className="eyebrow">Prompt</p>
             <h3>我猜你适合拆一个「慢热关系」盲盒。</h3>
             <p>给朋友留一句话，让分享不是拉人头，而是一次有趣的关系暗号。</p>
+            <div className="share-card-seal">Only for you</div>
             <button className="pill-primary mt-5" onClick={() => onStep("card")}>生成分享卡</button>
           </>
         )}
         {step === "card" && (
           <>
-            <p className="text-sm text-[var(--muted-ink)]">{invite.shareTitle}</p>
+            <div className="share-card-seal">Heartbox sealed</div>
+            <p className="text-sm text-white/70">{invite.shareTitle}</p>
             <h3>{invite.shareMessage}</h3>
-            <div className="mt-4 rounded-2xl bg-white/60 p-3 text-sm text-[var(--soft-ink)]">
-              邀请码：{invite.code}
+            <div className="mt-5 rounded-[22px] border border-white/20 bg-white/12 p-4 text-sm text-white/82">
+              <p>这不是注册链接，是一只给你留着的盲盒。</p>
+              <p className="mt-2 font-semibold text-white">邀请码：{invite.code}</p>
             </div>
             <button className="pill-primary mt-5" onClick={() => onStep("landing")}>
               <Copy className="h-4 w-4" />
@@ -719,7 +885,11 @@ function InviteFlow({
           <>
             <p className="eyebrow">WeChat ready</p>
             <h3>有人觉得这里有一个你会想认识的人</h3>
-            <p>微信内置浏览器下展示保存图片、复制链接和浏览器打开提示。不伪造微信 API 能力。</p>
+            <p>微信内置浏览器下展示保存图片、复制链接和浏览器打开提示；如果当前环境不支持唤起分享，就保留截图转发和复制链接。</p>
+            <div className="state-strip waiting-state mt-4">
+              <RefreshCw className="h-4 w-4" />
+              邀请奖励将在对方完成人格卡并通过基础风控后发放。
+            </div>
             <button className="pill-primary mt-5" onClick={() => onStep("signup")}>进入 Heartbox</button>
           </>
         )}
@@ -772,21 +942,25 @@ function MessagesView({
   return (
     <div className="messages-grid">
       <Panel className="relationship-list p-3">
-        {relationships.map((relationship) => (
-          <button
-            key={relationship.id}
-            className={cx("relationship-row", relationship.id === selectedRelationship.id && "relationship-row-active")}
-            onClick={() => onSelect(relationship.id)}
-          >
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--wine)] text-white">
-              <HeartHandshake className="h-4 w-4" />
-            </span>
-            <span className="min-w-0 text-left">
-              <span className="block truncate font-semibold">{relationship.alias}</span>
-              <span className="block truncate text-sm text-[var(--muted-ink)]">{stageMeta[relationship.stage].label} · {relationship.progress}%</span>
-            </span>
-          </button>
-        ))}
+        {relationships.length === 0 ? (
+          <EmptyState title="还没有匿名关系" body="拆开盲盒并收到双向回声后，这里会出现第一段关系 Journey。" action="去发现盲盒" onAction={() => onSelect(selectedRelationship.id)} />
+        ) : (
+          relationships.map((relationship) => (
+            <button
+              key={relationship.id}
+              className={cx("relationship-row", relationship.id === selectedRelationship.id && "relationship-row-active")}
+              onClick={() => onSelect(relationship.id)}
+            >
+              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--wine)] text-white">
+                <HeartHandshake className="h-4 w-4" />
+              </span>
+              <span className="min-w-0 text-left">
+                <span className="block truncate font-semibold">{relationship.alias}</span>
+                <span className="block truncate text-sm text-[var(--muted-ink)]">{stageMeta[relationship.stage].label} · {relationship.progress}%</span>
+              </span>
+            </button>
+          ))
+        )}
       </Panel>
       <Panel className="chat-panel">
         <div className="chat-header">
@@ -800,11 +974,19 @@ function MessagesView({
           </span>
         </div>
         <div className="chat-body">
-          {messages.map((message) => (
-            <div key={message.id} className={cx("chat-line", message.sender === "me" && "chat-line-me", message.sender === "system" && "chat-line-system")}>
-              <div className="chat-bubble">{message.body}</div>
+          {messages.length === 0 ? (
+            <div className="no-message-state">
+              <MessageCircle className="h-7 w-7" />
+              <h3>还没有消息</h3>
+              <p>先发一句轻一点的话。Heartbox 会保护你们的真实身份，直到双方都想靠近。</p>
             </div>
-          ))}
+          ) : (
+            messages.map((message) => (
+              <div key={message.id} className={cx("chat-line", message.sender === "me" && "chat-line-me", message.sender === "system" && "chat-line-system")}>
+                <div className="chat-bubble">{message.body}</div>
+              </div>
+            ))
+          )}
           {revealRequested && (
             <div className="journey-notice">你已发送“我想认识真实的你”。只有对方也同意，才会进入揭晓。</div>
           )}
@@ -856,6 +1038,11 @@ function JourneyPanel({
   return (
     <Panel className="journey-panel p-5">
       <p className="eyebrow">Relationship journey</p>
+      <div className="current-stage-card">
+        <span>现在是</span>
+        <strong>{stageMeta[relationship.stage].label}</strong>
+        <p>{stageMeta[relationship.stage].tone}</p>
+      </div>
       <div className="mt-4 space-y-3">
         {stageOrder.map((stage) => (
           <div key={stage} className={cx("journey-step", relationship.stage === stage && "journey-step-active")}>
@@ -876,6 +1063,10 @@ function JourneyPanel({
           <div className="h-full rounded-full bg-[var(--berry)]" style={{ width: `${relationship.progress}%` }} />
         </div>
         <p className="mt-3 text-sm leading-6 text-[var(--soft-ink)]">{relationship.nextUnlock}</p>
+      </div>
+      <div className="protected-list">
+        <p><LockKeyhole className="h-4 w-4" /> 仍受保护：真实姓名、联系方式、精确位置</p>
+        <p><Sparkles className="h-4 w-4" /> 已解锁：{relationship.unlockedFragments.join("、")}</p>
       </div>
       <div className="mt-4 space-y-2">
         <button className="action-row" onClick={onReveal}>
@@ -1078,11 +1269,11 @@ function ConversionModal({
           </button>
           <button className="conversion-option" onClick={onUseHeart}>
             <Heart className="h-5 w-5" />
-            <span><strong>使用 Heart</strong><small>当前余额 {hearts}，价格暂不写死</small></span>
+            <span><strong>使用 Heart</strong><small>当前余额 {hearts}，只作为额外探索机会</small></span>
           </button>
           <button className="conversion-option" onClick={onPlus}>
             <Sparkles className="h-5 w-5" />
-            <span><strong>了解 Heart+</strong><small>更多每日拆盒、高级筛选和悔拆找回</small></span>
+            <span><strong>了解 Heart+</strong><small>更多每日拆盒，但不能绕过双方同意</small></span>
           </button>
         </div>
       </div>
@@ -1095,6 +1286,15 @@ function MiniStat({ label, value }: { label: string; value: string }) {
     <div className="mini-stat">
       <p>{label}</p>
       <strong>{value}</strong>
+    </div>
+  );
+}
+
+function StateChip({ label, body }: { label: string; body: string }) {
+  return (
+    <div className="state-chip">
+      <strong>{label}</strong>
+      <span>{body}</span>
     </div>
   );
 }
