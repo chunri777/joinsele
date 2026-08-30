@@ -1,454 +1,624 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { ElementType, ReactNode } from "react";
 import {
   ArrowRight,
   Ban,
-  Bell,
-  Check,
   ChevronLeft,
-  Eye,
-  EyeOff,
+  Copy,
   Flag,
+  Gift,
+  Heart,
   HeartHandshake,
+  House,
   LockKeyhole,
-  MapPin,
   MessageCircle,
   PackageOpen,
+  Plus,
+  RefreshCw,
   Send,
   ShieldAlert,
   ShieldCheck,
   Sparkles,
-  UserRoundPlus,
+  UserRound,
+  UsersRound,
 } from "lucide-react";
+import {
+  type AppView,
+  type BlindBox,
+  type Conversation,
+  type PersonalityFragment,
+  type Relationship,
+  blindBoxes,
+  conversations,
+  currentUser,
+  dailyPrompt,
+  invite,
+  personalityCards,
+  personalityFragments,
+  profiles,
+  referralRewards,
+  relationships,
+  stageMeta,
+  themes,
+  wallet as initialWallet,
+} from "@/lib/heartbox-data";
 
-type View = "discover" | "create" | "quiz" | "match" | "chat" | "mine" | "safety";
-
-const navItems: { id: View; label: string }[] = [
-  { id: "discover", label: "发现盲盒" },
-  { id: "create", label: "创建盲盒" },
-  { id: "quiz", label: "人格问答" },
-  { id: "match", label: "匹配结果" },
-  { id: "chat", label: "匿名聊天室" },
-  { id: "mine", label: "我的盲盒" },
-  { id: "safety", label: "安全中心" },
+const navItems: { id: AppView; label: string; icon: ElementType }[] = [
+  { id: "discover", label: "发现", icon: House },
+  { id: "circle", label: "此刻", icon: Sparkles },
+  { id: "create", label: "＋", icon: Plus },
+  { id: "messages", label: "消息", icon: MessageCircle },
+  { id: "mine", label: "我的", icon: UserRound },
 ];
 
-const interests = ["独立电影", "夜跑", "小酒馆", "城市散步", "Livehouse", "心理学", "做饭", "展览"];
-
-const poolCards = [
-  {
-    name: "月台来信",
-    city: "上海",
-    age: "25-29",
-    mbti: "INFJ",
-    tags: ["电影", "夜跑", "慢热"],
-    line: "希望先确认能不能自然地说废话，再谈心动。",
-    match: 92,
-  },
-  {
-    name: "雾里电台",
-    city: "杭州",
-    age: "23-26",
-    mbti: "ENFP",
-    tags: ["播客", "咖啡", "周末出逃"],
-    line: "喜欢有边界感的人，也喜欢认真回复一段话的人。",
-    match: 87,
-  },
-  {
-    name: "晚风切片",
-    city: "成都",
-    age: "27-31",
-    mbti: "INTP",
-    tags: ["书店", "爵士", "猫"],
-    line: "不赶进度，想认识一个能一起沉默也舒服的人。",
-    match: 84,
-  },
-];
-
-const history = [
-  ["未署名的伞", "已聊天 9 轮", "互相揭晓了兴趣和城市区"],
-  ["周三宇航员", "已结束", "对方主动关闭，资料已自动隐藏"],
-  ["蓝莓回音", "待回应", "盲盒仍在 24 小时保护期内"],
-];
-
-const starters = [
-  "最近一次觉得生活有电影感是什么时候？",
-  "你在亲密关系里最看重的一个细节？",
-  "如果周末只留给一个人，你会带 TA 去哪里？",
-];
-
-const initialMessages = [
-  { from: "match", text: "我抽到了你的卡片，那个“能自然说废话”有点打中我。" },
-  { from: "me", text: "那我们先从废话开始：今天你路过的天空是什么颜色？" },
-  { from: "match", text: "偏灰蓝，但下班路上的灯很暖。你呢？" },
-  { from: "me", text: "奶油色的办公室和莓果色的晚霞，听起来很像这个盲盒。" },
-];
+const stageOrder = ["stranger", "echo", "resonance", "closer", "reveal"] as const;
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Home() {
-  const [view, setView] = useState<View>("discover");
-  const [step, setStep] = useState(0);
-  const [matched, setMatched] = useState(false);
-  const [revealed, setRevealed] = useState(false);
+  const [view, setView] = useState<AppView>("discover");
+  const [selectedBoxId, setSelectedBoxId] = useState(blindBoxes[0].id);
+  const [openingState, setOpeningState] = useState<"sealed" | "opening" | "first" | "second" | "echo" | "matched">("sealed");
+  const [freeOpens, setFreeOpens] = useState(initialWallet.dailyFreeOpensRemaining);
+  const [hearts, setHearts] = useState(initialWallet.hearts);
+  const [showConversion, setShowConversion] = useState(false);
+  const [likedFragments, setLikedFragments] = useState<string[]>([]);
+  const [fragmentDraft, setFragmentDraft] = useState("");
+  const [publishedFragments, setPublishedFragments] = useState<PersonalityFragment[]>([]);
+  const [selectedRelationshipId, setSelectedRelationshipId] = useState(relationships[0].id);
+  const [messages, setMessages] = useState(conversations[0].messages);
+  const [messageDraft, setMessageDraft] = useState("");
+  const [revealRequested, setRevealRequested] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const [reported, setReported] = useState(false);
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState(initialMessages);
+  const [inviteStep, setInviteStep] = useState<"create" | "card" | "landing" | "signup">("create");
 
-  const sensitive = useMemo(() => {
-    return /(微信|vx|wechat|手机号|电话|\d{11})/i.test(message);
-  }, [message]);
+  const selectedBox = blindBoxes.find((box) => box.id === selectedBoxId) ?? blindBoxes[0];
+  const selectedRelationship = relationships.find((item) => item.id === selectedRelationshipId) ?? relationships[0];
+  const allFragments = [...publishedFragments, ...personalityFragments];
+  const myCard = personalityCards.find((card) => card.userId === currentUser.id) ?? personalityCards[0];
+  const myProfile = profiles.find((profile) => profile.userId === currentUser.id) ?? profiles[0];
+  const conversation: Conversation = conversations.find((item) => item.relationshipId === selectedRelationship.id) ?? conversations[0];
 
-  function go(next: View) {
+  const sensitive = useMemo(() => /(微信|vx|wechat|手机号|电话|\d{11})/i.test(messageDraft), [messageDraft]);
+
+  function switchView(next: AppView) {
     setView(next);
     window.requestAnimationFrame(() => {
-      document.getElementById("app-surface")?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById("heartbox-shell")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 
-  function sendMessage() {
-    if (!message.trim()) return;
-    setMessages((current) => [...current, { from: "me", text: message.trim() }]);
-    setMessage("");
+  function beginOpening() {
+    if (freeOpens < 1) {
+      setShowConversion(true);
+      return;
+    }
+    setFreeOpens((value) => value - 1);
+    setOpeningState("opening");
+    window.setTimeout(() => setOpeningState("first"), 720);
+  }
+
+  function resetOpening(boxId?: string) {
+    if (boxId) setSelectedBoxId(boxId);
+    setOpeningState("sealed");
+  }
+
+  function publishFragment() {
+    if (!fragmentDraft.trim()) return;
+    setPublishedFragments((current) => [
+      {
+        id: `fragment_new_${Date.now()}`,
+        userId: currentUser.id,
+        prompt: dailyPrompt.title,
+        answer: fragmentDraft.trim(),
+        mood: "刚刚发生",
+        tags: ["今日人格碎片", "真实表达"],
+        likes: 0,
+        comments: 0,
+        createdAt: "刚刚",
+      },
+      ...current,
+    ]);
+    setFragmentDraft("");
+    setView("circle");
+  }
+
+  function sendChatMessage() {
+    if (!messageDraft.trim()) return;
+    setMessages((current) => [
+      ...current,
+      {
+        id: `msg_new_${Date.now()}`,
+        sender: "me",
+        body: messageDraft.trim(),
+        createdAt: "现在",
+      },
+    ]);
+    setMessageDraft("");
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[var(--cream)] text-[var(--ink)]">
+    <main id="heartbox-shell" className="min-h-screen bg-[var(--cream)] text-[var(--ink)]">
       <div className="grain" />
-      <header className="sticky top-0 z-40 border-b border-white/70 bg-[rgba(255,248,240,0.78)] px-4 py-3 backdrop-blur-2xl sm:px-8">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-          <button className="flex items-center gap-3" onClick={() => go("discover")}>
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--wine)] text-sm font-semibold text-white shadow-[0_10px_28px_rgb(95_20_38/25%)]">
-              Hb
-            </span>
-            <span className="text-left">
-              <span className="block text-base font-semibold tracking-[0.02em]">Heartbox</span>
-              <span className="block text-xs text-[var(--muted-ink)]">心动盲盒</span>
-            </span>
-          </button>
-          <nav className="hidden items-center gap-1 rounded-full border border-white/70 bg-white/45 p-1 shadow-[0_12px_35px_rgb(80_20_35/7%)] lg:flex">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => go(item.id)}
-                className={cx(
-                  "rounded-full px-4 py-2 text-sm transition",
-                  view === item.id
-                    ? "bg-[var(--wine)] text-white shadow-[0_10px_22px_rgb(95_20_38/18%)]"
-                    : "text-[var(--soft-ink)] hover:bg-white/70",
-                )}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-          <button
-            onClick={() => go("create")}
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--wine)] px-4 py-2.5 text-sm font-medium text-white shadow-[0_12px_28px_rgb(95_20_38/18%)]"
-          >
-            <UserRoundPlus className="h-4 w-4" />
-            创建
-          </button>
-        </div>
-      </header>
-
-      <section className="relative px-5 py-8 sm:px-8 lg:px-12">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:min-h-[calc(100vh-92px)] lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="relative z-10 max-w-3xl py-8">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--berry)]/15 bg-white/55 px-3 py-2 text-sm text-[var(--berry)] backdrop-blur-xl">
-              <Sparkles className="h-4 w-4" />
-              18+ 年轻成年人的匿名恋爱盲盒
-            </div>
-            <h1 className="max-w-4xl text-[clamp(3.3rem,8vw,7.8rem)] font-semibold leading-[0.91] tracking-[-0.04em]">
-              拆开一个
-              <span className="block text-[var(--berry)]">未知的人</span>
-            </h1>
-            <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--soft-ink)]">
-              先用人格卡片认识彼此，不急着交换真实资料。投递一个匿名盲盒，遇见城市、兴趣和恋爱观刚好有回声的人。
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <button
-                onClick={() => go("match")}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--wine)] px-6 py-4 text-base font-semibold text-white shadow-[0_18px_42px_rgb(95_20_38/22%)]"
-              >
-                拆开一个盲盒
-                <ArrowRight className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => go("create")}
-                className="inline-flex items-center justify-center rounded-full border border-[var(--wine)]/15 bg-white/60 px-6 py-4 text-base font-semibold text-[var(--wine)] backdrop-blur-xl"
-              >
-                先创建人格卡片
-              </button>
-            </div>
-            <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
-              <Metric title="18+" body="仅面向成年人" />
-              <Metric title="0m" body="不展示精确定位" />
-              <Metric title="匿名" body="手机号微信不公开" />
-            </div>
-          </div>
-          <HeroStack />
-        </div>
-      </section>
-
-      <section id="app-surface" className="relative px-5 pb-16 sm:px-8 lg:px-12">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
-          <aside className="glass-panel h-fit p-3 lg:sticky lg:top-24">
-            <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => go(item.id)}
-                  className={cx(
-                    "flex items-center justify-between rounded-2xl px-4 py-3 text-left text-sm font-medium transition",
-                    view === item.id
-                      ? "bg-[var(--wine)] text-white"
-                      : "bg-white/45 text-[var(--soft-ink)] hover:bg-white/70",
-                  )}
-                >
-                  {item.label}
-                  {view === item.id && <Check className="h-4 w-4" />}
-                </button>
-              ))}
-            </div>
-            <div className="mt-4 rounded-3xl border border-[var(--berry)]/10 bg-[var(--mist)]/35 p-4">
-              <p className="text-sm font-semibold text-[var(--wine)]">安全边界</p>
-              <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
-                不允许未成年人使用；不公开手机号、微信、精确定位；聊天内置敏感信息提醒。
-              </p>
-            </div>
-          </aside>
-
-          <div className="min-h-[680px]">
-            {view === "discover" && <Discover onCreate={() => go("create")} onMatch={() => go("match")} />}
-            {view === "create" && <CreateBox onNext={() => go("quiz")} />}
-            {view === "quiz" && <Quiz step={step} setStep={setStep} onDone={() => go("match")} />}
-            {view === "match" && (
-              <MatchResult
-                matched={matched}
-                onMatch={() => setMatched(true)}
-                onChat={() => go("chat")}
+      <div className="app-frame">
+        <DesktopSidebar view={view} onSwitch={switchView} />
+        <section className="main-stage">
+          <MobileTopbar freeOpens={freeOpens} hearts={hearts} heartPlus={initialWallet.heartPlus.active} />
+          <TopStatus view={view} freeOpens={freeOpens} hearts={hearts} onOpenWallet={() => switchView("mine")} />
+          <div className="view-stack">
+            {view === "discover" && (
+              <DiscoverView
+                box={selectedBox}
+                boxes={blindBoxes}
+                openingState={openingState}
+                freeOpens={freeOpens}
+                hearts={hearts}
+                onOpen={beginOpening}
+                onSecondLayer={() => setOpeningState("second")}
+                onEcho={() => setOpeningState("echo")}
+                onMatched={() => {
+                  setOpeningState("matched");
+                  setSelectedRelationshipId(relationships[0].id);
+                }}
+                onLater={() => resetOpening(blindBoxes[1]?.id)}
+                onPass={() => resetOpening(blindBoxes[2]?.id)}
+                onSelectBox={(boxId) => resetOpening(boxId)}
+                onNeedMore={() => setShowConversion(true)}
+                onMessages={() => switchView("messages")}
               />
             )}
-            {view === "chat" && (
-              <ChatRoom
-                messages={messages}
-                message={message}
+            {view === "circle" && (
+              <CircleView
+                fragments={allFragments}
+                likedFragments={likedFragments}
+                onLike={(id) =>
+                  setLikedFragments((current) =>
+                    current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
+                  )
+                }
+                onExplore={() => switchView("discover")}
+                onCreate={() => switchView("create")}
+              />
+            )}
+            {view === "create" && (
+              <CreateView
+                fragmentDraft={fragmentDraft}
+                inviteStep={inviteStep}
+                onDraft={setFragmentDraft}
+                onPublish={publishFragment}
+                onInviteStep={setInviteStep}
+                onCircle={() => switchView("circle")}
+              />
+            )}
+            {view === "messages" && (
+              <MessagesView
+                relationships={relationships}
+                selectedRelationship={selectedRelationship}
+                messages={messages.length ? messages : conversation.messages}
+                messageDraft={messageDraft}
                 sensitive={sensitive}
-                revealed={revealed}
+                revealRequested={revealRequested}
                 blocked={blocked}
                 reported={reported}
-                setMessage={setMessage}
-                sendMessage={sendMessage}
-                setRevealed={setRevealed}
-                setBlocked={setBlocked}
-                setReported={setReported}
+                onSelect={(id) => setSelectedRelationshipId(id)}
+                onDraft={setMessageDraft}
+                onSend={sendChatMessage}
+                onReveal={() => setRevealRequested(true)}
+                onBlock={() => setBlocked(true)}
+                onReport={() => setReported(true)}
+                onClose={() => setSelectedRelationshipId(relationships[1].id)}
               />
             )}
-            {view === "mine" && <Mine onChat={() => go("chat")} />}
-            {view === "safety" && <SafetyCenter reported={reported} blocked={blocked} />}
+            {view === "mine" && (
+              <MineView
+                profile={myProfile}
+                card={myCard}
+                freeOpens={freeOpens}
+                hearts={hearts}
+                onConversion={() => setShowConversion(true)}
+                onInvite={() => {
+                  setInviteStep("create");
+                  switchView("create");
+                }}
+              />
+            )}
           </div>
-        </div>
-      </section>
+        </section>
+        <ContextPanel
+          view={view}
+          freeOpens={freeOpens}
+          hearts={hearts}
+          selectedBox={selectedBox}
+          relationship={selectedRelationship}
+          onMine={() => switchView("mine")}
+          onInvite={() => switchView("create")}
+        />
+      </div>
+      <MobileNav view={view} onSwitch={switchView} />
+      {showConversion && (
+        <ConversionModal
+          hearts={hearts}
+          onClose={() => setShowConversion(false)}
+          onInvite={() => {
+            setShowConversion(false);
+            setInviteStep("create");
+            switchView("create");
+          }}
+          onUseHeart={() => {
+            if (hearts >= 8) {
+              setHearts((value) => value - 8);
+              setShowConversion(false);
+              setOpeningState("opening");
+              window.setTimeout(() => setOpeningState("first"), 720);
+            }
+          }}
+          onPlus={() => {
+            setShowConversion(false);
+            switchView("mine");
+          }}
+        />
+      )}
     </main>
   );
 }
 
-function Metric({ title, body }: { title: string; body: string }) {
+function DesktopSidebar({ view, onSwitch }: { view: AppView; onSwitch: (view: AppView) => void }) {
   return (
-    <div className="rounded-2xl border border-white/70 bg-white/50 p-4 backdrop-blur-xl">
-      <p className="text-xl font-semibold text-[var(--wine)]">{title}</p>
-      <p className="mt-1 text-sm text-[var(--muted-ink)]">{body}</p>
+    <aside className="desktop-sidebar">
+      <button className="brand-lockup" onClick={() => onSwitch("discover")}>
+        <span className="brand-mark">Hb</span>
+        <span>
+          <span className="block text-base font-semibold">Heartbox</span>
+          <span className="block text-xs text-[var(--muted-ink)]">心动盲盒</span>
+        </span>
+      </button>
+      <nav className="mt-8 space-y-2">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.id}
+              onClick={() => onSwitch(item.id)}
+              className={cx("side-nav-item", view === item.id && "side-nav-item-active")}
+            >
+              <Icon className="h-5 w-5" />
+              <span>{item.label === "＋" ? "发布 / 投递" : item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+      <div className="mt-auto rounded-[24px] border border-[var(--berry)]/12 bg-[var(--mist)]/35 p-4">
+        <p className="text-sm font-semibold text-[var(--wine)]">18+ 安全边界</p>
+        <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
+          匿名探索、双向揭晓、举报拉黑常驻。Heart+ 不能绕过同意。
+        </p>
+      </div>
+    </aside>
+  );
+}
+
+function MobileTopbar({ freeOpens, hearts, heartPlus }: { freeOpens: number; hearts: number; heartPlus: boolean }) {
+  return (
+    <header className="mobile-topbar">
+      <div className="brand-lockup">
+        <span className="brand-mark">Hb</span>
+        <span>
+          <span className="block text-sm font-semibold">Heartbox</span>
+          <span className="block text-[11px] text-[var(--muted-ink)]">拆开一个未知的人</span>
+        </span>
+      </div>
+      <div className="flex items-center gap-2">
+        <StatusPill icon={PackageOpen} label={`${freeOpens}/3`} />
+        <StatusPill icon={Heart} label={`${hearts}`} />
+        <StatusPill icon={Sparkles} label={heartPlus ? "Plus" : "Free"} />
+      </div>
+    </header>
+  );
+}
+
+function TopStatus({
+  view,
+  freeOpens,
+  hearts,
+  onOpenWallet,
+}: {
+  view: AppView;
+  freeOpens: number;
+  hearts: number;
+  onOpenWallet: () => void;
+}) {
+  const titles: Record<AppView, string> = {
+    discover: "发现盲盒",
+    circle: "此刻",
+    create: "发布 / 投递",
+    messages: "消息",
+    mine: "我的",
+  };
+  return (
+    <div className="top-status">
+      <div>
+        <p className="eyebrow">Heartbox V2</p>
+        <h1 className="mt-1 text-2xl font-semibold tracking-[-0.02em] sm:text-4xl">{titles[view]}</h1>
+      </div>
+      <button className="wallet-strip" onClick={onOpenWallet}>
+        <span><PackageOpen className="h-4 w-4" /> 今日 {freeOpens}/3</span>
+        <span><Heart className="h-4 w-4" /> {hearts}</span>
+        <span><Sparkles className="h-4 w-4" /> Heart+</span>
+      </button>
     </div>
   );
 }
 
-function HeroStack() {
+function DiscoverView(props: {
+  box: BlindBox;
+  boxes: BlindBox[];
+  openingState: "sealed" | "opening" | "first" | "second" | "echo" | "matched";
+  freeOpens: number;
+  hearts: number;
+  onOpen: () => void;
+  onSecondLayer: () => void;
+  onEcho: () => void;
+  onMatched: () => void;
+  onLater: () => void;
+  onPass: () => void;
+  onSelectBox: (boxId: string) => void;
+  onNeedMore: () => void;
+  onMessages: () => void;
+}) {
   return (
-    <div className="relative mx-auto w-full max-w-[540px] py-8">
-      <div className="absolute -left-10 top-16 h-52 w-52 rounded-full bg-[var(--mist)]/45 blur-3xl" />
-      <div className="absolute bottom-6 right-0 h-72 w-72 rounded-full bg-[var(--berry)]/15 blur-3xl" />
-      <div className="relative rotate-[-2deg] rounded-[34px] border border-white/75 bg-white/55 p-5 shadow-[0_34px_90px_rgb(80_20_35/16%)] backdrop-blur-2xl">
-        <div className="rounded-[28px] bg-[linear-gradient(145deg,#6f1830,#a42d4a_46%,#efd7d8)] p-1">
-          <div className="rounded-[24px] bg-[rgba(255,250,245,0.9)] p-5">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-[var(--muted-ink)]">匿名人格卡片</p>
-                <h2 className="mt-2 text-3xl font-semibold">月台来信</h2>
-              </div>
-              <EyeOff className="h-6 w-6 text-[var(--berry)]" />
+    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <section className="space-y-5">
+        <Panel className="overflow-hidden p-5 sm:p-7">
+          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
+            <div>
+              <p className="eyebrow">Daily box</p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-[-0.02em] sm:text-5xl">今晚拆开一段人格</h2>
+              <p className="mt-4 max-w-2xl text-[var(--soft-ink)]">
+                拆盒前只看到信封、封条和模糊人格碎片。你先对表达产生好奇，再决定是否靠近。
+              </p>
             </div>
-            <div className="mt-7 grid grid-cols-2 gap-3">
-              {["25-29", "上海", "INFJ", "电影 / 夜跑"].map((tag) => (
-                <span key={tag} className="rounded-full bg-white/70 px-4 py-3 text-sm text-[var(--soft-ink)]">
-                  {tag}
+            <div className="grid grid-cols-3 gap-2 text-center sm:min-w-[310px]">
+              <MiniStat label="免费" value={`${props.freeOpens}/3`} />
+              <MiniStat label="Heart" value={String(props.hearts)} />
+              <MiniStat label="Heart+" value="未开通" />
+            </div>
+          </div>
+        </Panel>
+        <UnboxingSurface {...props} />
+      </section>
+      <aside className="space-y-5">
+        <Panel className="p-5">
+          <p className="eyebrow">Theme boxes</p>
+          <div className="mt-4 grid gap-3">
+            {themes.map((theme) => (
+              <button key={theme.id} className="theme-row">
+                <span>
+                  <span className="block font-semibold text-[var(--wine)]">{theme.title}</span>
+                  <span className="text-sm text-[var(--muted-ink)]">{theme.note}</span>
                 </span>
-              ))}
-            </div>
-            <div className="mt-6 rounded-3xl bg-white/70 p-5">
-              <p className="text-sm text-[var(--muted-ink)]">恋爱观</p>
-              <p className="mt-2 text-lg leading-7">慢一点也没关系。希望先确认能不能自然地说废话，再谈心动。</p>
-            </div>
-            <div className="mt-5 flex items-center justify-between rounded-3xl border border-[var(--berry)]/10 bg-[var(--mist)]/35 px-5 py-4">
-              <span className="text-sm text-[var(--soft-ink)]">互动达到 6 轮后可互相揭晓</span>
-              <ShieldCheck className="h-5 w-5 text-[var(--berry)]" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="relative -mt-10 ml-auto w-[82%] rotate-[3deg] rounded-[28px] border border-white/70 bg-white/60 p-5 shadow-[0_24px_70px_rgb(80_20_35/12%)] backdrop-blur-2xl">
-        <p className="text-sm font-medium text-[var(--berry)]">今日匹配池</p>
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-4xl font-semibold">128</p>
-          <p className="max-w-36 text-right text-sm text-[var(--muted-ink)]">个等待被温柔拆开的盲盒</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Discover({ onCreate, onMatch }: { onCreate: () => void; onMatch: () => void }) {
-  return (
-    <section className="space-y-6">
-      <Panel className="p-6 sm:p-8">
-        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div>
-            <p className="eyebrow">Discover pool</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.02em] sm:text-5xl">今晚的盲盒池</h2>
-            <p className="mt-4 max-w-2xl text-[var(--soft-ink)]">
-              系统会按年龄段、城市区、兴趣重叠和恋爱观关键词半随机匹配。先匿名聊天，再决定是否揭晓更多资料。
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <button className="pill-secondary" onClick={onCreate}>创建我的盲盒</button>
-            <button className="pill-primary" onClick={onMatch}>投递并匹配</button>
-          </div>
-        </div>
-      </Panel>
-      <div className="grid gap-4 xl:grid-cols-3">
-        {poolCards.map((card) => (
-          <Panel key={card.name} className="group p-5">
-            <div className="flex items-start justify-between">
-              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--wine)] text-white">
-                <PackageOpen className="h-5 w-5" />
-              </div>
-              <span className="rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm font-semibold text-[var(--berry)]">
-                {card.match}% 回声
-              </span>
-            </div>
-            <h3 className="mt-5 text-2xl font-semibold">{card.name}</h3>
-            <p className="mt-2 flex items-center gap-2 text-sm text-[var(--muted-ink)]">
-              <MapPin className="h-4 w-4" />
-              {card.city} · {card.age} · {card.mbti}
-            </p>
-            <p className="mt-5 min-h-16 text-[var(--soft-ink)]">{card.line}</p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {card.tags.map((tag) => (
-                <span key={tag} className="rounded-full border border-[var(--wine)]/10 bg-white/50 px-3 py-1 text-sm">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </Panel>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function CreateBox({ onNext }: { onNext: () => void }) {
-  return (
-    <section className="grid gap-6 xl:grid-cols-[1fr_0.82fr]">
-      <Panel className="p-6 sm:p-8">
-        <p className="eyebrow">Create box</p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-[-0.02em] sm:text-5xl">创建匿名人格卡片</h2>
-        <div className="mt-7 grid gap-4 sm:grid-cols-2">
-          <Field label="匿名昵称" value="月台来信" />
-          <Field label="年龄段" value="25-29" />
-          <Field label="城市" value="上海（仅城市，不展示精确定位）" />
-          <Field label="MBTI（可选）" value="INFJ" />
-        </div>
-        <div className="mt-5">
-          <label className="text-sm font-medium text-[var(--wine)]">兴趣</label>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {interests.map((item, index) => (
-              <button
-                key={item}
-                className={cx("rounded-full px-4 py-2 text-sm", index < 4 ? "bg-[var(--wine)] text-white" : "bg-white/65 text-[var(--soft-ink)]")}
-              >
-                {item}
+                <span className="rounded-full bg-white/65 px-3 py-1 text-sm">{theme.count}</span>
               </button>
             ))}
           </div>
-        </div>
-        <div className="mt-5 grid gap-4">
-          <Area label="恋爱观" value="慢一点也没关系。希望先确认能不能自然地说废话，再谈心动。" />
-          <Area label="想认识的人" value="有边界感、愿意认真表达，也能接受彼此都有自己的生活。" />
-        </div>
-        <button className="pill-primary mt-7" onClick={onNext}>
-          进入 3 个问题
-        </button>
-      </Panel>
-      <Panel className="p-6">
-        <p className="eyebrow">Preview</p>
-        <div className="mt-4 rounded-[30px] bg-[linear-gradient(145deg,#5d1428,#a12c49,#edd5d8)] p-1">
-          <div className="rounded-[26px] bg-[rgba(255,250,245,0.9)] p-6">
-            <p className="text-sm text-[var(--muted-ink)]">你的匿名卡片</p>
-            <h3 className="mt-3 text-3xl font-semibold">月台来信</h3>
-            <p className="mt-4 text-[var(--soft-ink)]">25-29 · 上海 · INFJ</p>
-            <p className="mt-8 text-xl leading-8">“不急着证明自己，先看看对方如何对待一次普通聊天。”</p>
+        </Panel>
+        <Panel className="p-5">
+          <p className="eyebrow">Recommended</p>
+          <div className="mt-4 space-y-3">
+            {props.boxes.map((box) => (
+              <button key={box.id} className="box-list-item" onClick={() => props.onSelectBox(box.id)}>
+                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--wine)] text-white">
+                  <Gift className="h-4 w-4" />
+                </span>
+                <span className="min-w-0 flex-1 text-left">
+                  <span className="block truncate font-semibold">{box.title}</span>
+                  <span className="block truncate text-sm text-[var(--muted-ink)]">{box.cityHint} · {box.ageHint}</span>
+                </span>
+                <span className="text-sm font-semibold text-[var(--berry)]">{box.echoScore}%</span>
+              </button>
+            ))}
           </div>
-        </div>
-        <div className="mt-5 rounded-3xl bg-white/55 p-5">
-          <p className="font-semibold text-[var(--wine)]">发布前确认</p>
-          <ul className="mt-3 space-y-3 text-sm text-[var(--soft-ink)]">
-            <li>已确认本人 18 岁及以上。</li>
-            <li>未填写手机号、微信、住址或工作单位。</li>
-            <li>同意被举报或拉黑后限制互动。</li>
-          </ul>
-        </div>
-      </Panel>
-    </section>
+        </Panel>
+      </aside>
+    </div>
   );
 }
 
-function Quiz({ step, setStep, onDone }: { step: number; setStep: (step: number) => void; onDone: () => void }) {
-  const progress = ((step + 1) / starters.length) * 100;
+function UnboxingSurface({
+  box,
+  openingState,
+  onOpen,
+  onSecondLayer,
+  onEcho,
+  onMatched,
+  onLater,
+  onPass,
+  onNeedMore,
+  onMessages,
+}: {
+  box: BlindBox;
+  openingState: "sealed" | "opening" | "first" | "second" | "echo" | "matched";
+  onOpen: () => void;
+  onSecondLayer: () => void;
+  onEcho: () => void;
+  onMatched: () => void;
+  onLater: () => void;
+  onPass: () => void;
+  onNeedMore: () => void;
+  onMessages: () => void;
+}) {
+  const opened = openingState !== "sealed" && openingState !== "opening";
   return (
-    <Panel className="p-6 sm:p-8">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="eyebrow">Persona questions</p>
-          <h2 className="mt-3 text-3xl font-semibold sm:text-5xl">多步人格问答</h2>
+    <Panel className="unbox-panel">
+      <div className="unbox-stage">
+        <div className={cx("sealed-envelope", openingState === "opening" && "sealed-envelope-opening", opened && "sealed-envelope-opened")}>
+          <div className="seal-line" />
+          <div className="wax-seal"><Heart className="h-7 w-7" /></div>
+          <div className="envelope-copy">
+            <p className="text-sm text-[var(--muted-ink)]">{box.theme} · {box.seal}</p>
+            <h3>{box.title}</h3>
+            <p>{box.cityHint} · {box.ageHint} · {box.hiddenTags.slice(0, 2).join(" / ")}</p>
+          </div>
         </div>
-        <span className="rounded-full bg-white/60 px-4 py-2 text-sm text-[var(--soft-ink)]">{step + 1} / 3</span>
+        {opened && (
+          <div className="revealed-persona">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="eyebrow">First layer</p>
+                <h3 className="mt-2 text-3xl font-semibold">{box.firstLayer.alias}</h3>
+                <p className="mt-1 text-[var(--soft-ink)]">{box.firstLayer.archetype}</p>
+              </div>
+              <span className="rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm font-semibold text-[var(--berry)]">
+                {box.echoScore}% 回声
+              </span>
+            </div>
+            <blockquote className="mt-5 rounded-[24px] bg-white/65 p-5 text-lg leading-8">
+              “{box.firstLayer.fragment}”
+            </blockquote>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {box.firstLayer.interests.map((item) => (
+                <span key={item} className="chip">{item}</span>
+              ))}
+            </div>
+            {(openingState === "second" || openingState === "echo" || openingState === "matched") && (
+              <div className="second-layer">
+                <p><strong>关系观：</strong>{box.secondLayer.relationshipView}</p>
+                <p><strong>边界：</strong>{box.secondLayer.boundary}</p>
+                <p><strong>人格问答：</strong>{box.secondLayer.promptAnswer}</p>
+              </div>
+            )}
+            {(openingState === "echo" || openingState === "matched") && (
+              <div className="echo-result">
+                <HeartHandshake className="h-5 w-5" />
+                <span>{openingState === "matched" ? "对方也回应了你的回声，匿名关系已建立。" : "你的回声已发出，等待对方回应。"}</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-      <div className="mt-8 h-2 overflow-hidden rounded-full bg-white/60">
-        <div className="h-full rounded-full bg-[var(--berry)]" style={{ width: `${progress}%` }} />
+      <div className="unbox-actions">
+        {openingState === "sealed" && (
+          <>
+            <button className="pill-primary" onClick={onOpen}>拆开这个盲盒</button>
+            <button className="pill-secondary" onClick={onNeedMore}>查看次数规则</button>
+          </>
+        )}
+        {openingState === "opening" && <button className="pill-secondary">封条正在打开...</button>}
+        {openingState === "first" && (
+          <>
+            <button className="pill-primary" onClick={onSecondLayer}>继续探索第二层</button>
+            <button className="pill-secondary" onClick={onEcho}>感兴趣，发送回声</button>
+            <button className="pill-secondary" onClick={onLater}>稍后再看</button>
+          </>
+        )}
+        {openingState === "second" && (
+          <>
+            <button className="pill-primary" onClick={onEcho}>感兴趣，发送回声</button>
+            <button className="pill-secondary" onClick={onPass}>暂不继续</button>
+          </>
+        )}
+        {openingState === "echo" && (
+          <>
+            <button className="pill-primary" onClick={onMatched}>模拟双向回声</button>
+            <button className="pill-secondary" onClick={onLater}>继续等回应</button>
+          </>
+        )}
+        {openingState === "matched" && (
+          <>
+            <button className="pill-primary" onClick={onMessages}>进入 Relationship Journey</button>
+            <button className="pill-secondary" onClick={onLater}>再拆一个</button>
+          </>
+        )}
       </div>
-      <div className="mt-8 rounded-[30px] bg-white/55 p-6">
-        <p className="text-sm font-semibold text-[var(--berry)]">问题 {step + 1}</p>
-        <h3 className="mt-4 text-2xl font-semibold">{starters[step]}</h3>
-        <textarea
-          className="mt-6 min-h-40 w-full resize-none rounded-3xl border border-[var(--wine)]/10 bg-[rgba(255,255,255,0.72)] p-5 text-base outline-none focus:border-[var(--berry)]"
-          defaultValue={[
-            "上周六凌晨散步，便利店门口有人给流浪猫倒水。那一刻觉得城市没有那么硬。",
-            "看 TA 如何处理不一致。温柔不是永远同意，而是不同意时也不伤人。",
-            "先去安静的展，再去吃一顿不用拍照也很好吃的饭。",
-          ][step]}
-        />
+    </Panel>
+  );
+}
+
+function CircleView({
+  fragments,
+  likedFragments,
+  onLike,
+  onExplore,
+  onCreate,
+}: {
+  fragments: PersonalityFragment[];
+  likedFragments: string[];
+  onLike: (id: string) => void;
+  onExplore: () => void;
+  onCreate: () => void;
+}) {
+  return (
+    <div className="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
+      <Panel className="h-fit p-5 sm:p-6">
+        <p className="eyebrow">Daily prompt</p>
+        <h2 className="mt-3 text-2xl font-semibold leading-tight">{dailyPrompt.title}</h2>
+        <p className="mt-3 text-[var(--soft-ink)]">{dailyPrompt.helper}</p>
+        <div className="mt-5 space-y-2">
+          {dailyPrompt.examples.map((item) => (
+            <div key={item} className="rounded-2xl bg-white/55 p-3 text-sm text-[var(--soft-ink)]">{item}</div>
+          ))}
+        </div>
+        <button className="pill-primary mt-5 w-full" onClick={onCreate}>回答今日 Prompt</button>
+      </Panel>
+      <section className="space-y-4">
+        {fragments.length === 0 ? (
+          <EmptyState title="此刻还没有人格碎片" body="回答今日 Prompt 后，这里会长出第一张属于你的碎片。" action="写下第一段" onAction={onCreate} />
+        ) : (
+          fragments.map((fragment) => (
+            <FragmentCard
+              key={fragment.id}
+              fragment={fragment}
+              liked={likedFragments.includes(fragment.id)}
+              onLike={() => onLike(fragment.id)}
+              onExplore={onExplore}
+            />
+          ))
+        )}
+      </section>
+    </div>
+  );
+}
+
+function FragmentCard({
+  fragment,
+  liked,
+  onLike,
+  onExplore,
+}: {
+  fragment: PersonalityFragment;
+  liked: boolean;
+  onLike: () => void;
+  onExplore: () => void;
+}) {
+  return (
+    <Panel className="fragment-card p-5 sm:p-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-[var(--berry)]">{fragment.prompt}</p>
+          <p className="mt-3 text-xl leading-8 sm:text-2xl">“{fragment.answer}”</p>
+        </div>
+        <span className="w-fit rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm text-[var(--berry)]">{fragment.mood}</span>
       </div>
-      <div className="mt-7 flex justify-between">
-        <button className="pill-secondary" onClick={() => setStep(Math.max(0, step - 1))}>
-          <ChevronLeft className="h-4 w-4" />
-          上一步
+      <div className="mt-5 flex flex-wrap gap-2">
+        {fragment.tags.map((tag) => (
+          <span className="chip" key={tag}>{tag}</span>
+        ))}
+      </div>
+      <div className="mt-5 flex flex-wrap items-center gap-2">
+        <button className={cx("soft-command", liked && "soft-command-active")} onClick={onLike}>
+          <Heart className="h-4 w-4" />
+          {liked ? fragment.likes + 1 : fragment.likes}
         </button>
-        <button className="pill-primary" onClick={() => (step === 2 ? onDone() : setStep(step + 1))}>
-          {step === 2 ? "投递盲盒" : "下一题"}
+        <button className="soft-command">
+          <MessageCircle className="h-4 w-4" />
+          {fragment.comments}
+        </button>
+        <button className="soft-command" onClick={onExplore}>
+          从碎片探索 TA
           <ArrowRight className="h-4 w-4" />
         </button>
       </div>
@@ -456,209 +626,503 @@ function Quiz({ step, setStep, onDone }: { step: number; setStep: (step: number)
   );
 }
 
-function MatchResult({ matched, onMatch, onChat }: { matched: boolean; onMatch: () => void; onChat: () => void }) {
-  return (
-    <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-      <Panel className="flex min-h-[520px] flex-col items-center justify-center p-8 text-center">
-        <div className="grid h-24 w-24 place-items-center rounded-[32px] bg-[var(--wine)] text-white shadow-[0_26px_55px_rgb(95_20_38/24%)]">
-          <PackageOpen className="h-11 w-11" />
-        </div>
-        <h2 className="mt-7 text-4xl font-semibold">{matched ? "盲盒已拆开" : "准备拆开一个未知的人"}</h2>
-        <p className="mt-4 max-w-md text-[var(--soft-ink)]">
-          {matched ? "系统基于兴趣重叠、城市区和恋爱观关键词，为你匹配到一张匿名人格卡。" : "点击后模拟进入匹配池，系统将半随机抽取一位合适对象。"}
-        </p>
-        <button className="pill-primary mt-8" onClick={matched ? onChat : onMatch}>
-          {matched ? "进入匿名聊天" : "开始匹配"}
-        </button>
-      </Panel>
-      <Panel className="p-6 sm:p-8">
-        <p className="eyebrow">Match result</p>
-        <h3 className="mt-3 text-3xl font-semibold">雾里电台</h3>
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <Metric title="92%" body="恋爱观回声" />
-          <Metric title="6" body="共同兴趣" />
-          <Metric title="24h" body="匿名保护期" />
-        </div>
-        <div className="mt-6 rounded-3xl bg-white/55 p-6">
-          <p className="text-sm text-[var(--muted-ink)]">TA 的一段答案</p>
-          <p className="mt-3 text-xl leading-8">“我喜欢让关系自然长出来，而不是把每一次聊天都变成考试。”</p>
-        </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {["城市区：华东", "年龄段：25-29", "兴趣：播客 / 电影", "揭晓条件：双方同意"].map((item) => (
-            <div key={item} className="rounded-2xl bg-white/45 p-4 text-[var(--soft-ink)]">{item}</div>
-          ))}
-        </div>
-      </Panel>
-    </section>
-  );
-}
-
-function ChatRoom(props: {
-  messages: { from: string; text: string }[];
-  message: string;
-  sensitive: boolean;
-  revealed: boolean;
-  blocked: boolean;
-  reported: boolean;
-  setMessage: (value: string) => void;
-  sendMessage: () => void;
-  setRevealed: (value: boolean) => void;
-  setBlocked: (value: boolean) => void;
-  setReported: (value: boolean) => void;
+function CreateView({
+  fragmentDraft,
+  inviteStep,
+  onDraft,
+  onPublish,
+  onInviteStep,
+  onCircle,
+}: {
+  fragmentDraft: string;
+  inviteStep: "create" | "card" | "landing" | "signup";
+  onDraft: (value: string) => void;
+  onPublish: () => void;
+  onInviteStep: (step: "create" | "card" | "landing" | "signup") => void;
+  onCircle: () => void;
 }) {
   return (
-    <section className="grid gap-6 xl:grid-cols-[1fr_340px]">
-      <Panel className="overflow-hidden">
-        <div className="flex items-center justify-between border-b border-white/70 p-5">
-          <div>
-            <p className="eyebrow">Anonymous chat</p>
-            <h2 className="mt-1 text-2xl font-semibold">与「雾里电台」匿名聊天</h2>
-          </div>
-          <span className="rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm text-[var(--berry)]">4 / 6 轮</span>
+    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
+      <Panel className="p-5 sm:p-7">
+        <p className="eyebrow">Personality fragment</p>
+        <h2 className="mt-2 text-3xl font-semibold">写下今日人格碎片</h2>
+        <p className="mt-3 text-[var(--soft-ink)]">{dailyPrompt.title}</p>
+        <textarea
+          className="mt-5 min-h-44 w-full resize-none rounded-[24px] border border-[var(--wine)]/10 bg-white/70 p-5 text-base leading-7 outline-none focus:border-[var(--berry)]"
+          value={fragmentDraft}
+          onChange={(event) => onDraft(event.target.value)}
+          placeholder="不用像简介，也不用讨好谁。写一个真实片刻就好。"
+        />
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+          <button className="pill-primary" onClick={onPublish}>生成人格碎片</button>
+          <button className="pill-secondary" onClick={onCircle}>去此刻看看</button>
         </div>
-        <div className="space-y-4 p-5">
-          {props.messages.map((item, index) => (
-            <div key={`${item.text}-${index}`} className={cx("flex", item.from === "me" ? "justify-end" : "justify-start")}>
-              <div className={cx("max-w-[78%] rounded-[24px] px-5 py-3 leading-7", item.from === "me" ? "bg-[var(--wine)] text-white" : "bg-white/65 text-[var(--soft-ink)]")}>
-                {item.text}
-              </div>
+      </Panel>
+      <Panel className="p-5 sm:p-6">
+        <p className="eyebrow">Leave a box</p>
+        <h2 className="mt-2 text-2xl font-semibold">给朋友留一个盲盒</h2>
+        <InviteFlow step={inviteStep} onStep={onInviteStep} />
+      </Panel>
+    </div>
+  );
+}
+
+function InviteFlow({
+  step,
+  onStep,
+}: {
+  step: "create" | "card" | "landing" | "signup";
+  onStep: (step: "create" | "card" | "landing" | "signup") => void;
+}) {
+  const steps = [
+    { id: "create", label: "创建" },
+    { id: "card", label: "分享卡" },
+    { id: "landing", label: "落地页" },
+    { id: "signup", label: "人格卡" },
+  ] as const;
+  return (
+    <div className="mt-5">
+      <div className="invite-steps">
+        {steps.map((item, index) => (
+          <button
+            key={item.id}
+            className={cx("invite-step", step === item.id && "invite-step-active")}
+            onClick={() => onStep(item.id)}
+          >
+            {index + 1}. {item.label}
+          </button>
+        ))}
+      </div>
+      <div className="invite-card-preview">
+        {step === "create" && (
+          <>
+            <p className="eyebrow">Prompt</p>
+            <h3>我猜你适合拆一个「慢热关系」盲盒。</h3>
+            <p>给朋友留一句话，让分享不是拉人头，而是一次有趣的关系暗号。</p>
+            <button className="pill-primary mt-5" onClick={() => onStep("card")}>生成分享卡</button>
+          </>
+        )}
+        {step === "card" && (
+          <>
+            <p className="text-sm text-[var(--muted-ink)]">{invite.shareTitle}</p>
+            <h3>{invite.shareMessage}</h3>
+            <div className="mt-4 rounded-2xl bg-white/60 p-3 text-sm text-[var(--soft-ink)]">
+              邀请码：{invite.code}
+            </div>
+            <button className="pill-primary mt-5" onClick={() => onStep("landing")}>
+              <Copy className="h-4 w-4" />
+              模拟朋友打开
+            </button>
+          </>
+        )}
+        {step === "landing" && (
+          <>
+            <p className="eyebrow">WeChat ready</p>
+            <h3>有人觉得这里有一个你会想认识的人</h3>
+            <p>微信内置浏览器下展示保存图片、复制链接和浏览器打开提示。不伪造微信 API 能力。</p>
+            <button className="pill-primary mt-5" onClick={() => onStep("signup")}>进入 Heartbox</button>
+          </>
+        )}
+        {step === "signup" && (
+          <>
+            <p className="eyebrow">New user</p>
+            <h3>先回答一个人格 Prompt</h3>
+            <p>完成 18+ 确认、基础人格卡和第一张人格碎片后，双方奖励进入待发放状态。</p>
+            <button className="pill-secondary mt-5" onClick={() => onStep("create")}>再留一个盲盒</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MessagesView({
+  relationships,
+  selectedRelationship,
+  messages,
+  messageDraft,
+  sensitive,
+  revealRequested,
+  blocked,
+  reported,
+  onSelect,
+  onDraft,
+  onSend,
+  onReveal,
+  onBlock,
+  onReport,
+  onClose,
+}: {
+  relationships: Relationship[];
+  selectedRelationship: Relationship;
+  messages: Conversation["messages"];
+  messageDraft: string;
+  sensitive: boolean;
+  revealRequested: boolean;
+  blocked: boolean;
+  reported: boolean;
+  onSelect: (id: string) => void;
+  onDraft: (value: string) => void;
+  onSend: () => void;
+  onReveal: () => void;
+  onBlock: () => void;
+  onReport: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="messages-grid">
+      <Panel className="relationship-list p-3">
+        {relationships.map((relationship) => (
+          <button
+            key={relationship.id}
+            className={cx("relationship-row", relationship.id === selectedRelationship.id && "relationship-row-active")}
+            onClick={() => onSelect(relationship.id)}
+          >
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--wine)] text-white">
+              <HeartHandshake className="h-4 w-4" />
+            </span>
+            <span className="min-w-0 text-left">
+              <span className="block truncate font-semibold">{relationship.alias}</span>
+              <span className="block truncate text-sm text-[var(--muted-ink)]">{stageMeta[relationship.stage].label} · {relationship.progress}%</span>
+            </span>
+          </button>
+        ))}
+      </Panel>
+      <Panel className="chat-panel">
+        <div className="chat-header">
+          <button className="mobile-back" onClick={onClose}><ChevronLeft className="h-4 w-4" /></button>
+          <div>
+            <p className="eyebrow">Anonymous relationship</p>
+            <h2 className="text-2xl font-semibold">{selectedRelationship.alias}</h2>
+          </div>
+          <span className="rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm text-[var(--berry)]">
+            {stageMeta[selectedRelationship.stage].label}
+          </span>
+        </div>
+        <div className="chat-body">
+          {messages.map((message) => (
+            <div key={message.id} className={cx("chat-line", message.sender === "me" && "chat-line-me", message.sender === "system" && "chat-line-system")}>
+              <div className="chat-bubble">{message.body}</div>
             </div>
           ))}
-          {props.revealed && (
-            <div className="rounded-3xl border border-[var(--berry)]/15 bg-[var(--mist)]/35 p-5">
-              <p className="font-semibold text-[var(--wine)]">双方已同意揭晓更多资料</p>
-              <p className="mt-2 text-sm text-[var(--soft-ink)]">可见：真实名字首字母、城市区、更多兴趣。不显示手机号、微信或精确位置。</p>
-            </div>
+          {revealRequested && (
+            <div className="journey-notice">你已发送“我想认识真实的你”。只有对方也同意，才会进入揭晓。</div>
           )}
+          {blocked && <div className="journey-notice">关系已拉黑，后续不会再互相推荐。</div>}
+          {reported && <div className="journey-notice">举报已提交，相关对话会进入安全复核。</div>}
         </div>
-        <div className="border-t border-white/70 p-5">
-          {props.sensitive && (
-            <div className="mb-3 flex items-start gap-3 rounded-2xl border border-[var(--berry)]/15 bg-[var(--mist)]/35 p-3 text-sm text-[var(--wine)]">
-              <ShieldAlert className="mt-0.5 h-4 w-4" />
-              检测到可能的手机号/微信等敏感信息。为保护隐私，建议在双方确认前不要交换外部联系方式。
+        <div className="chat-input-area">
+          {sensitive && (
+            <div className="safety-warning">
+              <ShieldAlert className="h-4 w-4" />
+              检测到可能的联系方式。揭晓前建议不要交换微信、手机号或精确地址。
             </div>
           )}
-          <div className="flex gap-3">
+          <div className="chat-composer">
             <input
-              value={props.message}
-              onChange={(event) => props.setMessage(event.target.value)}
-              onKeyDown={(event) => event.key === "Enter" && props.sendMessage()}
+              value={messageDraft}
+              onChange={(event) => onDraft(event.target.value)}
+              onKeyDown={(event) => event.key === "Enter" && onSend()}
               placeholder="继续匿名聊天..."
-              className="min-w-0 flex-1 rounded-full border border-[var(--wine)]/10 bg-white/70 px-5 py-3 outline-none focus:border-[var(--berry)]"
             />
-            <button className="grid h-12 w-12 place-items-center rounded-full bg-[var(--wine)] text-white" onClick={props.sendMessage}>
-              <Send className="h-5 w-5" />
-            </button>
+            <button onClick={onSend} aria-label="发送消息"><Send className="h-5 w-5" /></button>
           </div>
         </div>
       </Panel>
-      <Panel className="h-fit p-5">
-        <p className="eyebrow">Controls</p>
-        <div className="mt-4 space-y-3">
-          <button className="action-row" onClick={() => props.setRevealed(!props.revealed)}>
-            <Eye className="h-5 w-5" />
-            {props.revealed ? "收起揭晓资料" : "请求互相揭晓"}
-          </button>
-          <button className="action-row" onClick={() => props.setReported(true)}>
-            <Flag className="h-5 w-5" />
-            {props.reported ? "已提交举报" : "举报不适内容"}
-          </button>
-          <button className="action-row" onClick={() => props.setBlocked(!props.blocked)}>
-            <Ban className="h-5 w-5" />
-            {props.blocked ? "已拉黑，对话冻结" : "拉黑并停止匹配"}
-          </button>
-        </div>
-        <div className="mt-5 rounded-3xl bg-white/55 p-5 text-sm leading-6 text-[var(--soft-ink)]">
-          反骚扰保护：连续发送冒犯、索要联系方式、诱导线下见面会触发限流和人工复核。
-        </div>
-      </Panel>
-    </section>
+      <JourneyPanel
+        relationship={selectedRelationship}
+        revealRequested={revealRequested}
+        onReveal={onReveal}
+        onReport={onReport}
+        onBlock={onBlock}
+      />
+    </div>
   );
 }
 
-function Mine({ onChat }: { onChat: () => void }) {
+function JourneyPanel({
+  relationship,
+  revealRequested,
+  onReveal,
+  onReport,
+  onBlock,
+}: {
+  relationship: Relationship;
+  revealRequested: boolean;
+  onReveal: () => void;
+  onReport: () => void;
+  onBlock: () => void;
+}) {
   return (
-    <section className="space-y-6">
-      <Panel className="p-6 sm:p-8">
-        <p className="eyebrow">My boxes</p>
-        <h2 className="mt-3 text-3xl font-semibold sm:text-5xl">我的盲盒 / 历史匹配</h2>
-        <div className="mt-7 grid gap-4 md:grid-cols-3">
-          <Metric title="1" body="投递中的盲盒" />
-          <Metric title="8" body="累计匿名聊天" />
-          <Metric title="2" body="互相揭晓" />
-        </div>
-      </Panel>
-      <div className="grid gap-4">
-        {history.map(([name, status, note]) => (
-          <Panel key={name} className="flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center">
-            <div>
-              <h3 className="text-xl font-semibold">{name}</h3>
-              <p className="mt-1 text-sm text-[var(--muted-ink)]">{status}</p>
-              <p className="mt-3 text-[var(--soft-ink)]">{note}</p>
-            </div>
-            <button className="pill-secondary" onClick={onChat}>查看</button>
-          </Panel>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function SafetyCenter({ reported, blocked }: { reported: boolean; blocked: boolean }) {
-  const rules = [
-    ["18+ 成人限定", "注册与提示明确禁止未成年人使用，内容不面向未成年人交友。", ShieldCheck],
-    ["隐私最小化", "只展示城市，不收集或公开精确定位、手机号、微信、住址。", LockKeyhole],
-    ["敏感信息提醒", "聊天中出现联系方式关键词时给出提醒，降低冲动暴露隐私。", Bell],
-    ["举报 / 拉黑", "用户可随时举报、拉黑，对话冻结并退出后续匹配。", Flag],
-  ];
-  return (
-    <Panel className="p-6 sm:p-8">
-      <p className="eyebrow">Safety center</p>
-      <h2 className="mt-3 text-3xl font-semibold sm:text-5xl">安全中心</h2>
-      <p className="mt-4 max-w-2xl text-[var(--soft-ink)]">
-        Heartbox 的默认原则是先保护边界，再制造心动。这里把反骚扰、隐私和成年人限定作为产品底层约束，而不是事后说明。
-      </p>
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
-        {rules.map(([title, body, Icon]) => (
-          <div key={title as string} className="rounded-3xl bg-white/55 p-5">
-            <Icon className="h-6 w-6 text-[var(--berry)]" />
-            <h3 className="mt-4 text-xl font-semibold">{title as string}</h3>
-            <p className="mt-2 leading-7 text-[var(--soft-ink)]">{body as string}</p>
+    <Panel className="journey-panel p-5">
+      <p className="eyebrow">Relationship journey</p>
+      <div className="mt-4 space-y-3">
+        {stageOrder.map((stage) => (
+          <div key={stage} className={cx("journey-step", relationship.stage === stage && "journey-step-active")}>
+            <span className="journey-dot" />
+            <span>
+              <span className="block font-semibold">{stageMeta[stage].label}</span>
+              <span className="text-sm text-[var(--muted-ink)]">{stageMeta[stage].unlock}</span>
+            </span>
           </div>
         ))}
       </div>
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <div className="rounded-3xl border border-[var(--berry)]/15 bg-[var(--mist)]/35 p-5">
-          <p className="font-semibold text-[var(--wine)]">当前演示状态</p>
-          <p className="mt-2 text-[var(--soft-ink)]">举报：{reported ? "已提交" : "未触发"} · 拉黑：{blocked ? "已冻结" : "未触发"}</p>
+      <div className="mt-5 rounded-[22px] bg-white/55 p-4">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-semibold text-[var(--wine)]">下一阶段</span>
+          <span>{relationship.progress}%</span>
         </div>
-        <div className="rounded-3xl border border-[var(--wine)]/10 bg-white/55 p-5">
-          <p className="font-semibold text-[var(--wine)]">隐私说明</p>
-          <p className="mt-2 text-[var(--soft-ink)]">揭晓资料也必须双方同意，且不会显示外部联系方式。线下见面建议保持公共场所和可信联系人告知。</p>
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+          <div className="h-full rounded-full bg-[var(--berry)]" style={{ width: `${relationship.progress}%` }} />
         </div>
+        <p className="mt-3 text-sm leading-6 text-[var(--soft-ink)]">{relationship.nextUnlock}</p>
+      </div>
+      <div className="mt-4 space-y-2">
+        <button className="action-row" onClick={onReveal}>
+          <LockKeyhole className="h-5 w-5" />
+          {revealRequested ? "已请求揭晓" : "我想认识真实的你"}
+        </button>
+        <button className="action-row" onClick={onReport}>
+          <Flag className="h-5 w-5" />
+          举报
+        </button>
+        <button className="action-row" onClick={onBlock}>
+          <Ban className="h-5 w-5" />
+          拉黑 / 结束关系
+        </button>
       </div>
     </Panel>
   );
 }
 
-function Field({ label, value }: { label: string; value: string }) {
+function MineView({
+  profile,
+  card,
+  freeOpens,
+  hearts,
+  onConversion,
+  onInvite,
+}: {
+  profile: (typeof profiles)[number];
+  card: (typeof personalityCards)[number];
+  freeOpens: number;
+  hearts: number;
+  onConversion: () => void;
+  onInvite: () => void;
+}) {
   return (
-    <label>
-      <span className="text-sm font-medium text-[var(--wine)]">{label}</span>
-      <input className="mt-2 w-full rounded-2xl border border-[var(--wine)]/10 bg-white/65 px-4 py-3 outline-none focus:border-[var(--berry)]" defaultValue={value} />
-    </label>
+    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
+      <section className="space-y-5">
+        <Panel className="p-5 sm:p-7">
+          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="eyebrow">My personality card</p>
+              <h2 className="mt-2 text-3xl font-semibold">{card.alias}</h2>
+              <p className="mt-2 text-[var(--soft-ink)]">{profile.ageRange} · {profile.city} · {card.archetype}</p>
+              <p className="mt-5 max-w-2xl text-xl leading-8">“{card.quote}”</p>
+            </div>
+            <div className="rounded-[24px] bg-white/55 p-4 text-center">
+              <p className="text-3xl font-semibold text-[var(--wine)]">{card.completeness}%</p>
+              <p className="text-sm text-[var(--muted-ink)]">人格卡完整度</p>
+            </div>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {[...card.interests, ...card.relationshipValues].map((item) => (
+              <span className="chip" key={item}>{item}</span>
+            ))}
+          </div>
+        </Panel>
+        <Panel className="p-5 sm:p-7">
+          <p className="eyebrow">History</p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {relationships.map((relationship) => (
+              <div className="history-card" key={relationship.id}>
+                <h3>{relationship.alias}</h3>
+                <p>{stageMeta[relationship.stage].label} · {relationship.nextUnlock}</p>
+              </div>
+            ))}
+          </div>
+        </Panel>
+      </section>
+      <aside className="space-y-5">
+        <Panel className="p-5">
+          <p className="eyebrow">Wallet</p>
+          <div className="mt-4 grid gap-3">
+            <MiniStat label="今日免费拆盒" value={`${freeOpens}/3`} />
+            <MiniStat label="Heart" value={String(hearts)} />
+            <MiniStat label="Heart+" value="未开通" />
+          </div>
+          <button className="pill-primary mt-5 w-full" onClick={onConversion}>查看继续探索方式</button>
+        </Panel>
+        <Panel className="p-5">
+          <p className="eyebrow">Invite progress</p>
+          <h3 className="mt-2 text-2xl font-semibold">给朋友留一个盲盒</h3>
+          <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">3 位朋友打开，2 位完成人格卡，1 个奖励待领取。</p>
+          <button className="pill-secondary mt-4 w-full" onClick={onInvite}>继续邀请</button>
+          <div className="mt-4 space-y-2">
+            {referralRewards.map((reward) => (
+              <div key={reward.id} className="reward-row">
+                <span>{reward.title}</span>
+                <strong>{reward.status === "ready" ? "可领取" : reward.status === "claimed" ? "已领取" : "待完成"}</strong>
+              </div>
+            ))}
+          </div>
+        </Panel>
+        <Panel className="p-5">
+          <p className="eyebrow">Safety settings</p>
+          <div className="mt-4 space-y-3 text-sm leading-6 text-[var(--soft-ink)]">
+            <p><ShieldCheck className="mr-2 inline h-4 w-4 text-[var(--berry)]" />18+ 成年人限定</p>
+            <p><LockKeyhole className="mr-2 inline h-4 w-4 text-[var(--berry)]" />揭晓必须双方同意</p>
+            <p><Flag className="mr-2 inline h-4 w-4 text-[var(--berry)]" />举报拉黑常驻可用</p>
+          </div>
+        </Panel>
+      </aside>
+    </div>
   );
 }
 
-function Area({ label, value }: { label: string; value: string }) {
+function ContextPanel({
+  view,
+  freeOpens,
+  hearts,
+  selectedBox,
+  relationship,
+  onMine,
+  onInvite,
+}: {
+  view: AppView;
+  freeOpens: number;
+  hearts: number;
+  selectedBox: BlindBox;
+  relationship: Relationship;
+  onMine: () => void;
+  onInvite: () => void;
+}) {
   return (
-    <label>
-      <span className="text-sm font-medium text-[var(--wine)]">{label}</span>
-      <textarea className="mt-2 min-h-28 w-full resize-none rounded-2xl border border-[var(--wine)]/10 bg-white/65 px-4 py-3 outline-none focus:border-[var(--berry)]" defaultValue={value} />
-    </label>
+    <aside className="context-panel">
+      <Panel className="p-5">
+        <p className="eyebrow">Today</p>
+        <div className="mt-4 grid gap-3">
+          <MiniStat label="免费拆盒" value={`${freeOpens}/3`} />
+          <MiniStat label="Heart" value={String(hearts)} />
+        </div>
+        <button className="pill-secondary mt-4 w-full" onClick={onMine}>管理权益</button>
+      </Panel>
+      {view === "discover" && (
+        <Panel className="p-5">
+          <p className="eyebrow">Selected box</p>
+          <h3 className="mt-2 text-2xl font-semibold">{selectedBox.title}</h3>
+          <p className="mt-3 text-sm leading-6 text-[var(--soft-ink)]">{selectedBox.theme} · {selectedBox.cityHint} · {selectedBox.echoScore}% 回声</p>
+        </Panel>
+      )}
+      {view === "messages" && (
+        <Panel className="p-5">
+          <p className="eyebrow">Journey</p>
+          <h3 className="mt-2 text-2xl font-semibold">{stageMeta[relationship.stage].label}</h3>
+          <p className="mt-3 text-sm leading-6 text-[var(--soft-ink)]">{stageMeta[relationship.stage].tone}</p>
+        </Panel>
+      )}
+      <Panel className="p-5">
+        <p className="eyebrow">Invite</p>
+        <h3 className="mt-2 text-xl font-semibold">有人觉得这里有一个你会想认识的人</h3>
+        <button className="pill-primary mt-4 w-full" onClick={onInvite}>留一个盲盒</button>
+      </Panel>
+    </aside>
   );
 }
 
-function Panel({ children, className }: { children: React.ReactNode; className?: string }) {
+function MobileNav({ view, onSwitch }: { view: AppView; onSwitch: (view: AppView) => void }) {
+  return (
+    <nav className="mobile-nav">
+      {navItems.map((item) => {
+        const Icon = item.icon;
+        return (
+          <button key={item.id} className={cx(view === item.id && "mobile-nav-active")} onClick={() => onSwitch(item.id)}>
+            <Icon className="h-5 w-5" />
+            <span>{item.label}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+function ConversionModal({
+  hearts,
+  onClose,
+  onInvite,
+  onUseHeart,
+  onPlus,
+}: {
+  hearts: number;
+  onClose: () => void;
+  onInvite: () => void;
+  onUseHeart: () => void;
+  onPlus: () => void;
+}) {
+  return (
+    <div className="modal-backdrop">
+      <div className="conversion-modal">
+        <button className="modal-close" onClick={onClose}>×</button>
+        <p className="eyebrow">More openings</p>
+        <h2 className="mt-2 text-3xl font-semibold">今天的免费拆盒用完了</h2>
+        <p className="mt-3 text-[var(--soft-ink)]">你可以明天自动恢复，也可以用 Heart、邀请朋友或了解 Heart+ 继续探索。</p>
+        <div className="mt-5 grid gap-3">
+          <button className="conversion-option" onClick={onClose}>
+            <RefreshCw className="h-5 w-5" />
+            <span><strong>明天恢复</strong><small>每日免费次数会自动回来</small></span>
+          </button>
+          <button className="conversion-option" onClick={onInvite}>
+            <UsersRound className="h-5 w-5" />
+            <span><strong>邀请朋友获得机会</strong><small>给朋友留一个 Heartbox 盲盒</small></span>
+          </button>
+          <button className="conversion-option" onClick={onUseHeart}>
+            <Heart className="h-5 w-5" />
+            <span><strong>使用 Heart</strong><small>当前余额 {hearts}，价格暂不写死</small></span>
+          </button>
+          <button className="conversion-option" onClick={onPlus}>
+            <Sparkles className="h-5 w-5" />
+            <span><strong>了解 Heart+</strong><small>更多每日拆盒、高级筛选和悔拆找回</small></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="mini-stat">
+      <p>{label}</p>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function StatusPill({ icon: Icon, label }: { icon: ElementType; label: string }) {
+  return (
+    <span className="status-pill">
+      <Icon className="h-3.5 w-3.5" />
+      {label}
+    </span>
+  );
+}
+
+function EmptyState({ title, body, action, onAction }: { title: string; body: string; action: string; onAction: () => void }) {
+  return (
+    <Panel className="grid min-h-[360px] place-items-center p-8 text-center">
+      <div>
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-[24px] bg-[var(--wine)] text-white">
+          <Sparkles className="h-7 w-7" />
+        </div>
+        <h3 className="mt-5 text-2xl font-semibold">{title}</h3>
+        <p className="mt-3 max-w-md text-[var(--soft-ink)]">{body}</p>
+        <button className="pill-primary mt-6" onClick={onAction}>{action}</button>
+      </div>
+    </Panel>
+  );
+}
+
+function Panel({ children, className }: { children: ReactNode; className?: string }) {
   return <div className={cx("glass-panel", className)}>{children}</div>;
 }

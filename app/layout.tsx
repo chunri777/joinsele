@@ -13,18 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://heartbox-blind-dating.openai.site'),
+  metadataBase: new URL('https://heartbox-blind-dating.vipg1888.chatgpt.site'),
   title: 'Heartbox 心动盲盒',
-  description: '面向年轻成年用户的匿名恋爱盲盒交友原型。',
+  description: '面向年轻成年用户的匿名人格探索、恋爱盲盒与关系成长产品。',
   openGraph: {
     title: 'Heartbox 心动盲盒',
-    description: '拆开一个未知的人。',
+    description: '通过人格碎片、拆盲盒和匿名关系 Journey，拆开一个未知的人。',
     images: ['/og.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Heartbox 心动盲盒',
-    description: '拆开一个未知的人。',
+    description: '通过人格碎片、拆盲盒和匿名关系 Journey，拆开一个未知的人。',
     images: ['/og.png'],
   },
 };
