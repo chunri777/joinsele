@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://heartbox-blind-dating.vipg1888.chatgpt.site'),
   title: 'Heartbox 心动盲盒',
   description: '面向年轻成年用户的匿名人格探索、恋爱盲盒与关系成长产品。',
+  icons: {
+    icon: '/favicon.svg',
+  },
   openGraph: {
     title: 'Heartbox 心动盲盒',
     description: '通过人格碎片、拆盲盒和匿名关系 Journey，拆开一个未知的人。',
