@@ -154,7 +154,7 @@ button {
     position: relative;
     z-index: 1;
     display: grid;
-    width: min(100%, 1920px);
+    width: min(100%, 1880px);
     min-height: 100vh;
     margin: 0 auto;
     grid-template-columns: minmax(0, 1fr);
@@ -430,6 +430,15 @@ button {
   .mobile-nav svg {
     width: 1.45rem;
     height: 1.45rem;
+  }
+
+  .mobile-nav-create span {
+    display: none;
+  }
+
+  .mobile-nav-create svg {
+    width: 1.62rem;
+    height: 1.62rem;
   }
 
   .glass-panel {

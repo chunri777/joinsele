@@ -1856,7 +1856,10 @@ function MobileNav({
         return (
           <button
             key={item.id}
-            className={cx(view === item.id && 'mobile-nav-active')}
+            className={cx(
+              item.id === 'create' && 'mobile-nav-create',
+              view === item.id && 'mobile-nav-active',
+            )}
             onClick={() => onSwitch(item.id)}
           >
             <Icon className="h-5 w-5" />
