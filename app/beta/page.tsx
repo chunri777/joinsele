@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -8,11 +7,13 @@ import {
   Check,
   HeartHandshake,
   LockKeyhole,
-  Mail,
   PackageOpen,
   ShieldCheck,
   Sparkles,
 } from 'lucide-react';
+
+const BETA_FORM_URL =
+  'https://my.feishu.cn/share/base/form/shrcnXhe8ikq2Wk15JTTNwzHPdd';
 
 const testerFit = [
   '18+，愿意用匿名方式探索关系',
@@ -43,9 +44,6 @@ const feedbackFocus = [
 ];
 
 export default function PrivateBetaPage() {
-  const [contact, setContact] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-
   return (
     <main className="beta-shell">
       <div className="grain" />
@@ -156,36 +154,20 @@ export default function PrivateBetaPage() {
               <p className="eyebrow">Join beta</p>
               <h2>留下一个可以联系你的方式</h2>
               <p>
-                这里暂时是 Demo
-                提交，不会连接真实后端。正式招募时会替换成安全的报名表单。
+                申请信息会通过飞书表单收集，用于后续内测联系和体验反馈。
               </p>
             </div>
             <div className="beta-form">
-              <label htmlFor="beta-contact">邮箱 / 微信 / 手机号</label>
-              <div>
-                <Mail className="h-4 w-4" />
-                <input
-                  id="beta-contact"
-                  value={contact}
-                  onChange={(event) => {
-                    setContact(event.target.value);
-                    setSubmitted(false);
-                  }}
-                  placeholder="只用于内测联系"
-                />
-              </div>
-              <button
+              <p>打开申请表后，会在新标签页填写联系方式和申请理由。</p>
+              <a
                 className="pill-primary"
-                disabled={!contact.trim()}
-                onClick={() => setSubmitted(true)}
+                href={BETA_FORM_URL}
+                target="_blank"
+                rel="noreferrer"
               >
-                提交内测申请
-              </button>
-              {submitted && (
-                <p className="beta-success">
-                  已记录在本次 Demo 里。真实报名阶段会接入正式表单和隐私说明。
-                </p>
-              )}
+                打开飞书申请表
+                <ArrowRight className="h-4 w-4" />
+              </a>
             </div>
           </div>
         </section>

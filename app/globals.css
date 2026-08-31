@@ -1305,35 +1305,10 @@ button {
     padding: 1rem;
   }
 
-  .beta-form label {
-    color: var(--wine);
+  .beta-form p {
+    color: var(--soft-ink);
     font-size: 0.9rem;
-    font-weight: 800;
-  }
-
-  .beta-form div {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    border: 1px solid rgba(93, 20, 40, 0.1);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.72);
-    padding: 0.78rem 1rem;
-  }
-
-  .beta-form input {
-    min-width: 0;
-    flex: 1;
-    background: transparent;
-    outline: none;
-  }
-
-  .beta-success {
-    border-radius: 18px;
-    background: rgba(236, 212, 216, 0.38);
-    padding: 0.8rem;
-    color: var(--wine) !important;
-    font-size: 0.9rem;
+    line-height: 1.65;
   }
 
   .beta-feedback-grid {
