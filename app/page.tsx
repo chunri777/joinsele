@@ -31,7 +31,9 @@ import {
   type BlindBox,
   type Conversation,
   type PersonalityFragment,
+  type PostComment,
   type Relationship,
+  type Topic,
   blindBoxes,
   conversations,
   currentUser,
@@ -39,11 +41,13 @@ import {
   invite,
   personalityCards,
   personalityFragments,
+  postComments,
   profiles,
   referralRewards,
   relationships,
   stageMeta,
   themes,
+  topics,
   wallet as initialWallet,
 } from '@/lib/heartbox-data';
 
@@ -82,6 +86,18 @@ export default function Home() {
   const [hearts, setHearts] = useState(initialWallet.hearts);
   const [showConversion, setShowConversion] = useState(false);
   const [likedFragments, setLikedFragments] = useState<string[]>([]);
+  const [likedComments, setLikedComments] = useState<string[]>([]);
+  const [selectedTopicId, setSelectedTopicId] = useState(topics[0].id);
+  const [topicMode, setTopicMode] = useState<'hot' | 'latest'>('hot');
+  const [commentFragmentId, setCommentFragmentId] = useState<string | null>(
+    null,
+  );
+  const [localComments, setLocalComments] =
+    useState<PostComment[]>(postComments);
+  const [commentDraft, setCommentDraft] = useState('');
+  const [replyingToCommentId, setReplyingToCommentId] = useState<string | null>(
+    null,
+  );
   const [fragmentDraft, setFragmentDraft] = useState('');
   const [publishedFragments, setPublishedFragments] = useState<
     PersonalityFragment[]
@@ -104,6 +120,14 @@ export default function Home() {
     relationships.find((item) => item.id === selectedRelationshipId) ??
     relationships[0];
   const allFragments = [...publishedFragments, ...personalityFragments];
+  const selectedTopic =
+    topics.find((topic) => topic.id === selectedTopicId) ?? topics[0];
+  const activeComments = useMemo(() => {
+    if (!commentFragmentId) return [];
+    return localComments.filter(
+      (comment) => comment.fragmentId === commentFragmentId,
+    );
+  }, [commentFragmentId, localComments]);
   const myCard =
     personalityCards.find((card) => card.userId === currentUser.id) ??
     personalityCards[0];
@@ -131,6 +155,13 @@ export default function Home() {
     setHearts(initialWallet.hearts);
     setShowConversion(false);
     setLikedFragments([]);
+    setLikedComments([]);
+    setSelectedTopicId(topics[0].id);
+    setTopicMode('hot');
+    setCommentFragmentId(null);
+    setLocalComments(postComments);
+    setCommentDraft('');
+    setReplyingToCommentId(null);
     setFragmentDraft('');
     setPublishedFragments([]);
     setSelectedRelationshipId(relationships[0].id);
@@ -180,10 +211,11 @@ export default function Home() {
         prompt: dailyPrompt.title,
         answer: fragmentDraft.trim(),
         mood: '刚刚发生',
-        tags: ['今日人格碎片', '真实表达'],
+        tags: [selectedTopic.name, '#深夜才会说的话'],
         likes: 0,
         comments: 0,
         createdAt: '刚刚',
+        topicId: selectedTopicId,
       },
       ...current,
     ]);
@@ -267,6 +299,9 @@ export default function Home() {
                 <CircleView
                   fragments={allFragments}
                   likedFragments={likedFragments}
+                  likedComments={likedComments}
+                  selectedTopic={selectedTopic}
+                  topicMode={topicMode}
                   onLike={(id) =>
                     setLikedFragments((current) =>
                       current.includes(id)
@@ -274,6 +309,17 @@ export default function Home() {
                         : [...current, id],
                     )
                   }
+                  onTopic={setSelectedTopicId}
+                  onTopicMode={setTopicMode}
+                  onComment={setCommentFragmentId}
+                  onLikeComment={(id) =>
+                    setLikedComments((current) =>
+                      current.includes(id)
+                        ? current.filter((item) => item !== id)
+                        : [...current, id],
+                    )
+                  }
+                  comments={localComments}
                   onExplore={() => switchView('discover')}
                   onCreate={() => switchView('create')}
                 />
@@ -355,6 +401,52 @@ export default function Home() {
           onPlus={() => {
             setShowConversion(false);
             switchView('mine');
+          }}
+        />
+      )}
+      {commentFragmentId && (
+        <CommentModal
+          fragment={
+            allFragments.find(
+              (fragment) => fragment.id === commentFragmentId,
+            ) ?? allFragments[0]
+          }
+          comments={activeComments}
+          draft={commentDraft}
+          replyingToCommentId={replyingToCommentId}
+          likedComments={likedComments}
+          onDraft={setCommentDraft}
+          onReply={setReplyingToCommentId}
+          onLikeComment={(id) =>
+            setLikedComments((current) =>
+              current.includes(id)
+                ? current.filter((item) => item !== id)
+                : [...current, id],
+            )
+          }
+          onSubmit={() => {
+            if (!commentDraft.trim()) return;
+            setLocalComments((current) => [
+              ...current,
+              {
+                id: `comment_new_${Date.now()}`,
+                fragmentId: commentFragmentId ?? allFragments[0].id,
+                author: '我',
+                body: replyingToCommentId
+                  ? `回复 ${activeComments.find((item) => item.id === replyingToCommentId)?.author ?? 'TA'}：${commentDraft.trim()}`
+                  : commentDraft.trim(),
+                likes: 0,
+                createdAt: '刚刚',
+                replies: [],
+              },
+            ]);
+            setCommentDraft('');
+            setReplyingToCommentId(null);
+          }}
+          onClose={() => {
+            setCommentFragmentId(null);
+            setCommentDraft('');
+            setReplyingToCommentId(null);
           }}
         />
       )}
@@ -638,17 +730,17 @@ function DiscoverView(props: {
         <Panel className="overflow-hidden p-5 sm:p-7">
           <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
             <div>
-              <p className="eyebrow">Daily box</p>
+              <p className="eyebrow">Heartbox</p>
               <h2 className="mt-2 text-3xl font-semibold sm:text-5xl">
-                今晚拆开一段人格
+                今天会遇见一个什么样的人？
               </h2>
               <p className="mt-4 max-w-2xl text-[var(--soft-ink)]">
-                拆盒前，你只能看见信封、封条和一点点线索。真正打开后，先出现的是一个人的片刻，不是资料表。
+                先拆开一只 Heartbox。看见一句话，再决定要不要靠近。
               </p>
               <div className="mt-5 grid gap-2 sm:grid-cols-3">
-                <StateChip label="未拆" body="只露出封条和模糊线索" />
-                <StateChip label="拆开" body="先出现第一层人格" />
-                <StateChip label="回声" body="感兴趣不是立刻揭晓" />
+                <StateChip label="未知" body="信封还没打开" />
+                <StateChip label="人格" body="先看见一个片刻" />
+                <StateChip label="回声" body="喜欢就留一句" />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center sm:min-w-[310px]">
@@ -911,57 +1003,125 @@ function UnboxingSurface({
 function CircleView({
   fragments,
   likedFragments,
+  likedComments,
+  selectedTopic,
+  topicMode,
+  comments,
   onLike,
+  onTopic,
+  onTopicMode,
+  onComment,
+  onLikeComment,
   onExplore,
   onCreate,
 }: {
   fragments: PersonalityFragment[];
   likedFragments: string[];
+  likedComments: string[];
+  selectedTopic: Topic;
+  topicMode: 'hot' | 'latest';
+  comments: PostComment[];
   onLike: (id: string) => void;
+  onTopic: (id: string) => void;
+  onTopicMode: (mode: 'hot' | 'latest') => void;
+  onComment: (id: string) => void;
+  onLikeComment: (id: string) => void;
   onExplore: () => void;
   onCreate: () => void;
 }) {
+  const topicPosts = fragments.filter(
+    (fragment) => fragment.topicId === selectedTopic.id,
+  );
+  const visiblePosts =
+    topicMode === 'hot'
+      ? [...topicPosts].sort(
+          (a, b) => b.likes + b.comments - (a.likes + a.comments),
+        )
+      : topicPosts;
+
   return (
-    <div className="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
-      <Panel className="h-fit p-5 sm:p-6">
-        <p className="eyebrow">Daily prompt</p>
-        <h2 className="mt-3 text-2xl font-semibold leading-tight">
-          {dailyPrompt.title}
-        </h2>
-        <p className="mt-3 text-[var(--soft-ink)]">{dailyPrompt.helper}</p>
-        <div className="state-strip success-state mt-4">
-          <Sparkles className="h-4 w-4" />
-          每一段都像一张被折起来的小纸条。先看见片刻，再决定要不要靠近。
-        </div>
-        <div className="mt-5 space-y-2">
-          {dailyPrompt.examples.map((item) => (
-            <div
-              key={item}
-              className="rounded-2xl bg-white/55 p-3 text-sm text-[var(--soft-ink)]"
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-        <button className="pill-primary mt-5 w-full" onClick={onCreate}>
-          回答今日 Prompt
-        </button>
-      </Panel>
+    <div className="circle-layout">
+      <section className="circle-topic-panel">
+        <Panel className="h-fit p-5 sm:p-6">
+          <p className="eyebrow">此刻</p>
+          <h2 className="mt-3 text-2xl font-semibold leading-tight">
+            看看大家此刻在想什么
+          </h2>
+          <p className="mt-3 text-sm text-[var(--soft-ink)]">
+            读一句具体的生活片刻，再决定要不要回应。
+          </p>
+          <button className="pill-primary mt-5 w-full" onClick={onCreate}>
+            发布 Post
+          </button>
+        </Panel>
+
+        <Panel className="mt-4 p-5">
+          <p className="eyebrow">Topics</p>
+          <div className="topic-list">
+            {topics.map((topic) => (
+              <button
+                key={topic.id}
+                className={cx(
+                  'topic-pill',
+                  selectedTopic.id === topic.id && 'topic-pill-active',
+                )}
+                onClick={() => onTopic(topic.id)}
+              >
+                {topic.name}
+              </button>
+            ))}
+          </div>
+        </Panel>
+      </section>
+
       <section className="space-y-4">
-        {fragments.length === 0 ? (
+        <Panel className="topic-detail-panel">
+          <div>
+            <p className="eyebrow">Topic detail</p>
+            <h2>{selectedTopic.name}</h2>
+            <p>{selectedTopic.description}</p>
+          </div>
+          <div className="topic-detail-meta">
+            <span>{selectedTopic.participants} 人参与</span>
+            <div>
+              <button
+                className={cx(topicMode === 'hot' && 'topic-mode-active')}
+                onClick={() => onTopicMode('hot')}
+              >
+                热门
+              </button>
+              <button
+                className={cx(topicMode === 'latest' && 'topic-mode-active')}
+                onClick={() => onTopicMode('latest')}
+              >
+                最新
+              </button>
+            </div>
+          </div>
+        </Panel>
+        <div className="daily-prompt-strip">
+          <span>今日问题</span>
+          <strong>{dailyPrompt.title}</strong>
+        </div>
+        {visiblePosts.length === 0 ? (
           <EmptyState
-            title="此刻还没有人格碎片"
-            body="回答今日 Prompt 后，这里会长出第一张属于你的碎片。"
-            action="写下第一段"
+            title="这个话题还没有 Post"
+            body="换个话题看看，或者写下第一段真实想法。"
+            action="发布 Post"
             onAction={onCreate}
           />
         ) : (
-          fragments.map((fragment) => (
+          visiblePosts.map((fragment) => (
             <FragmentCard
               key={fragment.id}
               fragment={fragment}
               liked={likedFragments.includes(fragment.id)}
+              likedComments={likedComments}
+              comments={comments}
               onLike={() => onLike(fragment.id)}
+              onComment={() => onComment(fragment.id)}
+              onLikeComment={onLikeComment}
+              onTopic={onTopic}
               onExplore={onExplore}
             />
           ))
@@ -974,53 +1134,92 @@ function CircleView({
 function FragmentCard({
   fragment,
   liked,
+  likedComments,
+  comments,
   onLike,
+  onComment,
+  onLikeComment,
+  onTopic,
   onExplore,
 }: {
   fragment: PersonalityFragment;
   liked: boolean;
+  likedComments: string[];
+  comments: PostComment[];
   onLike: () => void;
+  onComment: () => void;
+  onLikeComment: (id: string) => void;
+  onTopic: (id: string) => void;
   onExplore: () => void;
 }) {
+  const fragmentComments = comments.filter(
+    (comment) => comment.fragmentId === fragment.id,
+  );
+  const author =
+    profiles.find((profile) => profile.userId === fragment.userId)
+      ?.displayName ?? '测试用户';
+  const commentCount = Math.max(fragment.comments, fragmentComments.length);
+
   return (
-    <Panel className="fragment-card p-5 sm:p-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <Panel className="post-card p-5 sm:p-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-[var(--berry)]">
-            人格碎片 · {fragment.createdAt}
+          <p className="post-meta">
+            Post · {author} · {fragment.createdAt}
           </p>
-          <p className="mt-2 text-sm text-[var(--muted-ink)]">
-            {fragment.prompt}
-          </p>
-          <p className="mt-3 text-xl leading-8 sm:text-2xl">
-            “{fragment.answer}”
-          </p>
+          <p className="post-prompt">{fragment.prompt}</p>
+          <p className="post-body">“{fragment.answer}”</p>
         </div>
-        <span className="w-fit rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm text-[var(--berry)]">
-          {fragment.mood}
-        </span>
+        <span className="post-mood">{fragment.mood}</span>
       </div>
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className="post-topics">
         {fragment.tags.map((tag) => (
-          <span className="chip" key={tag}>
+          <button
+            className="topic-link"
+            key={tag}
+            onClick={() => {
+              const topic = topics.find((item) => item.name === tag);
+              if (topic) onTopic(topic.id);
+            }}
+          >
             {tag}
-          </span>
+          </button>
         ))}
       </div>
-      <div className="mt-5 flex flex-wrap items-center gap-2">
+      {fragmentComments[0] && (
+        <div className="comment-preview">
+          <button
+            className={cx(
+              'comment-like-mini',
+              likedComments.includes(fragmentComments[0].id) &&
+                'comment-like-active',
+            )}
+            onClick={() => onLikeComment(fragmentComments[0].id)}
+          >
+            ♡{' '}
+            {likedComments.includes(fragmentComments[0].id)
+              ? fragmentComments[0].likes + 1
+              : fragmentComments[0].likes}
+          </button>
+          <span>
+            {fragmentComments[0].author}：{fragmentComments[0].body}
+          </span>
+        </div>
+      )}
+      <div className="post-actions">
         <button
           className={cx('soft-command', liked && 'soft-command-active')}
           onClick={onLike}
         >
           <Heart className="h-4 w-4" />
-          {liked ? '已记下' : '记下'}
+          {liked ? fragment.likes + 1 : fragment.likes} Like
         </button>
-        <button className="soft-command">
+        <button className="soft-command" onClick={onComment}>
           <MessageCircle className="h-4 w-4" />
-          回应
+          {commentCount} Comment
         </button>
         <button className="soft-command">
-          看更多碎片
+          查看 TA
           <UserRound className="h-4 w-4" />
         </button>
         <button className="soft-command" onClick={onExplore}>
@@ -1657,7 +1856,10 @@ function MobileNav({
         return (
           <button
             key={item.id}
-            className={cx(view === item.id && 'mobile-nav-active')}
+            className={cx(
+              item.id === 'create' && 'mobile-nav-create',
+              view === item.id && 'mobile-nav-active',
+            )}
             onClick={() => onSwitch(item.id)}
           >
             <Icon className="h-5 w-5" />
@@ -1666,6 +1868,122 @@ function MobileNav({
         );
       })}
     </nav>
+  );
+}
+
+function CommentModal({
+  fragment,
+  comments,
+  draft,
+  replyingToCommentId,
+  likedComments,
+  onDraft,
+  onReply,
+  onLikeComment,
+  onSubmit,
+  onClose,
+}: {
+  fragment: PersonalityFragment;
+  comments: PostComment[];
+  draft: string;
+  replyingToCommentId: string | null;
+  likedComments: string[];
+  onDraft: (value: string) => void;
+  onReply: (id: string | null) => void;
+  onLikeComment: (id: string) => void;
+  onSubmit: () => void;
+  onClose: () => void;
+}) {
+  const author =
+    profiles.find((profile) => profile.userId === fragment.userId)
+      ?.displayName ?? '测试用户';
+  const replyingTo = comments.find(
+    (comment) => comment.id === replyingToCommentId,
+  );
+
+  return (
+    <div className="modal-backdrop">
+      <div className="comment-modal">
+        <div className="comment-modal-header">
+          <div>
+            <p className="eyebrow">Comments</p>
+            <h2>{author} 的 Post</h2>
+          </div>
+          <button className="modal-close" onClick={onClose}>
+            ×
+          </button>
+        </div>
+        <div className="comment-modal-post">
+          <p>{fragment.answer}</p>
+          <span>{fragment.tags.slice(0, 1).join('')}</span>
+        </div>
+        <div className="comment-list">
+          {comments.length === 0 ? (
+            <div className="comment-empty">
+              <MessageCircle className="h-6 w-6" />
+              <p>还没有评论。你可以留下一句轻一点的回应。</p>
+            </div>
+          ) : (
+            comments.map((comment) => (
+              <article className="comment-item" key={comment.id}>
+                <div className="comment-item-main">
+                  <strong>{comment.author}</strong>
+                  <p>{comment.body}</p>
+                  <div className="comment-item-actions">
+                    <button
+                      className={cx(
+                        likedComments.includes(comment.id) &&
+                          'comment-like-active',
+                      )}
+                      onClick={() => onLikeComment(comment.id)}
+                    >
+                      ♡{' '}
+                      {likedComments.includes(comment.id)
+                        ? comment.likes + 1
+                        : comment.likes}
+                    </button>
+                    <button onClick={() => onReply(comment.id)}>回复</button>
+                    <span>{comment.createdAt}</span>
+                  </div>
+                </div>
+                {comment.replies.length > 0 && (
+                  <div className="reply-list">
+                    {comment.replies.map((reply) => (
+                      <div className="reply-item" key={reply.id}>
+                        <strong>{reply.author}</strong>
+                        <span>{reply.body}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </article>
+            ))
+          )}
+        </div>
+        <div className="comment-composer-area">
+          {replyingTo && (
+            <div className="replying-chip">
+              回复 {replyingTo.author}
+              <button onClick={() => onReply(null)}>取消</button>
+            </div>
+          )}
+          <div className="comment-composer">
+            <input
+              value={draft}
+              onChange={(event) => onDraft(event.target.value)}
+              placeholder="写一句回应..."
+            />
+            <button
+              onClick={onSubmit}
+              disabled={!draft.trim()}
+              aria-label="发表评论"
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
