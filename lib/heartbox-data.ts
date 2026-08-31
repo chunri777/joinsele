@@ -38,6 +38,7 @@ export type PersonalityCard = {
 export type PersonalityFragment = {
   id: string;
   userId: string;
+  topicId: string;
   prompt: string;
   answer: string;
   mood: string;
@@ -45,6 +46,29 @@ export type PersonalityFragment = {
   likes: number;
   comments: number;
   createdAt: string;
+};
+
+export type Topic = {
+  id: string;
+  name: string;
+  description: string;
+  participants: number;
+};
+
+export type PostComment = {
+  id: string;
+  fragmentId: string;
+  author: string;
+  body: string;
+  likes: number;
+  createdAt: string;
+  replies: {
+    id: string;
+    author: string;
+    body: string;
+    likes: number;
+    createdAt: string;
+  }[];
 };
 
 export type BlindBox = {
@@ -192,7 +216,7 @@ export const profiles: Profile[] = [
   {
     id: 'profile_001',
     userId: 'user_001',
-    displayName: '雾里电台',
+    displayName: '小明',
     ageRange: '23-26',
     city: '杭州',
     pronouns: 'TA',
@@ -201,7 +225,7 @@ export const profiles: Profile[] = [
   {
     id: 'profile_002',
     userId: 'user_002',
-    displayName: '周三宇航员',
+    displayName: '小花',
     ageRange: '27-31',
     city: '成都',
     pronouns: 'TA',
@@ -210,7 +234,7 @@ export const profiles: Profile[] = [
   {
     id: 'profile_003',
     userId: 'user_003',
-    displayName: '晚风切片',
+    displayName: '小刘',
     ageRange: '24-29',
     city: '南京',
     pronouns: 'TA',
@@ -219,7 +243,7 @@ export const profiles: Profile[] = [
   {
     id: 'profile_004',
     userId: 'user_004',
-    displayName: '坡道蓝莓',
+    displayName: '小陈',
     ageRange: '22-27',
     city: '广州',
     pronouns: 'TA',
@@ -228,7 +252,7 @@ export const profiles: Profile[] = [
   {
     id: 'profile_005',
     userId: 'user_005',
-    displayName: '北窗计划',
+    displayName: '小林',
     ageRange: '26-30',
     city: '北京',
     pronouns: 'TA',
@@ -250,7 +274,7 @@ export const personalityCards: PersonalityCard[] = [
   {
     id: 'card_001',
     userId: 'user_001',
-    alias: '雾里电台',
+    alias: '小明',
     archetype: '城市文艺型',
     interests: ['播客', '咖啡', '展览', 'Livehouse'],
     relationshipValues: ['轻松表达', '尊重节奏', '稳定好奇'],
@@ -260,7 +284,7 @@ export const personalityCards: PersonalityCard[] = [
   {
     id: 'card_002',
     userId: 'user_002',
-    alias: '周三宇航员',
+    alias: '小花',
     archetype: '户外行动型',
     interests: ['徒步', '菜市场', '爵士', '做饭'],
     relationshipValues: ['行动力', '稳定在场', '不催促'],
@@ -270,7 +294,7 @@ export const personalityCards: PersonalityCard[] = [
   {
     id: 'card_003',
     userId: 'user_003',
-    alias: '晚风切片',
+    alias: '小刘',
     archetype: '慢热安静型',
     interests: ['独立电影', '心理学', '深夜散步'],
     relationshipValues: ['边界感', '认真倾听', '不急着定义'],
@@ -280,7 +304,7 @@ export const personalityCards: PersonalityCard[] = [
   {
     id: 'card_004',
     userId: 'user_004',
-    alias: '坡道蓝莓',
+    alias: '小陈',
     archetype: '幽默松弛型',
     interests: ['脱口秀', '骑车', '路边摊', '冷笑话'],
     relationshipValues: ['能一起笑', '低压力', '真诚但不沉重'],
@@ -290,7 +314,7 @@ export const personalityCards: PersonalityCard[] = [
   {
     id: 'card_005',
     userId: 'user_005',
-    alias: '北窗计划',
+    alias: '小林',
     archetype: '理性克制型',
     interests: ['建筑', '纪录片', '长跑', '手冲咖啡'],
     relationshipValues: ['清楚沟通', '尊重隐私', '长期主义'],
@@ -303,11 +327,12 @@ export const personalityFragments: PersonalityFragment[] = [
   {
     id: 'fragment_daily_me',
     userId: 'user_me',
+    topicId: 'topic_heart',
     prompt: '最近一次让你心动是什么时候？',
     answer:
       '下班路上有人把伞往陌生人那边偏了一点。没有对视，但那一秒城市变软了。',
     mood: '柔软',
-    tags: ['城市散步', '心动细节'],
+    tags: ['#最近一次心动', '#深夜才会说的话'],
     likes: 36,
     comments: 8,
     createdAt: '今天 20:12',
@@ -315,11 +340,12 @@ export const personalityFragments: PersonalityFragment[] = [
   {
     id: 'fragment_001',
     userId: 'user_001',
+    topicId: 'topic_walk',
     prompt: '如果今晚有人陪你散步，你想去哪里？',
     answer:
       '想沿着河边走，不安排目的地。最好两个人都不用急着找话题，偶尔说一句也够。',
     mood: '松弛',
-    tags: ['夜路', '慢热'],
+    tags: ['#如果不先看照片', '#慢热的人怎么开始一段关系'],
     likes: 128,
     comments: 21,
     createdAt: '今天 18:44',
@@ -327,11 +353,12 @@ export const personalityFragments: PersonalityFragment[] = [
   {
     id: 'fragment_002',
     userId: 'user_002',
+    topicId: 'topic_alone',
     prompt: '你认为舒服的关系是什么样？',
     answer:
       '是可以不同频，但不互相消耗。忙的时候各自生活，靠近的时候认真在场。',
     mood: '清醒',
-    tags: ['边界感', '长期关系'],
+    tags: ['#你什么时候开始喜欢一个人生活', '#舒服的关系是什么'],
     likes: 96,
     comments: 14,
     createdAt: '昨天 23:08',
@@ -339,11 +366,12 @@ export const personalityFragments: PersonalityFragment[] = [
   {
     id: 'fragment_003',
     userId: 'user_003',
+    topicId: 'topic_slow',
     prompt: '你最容易被什么样的细节打动？',
     answer:
       '记得我随口说过不吃香菜，也记得给自己留一点空间。体贴不是把人围住。',
     mood: '笃定',
-    tags: ['细节控', '相处方式'],
+    tags: ['#慢热的人怎么开始一段关系', '#舒服的关系是什么'],
     likes: 74,
     comments: 12,
     createdAt: '昨天 21:31',
@@ -351,11 +379,12 @@ export const personalityFragments: PersonalityFragment[] = [
   {
     id: 'fragment_004',
     userId: 'user_004',
+    topicId: 'topic_night',
     prompt: '如果今晚有人陪你散步，你想去哪里？',
     answer:
       '去那条很多坡的路。走累了就买两瓶汽水，坐在便利店门口假装我们在拍青春片。',
     mood: '轻快',
-    tags: ['松弛', '城市夜路'],
+    tags: ['#深夜才会说的话', '#如果今晚有人陪你散步'],
     likes: 41,
     comments: 5,
     createdAt: '昨天 19:06',
@@ -363,11 +392,12 @@ export const personalityFragments: PersonalityFragment[] = [
   {
     id: 'fragment_005',
     userId: 'user_005',
+    topicId: 'topic_alone',
     prompt: '你认为舒服的关系是什么样？',
     answer:
       '是两个人都不用靠消失来证明自由。忙的时候说一声，回来以后还接得上话。',
     mood: '克制',
-    tags: ['长期主义', '边界'],
+    tags: ['#你什么时候开始喜欢一个人生活', '#舒服的关系是什么'],
     likes: 52,
     comments: 6,
     createdAt: '周五 22:40',
@@ -375,10 +405,11 @@ export const personalityFragments: PersonalityFragment[] = [
   {
     id: 'fragment_006',
     userId: 'user_002',
+    topicId: 'topic_trip',
     prompt: '最近一次让你心动是什么时候？',
     answer: '爬到半山腰时对面递来一颗橘子，没有问我累不累，只说先吃点甜的。',
     mood: '明亮',
-    tags: ['户外', '具体照顾'],
+    tags: ['#一个人旅行会上瘾吗', '#最近一次心动'],
     likes: 47,
     comments: 4,
     createdAt: '周五 17:18',
@@ -403,7 +434,7 @@ export const blindBoxes: BlindBox[] = [
       '舒服的沉默对我来说，比漂亮的开场白更难得。',
     ],
     firstLayer: {
-      alias: '雾里电台',
+      alias: '小明',
       archetype: '城市文艺型',
       fragment: '最好两个人都不用急着找话题，偶尔说一句也够。',
       interests: ['播客', '河边散步', '展览'],
@@ -431,7 +462,7 @@ export const blindBoxes: BlindBox[] = [
       '做饭时如果有人负责洗菜，我会觉得那天已经很亲密。',
     ],
     firstLayer: {
-      alias: '周三宇航员',
+      alias: '小花',
       archetype: '户外行动型',
       fragment:
         '爬到半山腰时对面递来一颗橘子，没有问我累不累，只说先吃点甜的。',
@@ -460,7 +491,7 @@ export const blindBoxes: BlindBox[] = [
       '体贴不是把人围住，而是知道什么时候靠近。',
     ],
     firstLayer: {
-      alias: '晚风切片',
+      alias: '小刘',
       archetype: '慢热安静型',
       fragment: '我回复慢不是冷淡，是需要把感受放清楚再递出去。',
       interests: ['独立电影', '心理学', 'Livehouse'],
@@ -489,7 +520,7 @@ export const blindBoxes: BlindBox[] = [
       '如果两个人都能放松地尴尬，我会觉得很安全。',
     ],
     firstLayer: {
-      alias: '坡道蓝莓',
+      alias: '小陈',
       archetype: '幽默松弛型',
       fragment: '我能把很糟的一天讲成段子，但也希望有人听懂我在逞强。',
       interests: ['脱口秀', '骑车', '路边摊'],
@@ -518,7 +549,7 @@ export const blindBoxes: BlindBox[] = [
       '舒服的关系是不靠消失证明自由，回来以后还接得上话。',
     ],
     firstLayer: {
-      alias: '北窗计划',
+      alias: '小林',
       archetype: '理性克制型',
       fragment: '我不太相信突如其来的热烈，但相信一个人愿意稳定地出现。',
       interests: ['建筑', '纪录片', '长跑'],
@@ -539,7 +570,7 @@ export const relationships: Relationship[] = [
     userBId: 'user_001',
     stage: 'resonance',
     progress: 64,
-    alias: '雾里电台',
+    alias: '小明',
     unlockedFragments: ['河边没有目的地', '舒服的关系是不急着证明'],
     nextUnlock: '再多认识一点，也许会听见新的回声。',
     revealRequestedByMe: false,
@@ -551,7 +582,7 @@ export const relationships: Relationship[] = [
     userBId: 'user_002',
     stage: 'echo',
     progress: 38,
-    alias: '周三宇航员',
+    alias: '小花',
     unlockedFragments: ['忙的时候各自生活，靠近时认真在场'],
     nextUnlock: '如果你们都愿意停留，下一段生活片段会自然出现。',
     revealRequestedByMe: false,
@@ -588,6 +619,103 @@ export const conversations: Conversation[] = [
         sender: 'system',
         body: '你们已进入「共鸣」阶段，解锁一张新的人格碎片。',
         createdAt: '20:24',
+      },
+    ],
+  },
+];
+
+export const topics: Topic[] = [
+  {
+    id: 'topic_heart',
+    name: '#最近一次心动',
+    description: '那些很小、但让你突然停一下的瞬间。',
+    participants: 182,
+  },
+  {
+    id: 'topic_alone',
+    name: '#你什么时候开始喜欢一个人生活',
+    description: '关于独处、自由和仍然想被理解的矛盾时刻。',
+    participants: 146,
+  },
+  {
+    id: 'topic_slow',
+    name: '#慢热的人怎么开始一段关系',
+    description: '慢一点靠近，也可以是认真对待关系的方式。',
+    participants: 119,
+  },
+  {
+    id: 'topic_night',
+    name: '#深夜才会说的话',
+    description: '白天说不出口的东西，有时会在夜里变轻。',
+    participants: 98,
+  },
+  {
+    id: 'topic_trip',
+    name: '#一个人旅行会上瘾吗',
+    description: '出发、绕路、临时改主意，以及想有人一起看的风景。',
+    participants: 87,
+  },
+  {
+    id: 'topic_walk',
+    name: '#如果不先看照片',
+    description: '先被一句话吸引，再决定要不要认识一个人。',
+    participants: 154,
+  },
+  {
+    id: 'topic_stroll',
+    name: '#如果今晚有人陪你散步',
+    description: '关于夜路、城市、沉默和那些不用刻意找话题的人。',
+    participants: 103,
+  },
+  {
+    id: 'topic_comfort',
+    name: '#舒服的关系是什么',
+    description: '不消耗、不表演，也不靠忽冷忽热证明吸引。',
+    participants: 137,
+  },
+];
+
+export const postComments: PostComment[] = [
+  {
+    id: 'comment_001',
+    fragmentId: 'fragment_001',
+    author: '小陈',
+    body: '“偶尔说一句也够”这句很懂，散步有时候就是不用表演。',
+    likes: 12,
+    createdAt: '18:52',
+    replies: [
+      {
+        id: 'reply_001',
+        author: '小明',
+        body: '对，我有点怕把聊天变成汇报。',
+        likes: 5,
+        createdAt: '18:56',
+      },
+    ],
+  },
+  {
+    id: 'comment_002',
+    fragmentId: 'fragment_002',
+    author: '小林',
+    body: '不同频但不互相消耗，这个标准其实挺难得。',
+    likes: 9,
+    createdAt: '23:18',
+    replies: [],
+  },
+  {
+    id: 'comment_003',
+    fragmentId: 'fragment_004',
+    author: '小花',
+    body: '便利店门口那种停一下的感觉，比精心安排更像约会。',
+    likes: 7,
+    createdAt: '19:20',
+    replies: [
+      {
+        id: 'reply_002',
+        author: '小陈',
+        body: '对，最好汽水还要是冰的。',
+        likes: 3,
+        createdAt: '19:22',
       },
     ],
   },
@@ -650,13 +778,28 @@ export const dailyPrompt = {
 };
 
 export const themes = [
-  { id: 'theme_001', title: '深夜电台', count: 28, note: '适合慢慢聊起的人' },
+  {
+    id: 'theme_001',
+    title: '今晚还没睡的人',
+    count: 28,
+    note: '适合慢慢聊起',
+  },
   {
     id: 'theme_002',
-    title: '城市散步',
+    title: '最近也想出去走走的人',
     count: 34,
-    note: '从路线和生活半径开始',
+    note: '从生活半径开始',
   },
-  { id: 'theme_003', title: '慢热关系', count: 19, note: '给不急着证明的人' },
-  { id: 'theme_004', title: '周末出逃', count: 23, note: '把好奇心留给小旅行' },
+  {
+    id: 'theme_003',
+    title: '慢热的人',
+    count: 19,
+    note: '不急着证明自己',
+  },
+  {
+    id: 'theme_004',
+    title: '一个人旅行过的人',
+    count: 23,
+    note: '把好奇留给路上',
+  },
 ];
