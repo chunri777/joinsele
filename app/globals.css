@@ -192,9 +192,9 @@ button {
 
   .onboarding-step {
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.58);
+    background: rgba(255, 255, 255, 0.68);
     padding: 0.46rem 0.4rem;
-    color: var(--muted-ink);
+    color: var(--soft-ink);
     text-align: center;
     font-size: 0.72rem;
     font-weight: 560;
@@ -231,7 +231,7 @@ button {
 
   .onboarding-pane p {
     max-width: 680px;
-    color: var(--soft-ink);
+    color: #3f3f3f;
     font-size: 0.94rem;
     line-height: 1.68;
   }
@@ -1153,7 +1153,7 @@ button {
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.56);
     padding: 0.58rem 0.82rem;
-    color: var(--wine);
+    color: #111111;
     font-size: 0.8rem;
     font-weight: 540;
   }
@@ -1200,9 +1200,19 @@ button {
   .beta-hero-copy p,
   .beta-panel p {
     max-width: 680px;
-    color: var(--soft-ink);
+    color: #3f3f3f;
     font-size: 0.94rem;
     line-height: 1.62;
+  }
+
+  .beta-hero-subtitle {
+    display: grid;
+    gap: 0.18rem;
+  }
+
+  .beta-hero-subtitle strong {
+    color: #181818;
+    font-weight: 560;
   }
 
   .beta-actions {
@@ -1348,7 +1358,7 @@ button {
   }
 
   .beta-form p {
-    color: var(--soft-ink);
+    color: #3f3f3f;
     font-size: 0.84rem;
     line-height: 1.55;
   }
