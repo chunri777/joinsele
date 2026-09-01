@@ -466,11 +466,11 @@ function DesktopSidebar({
   return (
     <aside className="desktop-sidebar">
       <button className="brand-lockup" onClick={() => onSwitch('discover')}>
-        <span className="brand-mark">Hb</span>
+        <span className="brand-mark">S</span>
         <span>
-          <span className="block text-base font-semibold">Heartbox</span>
+          <span className="block text-base font-semibold">SELE</span>
           <span className="block text-xs text-[var(--muted-ink)]">
-            心动盲盒
+            Sele Heartbox
           </span>
         </span>
       </button>
@@ -534,9 +534,9 @@ function OnboardingFlow({
     <section className="onboarding-shell">
       <div className="onboarding-card">
         <div className="brand-lockup">
-          <span className="brand-mark">Hb</span>
+          <span className="brand-mark">S</span>
           <span>
-            <span className="block text-base font-semibold">Heartbox</span>
+            <span className="block text-base font-semibold">SELE</span>
             <span className="block text-xs text-[var(--muted-ink)]">
               先拆开人格，再靠近关系
             </span>
@@ -557,7 +557,7 @@ function OnboardingFlow({
         </div>
         {step === 'landing' && (
           <div className="onboarding-pane">
-            <p className="eyebrow">Heartbox</p>
+            <p className="eyebrow">SELE / Heartbox</p>
             <h1>写一点关于自己，拆开一个未知的人</h1>
             <p>
               第一次不用理解很多规则。回答一个问题，拿到一只盲盒，如果那个人让你有点好奇，就留下一段回声。
@@ -577,7 +577,7 @@ function OnboardingFlow({
         {step === 'age' && (
           <div className="onboarding-pane">
             <p className="eyebrow">Adults only</p>
-            <h1>Heartbox 只面向 18+ 成年用户</h1>
+            <h1>SELE 只面向 18+ 成年用户</h1>
             <p>
               这里会保护真实身份、联系方式和精确位置。想看见真实的彼此，必须双方都同意。
             </p>
@@ -654,11 +654,11 @@ function MobileTopbar({
   return (
     <header className="mobile-topbar">
       <div className="brand-lockup">
-        <span className="brand-mark">Hb</span>
+        <span className="brand-mark">S</span>
         <span>
-          <span className="block text-sm font-semibold">Heartbox</span>
+          <span className="block text-sm font-semibold">SELE</span>
           <span className="block text-[11px] text-[var(--muted-ink)]">
-            拆开一个未知的人
+            Sele Heartbox
           </span>
         </span>
       </div>
@@ -691,7 +691,7 @@ function TopStatus({
   return (
     <div className="top-status">
       <div>
-        <p className="eyebrow">Heartbox V2</p>
+        <p className="eyebrow">SELE Beta</p>
         <h1 className="mt-1 text-2xl font-semibold sm:text-4xl">
           {titles[view]}
         </h1>

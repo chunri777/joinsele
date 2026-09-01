@@ -50,11 +50,11 @@ export default function PrivateBetaPage() {
       <section className="beta-frame">
         <nav className="beta-nav">
           <Link className="brand-lockup" href="/">
-            <span className="brand-mark">Hb</span>
+            <span className="brand-mark">S</span>
             <span>
-              <span className="block text-base font-semibold">Heartbox</span>
+              <span className="block text-base font-semibold">SELE</span>
               <span className="block text-xs text-[var(--muted-ink)]">
-                Private Beta
+                Sele Private Beta
               </span>
             </span>
           </Link>
@@ -66,7 +66,7 @@ export default function PrivateBetaPage() {
 
         <div className="beta-hero">
           <div className="beta-hero-copy">
-            <p className="eyebrow">Heartbox private beta</p>
+            <p className="eyebrow">SELE private beta</p>
             <h1>我们在找第一批愿意认真拆开一个人的测试用户</h1>
             <p>
               Heartbox
