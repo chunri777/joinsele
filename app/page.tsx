@@ -102,9 +102,9 @@ export default function Home() {
   const [publishedFragments, setPublishedFragments] = useState<
     PersonalityFragment[]
   >([]);
-  const [selectedRelationshipId, setSelectedRelationshipId] = useState(
-    relationships[0].id,
-  );
+  const [selectedRelationshipId, setSelectedRelationshipId] = useState<
+    string | null
+  >(null);
   const [messages, setMessages] = useState(conversations[0].messages);
   const [messageDraft, setMessageDraft] = useState('');
   const [revealRequested, setRevealRequested] = useState(false);
@@ -164,7 +164,7 @@ export default function Home() {
     setReplyingToCommentId(null);
     setFragmentDraft('');
     setPublishedFragments([]);
-    setSelectedRelationshipId(relationships[0].id);
+    setSelectedRelationshipId(null);
     setMessages(conversations[0].messages);
     setMessageDraft('');
     setRevealRequested(false);
@@ -338,7 +338,12 @@ export default function Home() {
                 <MessagesView
                   relationships={relationships}
                   selectedRelationship={selectedRelationship}
-                  messages={messages.length ? messages : conversation.messages}
+                  detailOpen={selectedRelationshipId !== null}
+                  messages={
+                    selectedRelationship.id === conversations[0].relationshipId
+                      ? messages
+                      : conversation.messages
+                  }
                   messageDraft={messageDraft}
                   sensitive={sensitive}
                   revealRequested={revealRequested}
@@ -350,7 +355,7 @@ export default function Home() {
                   onReveal={() => setRevealRequested(true)}
                   onBlock={() => setBlocked(true)}
                   onReport={() => setReported(true)}
-                  onClose={() => setSelectedRelationshipId(relationships[1].id)}
+                  onClose={() => setSelectedRelationshipId(null)}
                 />
               )}
               {view === 'mine' && (
@@ -538,7 +543,7 @@ function OnboardingFlow({
           <span>
             <span className="block text-sm font-medium">SELE</span>
             <span className="block text-xs text-[var(--muted-ink)]">
-              先拆开人格，再靠近关系
+              先认识一点，再靠近一点
             </span>
           </span>
         </div>
@@ -558,9 +563,9 @@ function OnboardingFlow({
         {step === 'landing' && (
           <div className="onboarding-pane">
             <p className="eyebrow">SELE / Heartbox</p>
-            <h1>写一点关于自己，拆开一个未知的人</h1>
+            <h1>有些人，适合晚一点看见。</h1>
             <p>
-              第一次不用理解很多规则。回答一个问题，拿到一只盲盒，如果那个人让你有点好奇，就留下一段回声。
+              先认识一点，再决定要不要靠近。写下一段真实片刻，拆开一个未知的人。
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <button className="pill-primary" onClick={() => onStep('age')}>
@@ -1393,6 +1398,7 @@ function InviteFlow({
 function MessagesView({
   relationships,
   selectedRelationship,
+  detailOpen,
   messages,
   messageDraft,
   sensitive,
@@ -1409,6 +1415,7 @@ function MessagesView({
 }: {
   relationships: Relationship[];
   selectedRelationship: Relationship;
+  detailOpen: boolean;
   messages: Conversation['messages'];
   messageDraft: string;
   sensitive: boolean;
@@ -1423,6 +1430,75 @@ function MessagesView({
   onReport: () => void;
   onClose: () => void;
 }) {
+  const messageEntrances = [
+    { label: '匹配', value: relationships.length, icon: HeartHandshake },
+    { label: '喜欢', value: 6, icon: Heart },
+    { label: '评论', value: postComments.length, icon: MessageCircle },
+    { label: '通知', value: 2, icon: ShieldCheck },
+  ];
+
+  if (!detailOpen) {
+    return (
+      <div className="message-home">
+        <div className="message-entry-grid">
+          {messageEntrances.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button key={item.label} className="message-entry-card">
+                <span>
+                  <Icon className="h-5 w-5" />
+                </span>
+                <strong>{item.label}</strong>
+                <small>{item.value}</small>
+              </button>
+            );
+          })}
+        </div>
+        <Panel className="message-home-list p-3">
+          {relationships.length === 0 ? (
+            <EmptyState
+              title="还没有会话"
+              body="当你们留下彼此的回声，这里会出现一段新的匿名关系。"
+              action="去发现盲盒"
+              onAction={() => onSelect(selectedRelationship.id)}
+            />
+          ) : (
+            relationships.map((relationship, index) => {
+              const convo = conversations.find(
+                (item) => item.relationshipId === relationship.id,
+              );
+              const lastMessage = convo?.messages.at(-1);
+              return (
+                <button
+                  key={relationship.id}
+                  className="message-thread-row"
+                  onClick={() => onSelect(relationship.id)}
+                >
+                  <span className="thread-avatar">
+                    <HeartHandshake className="h-4 w-4" />
+                  </span>
+                  <span className="min-w-0 flex-1 text-left">
+                    <span className="thread-title">
+                      <strong>{relationship.alias}</strong>
+                      <small>{stageMeta[relationship.stage].label}</small>
+                    </span>
+                    <span className="thread-preview">
+                      {lastMessage?.body ?? relationship.nextUnlock}
+                    </span>
+                  </span>
+                  <span className="thread-meta">
+                    <small>{lastMessage?.createdAt ?? (index ? '昨天' : '刚刚')}</small>
+                    {!!convo?.unread && <em>{convo.unread}</em>}
+                  </span>
+                </button>
+              );
+            })
+          )}
+        </Panel>
+      </div>
+    );
+  }
+
   return (
     <div className="messages-grid">
       <Panel className="relationship-list p-3">
@@ -1654,7 +1730,7 @@ function MineView({
         <Panel className="p-5 sm:p-7">
           <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="eyebrow">My personality card</p>
+              <p className="eyebrow">Personality card</p>
               <h2 className="mt-2 text-lg font-medium">{card.alias}</h2>
               <p className="mt-2 text-[var(--soft-ink)]">
                 {profile.ageRange} · {profile.city} · {card.archetype}
@@ -1676,24 +1752,11 @@ function MineView({
             ))}
           </div>
         </Panel>
-        <Panel className="p-5 sm:p-7">
-          <p className="eyebrow">History</p>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            {relationships.map((relationship) => (
-              <div className="history-card" key={relationship.id}>
-                <h3>{relationship.alias}</h3>
-                <p>
-                  {stageMeta[relationship.stage].label} ·{' '}
-                  {relationship.nextUnlock}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Panel>
       </section>
       <aside className="space-y-5">
         <Panel className="p-5">
-          <p className="eyebrow">Wallet</p>
+          <p className="eyebrow">Opens</p>
+          <h3 className="mt-2 text-lg font-medium">我的次数</h3>
           <div className="mt-4 grid gap-3">
             <MiniStat label="今日免费拆盒" value={`${freeOpens}/3`} />
             <MiniStat label="Heart" value={String(hearts)} />
@@ -1704,8 +1767,8 @@ function MineView({
           </button>
         </Panel>
         <Panel className="p-5">
-          <p className="eyebrow">Invite progress</p>
-          <h3 className="mt-2 text-lg font-medium">给朋友留一个盲盒</h3>
+          <p className="eyebrow">Invite</p>
+          <h3 className="mt-2 text-lg font-medium">我的邀请</h3>
           <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
             3 位朋友打开，2 位完成人格卡，1 个奖励待领取。
           </p>
@@ -1728,18 +1791,8 @@ function MineView({
           </div>
         </Panel>
         <Panel className="p-5">
-          <p className="eyebrow">Private beta</p>
-          <h3 className="mt-2 text-lg font-medium">邀请真实用户试用</h3>
-          <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
-            内测页说明适合谁、怎么测试、反馈重点，以及当前 Demo 的边界。
-          </p>
-          <Link className="pill-secondary mt-4 w-full" href="beta">
-            打开 Private Beta 页面
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </Panel>
-        <Panel className="p-5">
-          <p className="eyebrow">Safety settings</p>
+          <p className="eyebrow">Privacy</p>
+          <h3 className="mt-2 text-lg font-medium">安全与隐私</h3>
           <div className="mt-4 space-y-3 text-sm leading-6 text-[var(--soft-ink)]">
             <p>
               <ShieldCheck className="mr-2 inline h-4 w-4 text-[var(--berry)]" />
@@ -1756,8 +1809,8 @@ function MineView({
           </div>
         </Panel>
         <Panel className="p-5">
-          <p className="eyebrow">Demo testing</p>
-          <h3 className="mt-2 text-lg font-medium">重新体验新用户路径</h3>
+          <p className="eyebrow">Reset</p>
+          <h3 className="mt-2 text-lg font-medium">体验重置</h3>
           <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
             测试入口会恢复 onboarding、免费次数、第一只盲盒、回声状态、关系
             Journey 和邀请流程。

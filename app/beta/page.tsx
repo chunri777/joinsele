@@ -16,9 +16,9 @@ const BETA_FORM_URL =
   'https://my.feishu.cn/share/base/form/shrcnXhe8ikq2Wk15JTTNwzHPdd';
 
 const testerFit = [
-  '18+，愿意用匿名方式探索关系',
-  '喜欢具体表达，而不是只看头像资料',
-  '可以接受产品仍处于 Mock Demo 阶段',
+  '18+，愿意慢一点认识一个人',
+  '相信一句具体的话，比一张照片更接近真实',
+  '愿意把第一感受认真告诉我们',
 ];
 
 const betaFlow = [
@@ -37,10 +37,10 @@ const betaFlow = [
 ];
 
 const feedbackFocus = [
-  '你是否真的想继续拆第二层',
-  '哪一个人格碎片让你停了一下',
-  '关系 Journey 是期待感，还是像任务',
-  '邀请朋友的分享卡是否值得截图转发',
+  '哪一句话让你停了一下',
+  '你是否想继续拆开第二层',
+  '回声是否让关系变得更轻',
+  '这个邀请是否值得发给一个朋友',
 ];
 
 export default function PrivateBetaPage() {
@@ -67,11 +67,9 @@ export default function PrivateBetaPage() {
         <div className="beta-hero">
           <div className="beta-hero-copy">
             <p className="eyebrow">SELE private beta</p>
-            <h1>我们在找第一批愿意认真拆开一个人的测试用户</h1>
+            <h1>有些人，适合晚一点看见。</h1>
             <p>
-              Heartbox
-              不是看脸滑卡，也不是另一个朋友圈。这里先写下一点真实的你，
-              再拆开一个未知的人，最后决定要不要留下回声。
+              先认识一点，再决定要不要靠近。SELE 正在邀请第一批体验者。
             </p>
             <div className="beta-actions">
               <a className="pill-primary" href="#join-beta">
@@ -86,8 +84,8 @@ export default function PrivateBetaPage() {
           </div>
           <div className="beta-invite-card" aria-label="Heartbox beta card">
             <div className="share-card-seal">Sealed for beta</div>
-            <h2>有人觉得这里有一个你会想认识的人</h2>
-            <p>先别急着看脸。拆开一段人格碎片，看看你会不会突然想多问一句。</p>
+            <h2>给你留了一只还没拆开的 Heartbox。</h2>
+            <p>先别急着看见全部。读一句话，看看你会不会想多问一句。</p>
             <div className="beta-envelope-mini">
               <HeartHandshake className="h-5 w-5" />
               一段回声正在等你
@@ -131,10 +129,9 @@ export default function PrivateBetaPage() {
         <section className="beta-panel beta-flow-panel">
           <div>
             <p className="eyebrow">10-minute test</p>
-            <h2>这次内测只验证一件事</h2>
+            <h2>这次内测，只想听见真实感受</h2>
             <p>
-              一个从没听过 Heartbox 的年轻用户，能不能自然走完： 写一点关于自己
-              → 拆开一个人 → 喜欢就留下回声。
+              你不需要理解复杂规则。写下一点自己，拆开一个人，喜欢就留下回声。
             </p>
           </div>
           <div className="beta-flow">
@@ -152,9 +149,9 @@ export default function PrivateBetaPage() {
           <div className="beta-join">
             <div>
               <p className="eyebrow">Join beta</p>
-              <h2>留下一个可以联系你的方式</h2>
+              <h2>留下一个可以收到邀请的方式</h2>
               <p>
-                申请信息会通过飞书表单收集，用于后续内测联系和体验反馈。
+                申请会进入飞书表单。我们会从第一批体验者开始，慢慢开放。
               </p>
             </div>
             <div className="beta-form">

@@ -1434,6 +1434,124 @@ button {
     gap: 0.75rem;
   }
 
+  .message-home {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .message-entry-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .message-entry-card {
+    display: grid;
+    min-height: 92px;
+    place-items: center;
+    gap: 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--ink);
+    text-align: center;
+  }
+
+  .message-entry-card span {
+    display: grid;
+    width: 2.35rem;
+    height: 2.35rem;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .message-entry-card strong {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .message-entry-card small {
+    color: var(--muted-ink);
+    font-size: 0.72rem;
+  }
+
+  .message-home-list {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .message-thread-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: 18px;
+    padding: 0.72rem;
+    text-align: left;
+  }
+
+  .thread-avatar {
+    display: grid;
+    width: 2.55rem;
+    height: 2.55rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--wine);
+    color: var(--cream);
+  }
+
+  .thread-title {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .thread-title strong {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--ink);
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .thread-title small,
+  .thread-preview,
+  .thread-meta small {
+    color: var(--muted-ink);
+    font-size: 0.76rem;
+  }
+
+  .thread-preview {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    margin-top: 0.16rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .thread-meta {
+    display: grid;
+    flex: 0 0 auto;
+    justify-items: end;
+    gap: 0.3rem;
+  }
+
+  .thread-meta em {
+    display: grid;
+    min-width: 1.2rem;
+    height: 1.2rem;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--wine);
+    color: var(--cream);
+    font-size: 0.68rem;
+    font-style: normal;
+  }
+
   .relationship-list {
     display: grid;
     gap: 0.55rem;
@@ -1927,6 +2045,316 @@ button {
         rgba(34, 34, 34, 0.12) 0 0.7px,
         transparent 0.7px 3px
       );
+  }
+
+  #heartbox-shell {
+    --cream: #000000;
+    --ink: #f2f2f2;
+    --soft-ink: #b8b8b8;
+    --muted-ink: #7a7a7a;
+    --wine: #f2f2f2;
+    --berry: #b8b8b8;
+    --mist: #2c2c2c;
+    background:
+      radial-gradient(circle at 50% 12%, rgb(255 255 255 / 4%), transparent 26%),
+      #000;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  #heartbox-shell .grain {
+    opacity: 0.08;
+    mix-blend-mode: screen;
+  }
+
+  #heartbox-shell .mobile-topbar,
+  #heartbox-shell .desktop-sidebar,
+  #heartbox-shell .context-panel {
+    border-color: rgb(255 255 255 / 9%);
+    background: rgb(0 0 0 / 74%);
+    backdrop-filter: blur(18px);
+  }
+
+  #heartbox-shell .brand-mark {
+    border: 1px solid rgb(255 255 255 / 18%);
+    background: rgb(255 255 255 / 6%);
+    color: #f2f2f2;
+    box-shadow:
+      inset 0 0 18px rgb(255 255 255 / 7%),
+      0 0 18px rgb(255 255 255 / 10%);
+    text-shadow: 0 0 12px rgb(255 255 255 / 70%);
+  }
+
+  #heartbox-shell .brand-lockup .block:first-child {
+    color: #f2f2f2;
+    font-size: 0.8rem;
+    font-weight: 520;
+    letter-spacing: 0.24em;
+  }
+
+  #heartbox-shell .brand-lockup .block:last-child {
+    color: rgb(184 184 184 / 72%);
+    font-size: 0.68rem;
+    font-weight: 400;
+  }
+
+  #heartbox-shell .top-status {
+    margin-bottom: 0.65rem;
+  }
+
+  #heartbox-shell .top-status h1,
+  #heartbox-shell .onboarding-pane h1,
+  #heartbox-shell .glass-panel h2,
+  #heartbox-shell .glass-panel h3,
+  #heartbox-shell .envelope-copy h3,
+  #heartbox-shell .current-stage-card strong {
+    color: #f2f2f2;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  #heartbox-shell .top-status h1 {
+    font-size: clamp(1.05rem, 4.8vw, 1.65rem);
+  }
+
+  #heartbox-shell .eyebrow {
+    color: rgb(184 184 184 / 56%);
+    font-size: 0.55rem;
+    font-weight: 420;
+    letter-spacing: 0.06em;
+  }
+
+  #heartbox-shell p,
+  #heartbox-shell small,
+  #heartbox-shell input,
+  #heartbox-shell textarea,
+  #heartbox-shell button,
+  #heartbox-shell .text-sm,
+  #heartbox-shell .post-prompt,
+  #heartbox-shell .post-meta {
+    font-size: 0.86rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  #heartbox-shell .text-xs,
+  #heartbox-shell .text-\[11px\] {
+    font-size: 0.68rem;
+  }
+
+  #heartbox-shell .glass-panel,
+  #heartbox-shell .onboarding-card,
+  #heartbox-shell .onboarding-pane,
+  #heartbox-shell .mini-stat,
+  #heartbox-shell .state-chip,
+  #heartbox-shell .theme-row,
+  #heartbox-shell .box-list-item,
+  #heartbox-shell .relationship-row,
+  #heartbox-shell .history-card,
+  #heartbox-shell .reward-row,
+  #heartbox-shell .comment-modal,
+  #heartbox-shell .conversion-modal {
+    border-color: rgb(255 255 255 / 12%);
+    background: rgb(255 255 255 / 5%);
+    box-shadow: none;
+    backdrop-filter: blur(14px);
+  }
+
+  #heartbox-shell .glass-panel.p-5,
+  #heartbox-shell .glass-panel.p-6,
+  #heartbox-shell .glass-panel.p-7,
+  #heartbox-shell .post-card {
+    padding: 0.82rem !important;
+  }
+
+  #heartbox-shell .side-nav-item,
+  #heartbox-shell .theme-row,
+  #heartbox-shell .box-list-item,
+  #heartbox-shell .relationship-row,
+  #heartbox-shell .action-row,
+  #heartbox-shell .conversion-option {
+    min-height: unset;
+    padding: 0.62rem 0.7rem;
+  }
+
+  #heartbox-shell .side-nav-item {
+    color: rgb(242 242 242 / 72%);
+  }
+
+  #heartbox-shell .side-nav-item-active,
+  #heartbox-shell .mobile-nav-active,
+  #heartbox-shell .topic-mode-active,
+  #heartbox-shell .invite-step-active,
+  #heartbox-shell .soft-command-active {
+    background: #f2f2f2;
+    color: #000 !important;
+    box-shadow: none;
+  }
+
+  #heartbox-shell .mobile-nav {
+    border-color: rgb(255 255 255 / 10%);
+    background: rgb(0 0 0 / 82%);
+  }
+
+  #heartbox-shell .mobile-nav button {
+    min-height: 46px;
+    color: rgb(242 242 242 / 64%);
+    font-size: 0.66rem;
+  }
+
+  #heartbox-shell .mobile-nav svg,
+  #heartbox-shell .side-nav-item svg,
+  #heartbox-shell .soft-command svg {
+    stroke-width: 1.5;
+  }
+
+  #heartbox-shell .pill-primary,
+  #heartbox-shell .pill-secondary,
+  #heartbox-shell .soft-command,
+  #heartbox-shell .reset-demo-button,
+  #heartbox-shell .wallet-strip,
+  #heartbox-shell .status-pill,
+  #heartbox-shell .topic-pill,
+  #heartbox-shell .topic-link,
+  #heartbox-shell .chip {
+    min-height: 34px;
+    border-color: rgb(255 255 255 / 14%);
+    background: rgb(255 255 255 / 7%);
+    color: #f2f2f2;
+    font-size: 0.76rem;
+    font-weight: 430;
+    box-shadow: none;
+  }
+
+  #heartbox-shell .pill-primary {
+    background: #f2f2f2;
+    color: #000;
+  }
+
+  #heartbox-shell .pill-primary:hover,
+  #heartbox-shell .pill-secondary:hover,
+  #heartbox-shell .soft-command:hover {
+    background: rgb(242 242 242 / 88%);
+    color: #000;
+    transform: none;
+  }
+
+  #heartbox-shell .mini-stat {
+    padding: 0.58rem;
+  }
+
+  #heartbox-shell .mini-stat p,
+  #heartbox-shell .state-chip span,
+  #heartbox-shell .topic-detail-meta,
+  #heartbox-shell .protected-list,
+  #heartbox-shell .comment-like-mini {
+    color: rgb(184 184 184 / 62%);
+    font-size: 0.68rem;
+  }
+
+  #heartbox-shell .mini-stat strong {
+    color: #f2f2f2;
+    font-size: 1rem;
+    font-weight: 520;
+  }
+
+  #heartbox-shell .state-chip {
+    gap: 0.12rem;
+    padding: 0.52rem;
+  }
+
+  #heartbox-shell .state-chip strong {
+    color: #f2f2f2;
+    font-size: 0.76rem;
+    font-weight: 500;
+  }
+
+  #heartbox-shell .unbox-stage {
+    min-height: 390px;
+    background:
+      radial-gradient(circle at 50% 92%, rgb(255 255 255 / 13%), transparent 34%),
+      linear-gradient(180deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 2%)),
+      #050505;
+  }
+
+  #heartbox-shell .sealed-envelope {
+    min-height: 236px;
+    border-color: rgb(255 255 255 / 16%);
+    background:
+      linear-gradient(150deg, rgb(255 255 255 / 13%), rgb(255 255 255 / 4%)),
+      #0d0d0d;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 12%),
+      0 24px 80px rgb(255 255 255 / 5%);
+  }
+
+  #heartbox-shell .sealed-envelope::before,
+  #heartbox-shell .sealed-envelope::after {
+    background: linear-gradient(145deg, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%));
+  }
+
+  #heartbox-shell .wax-seal {
+    background: radial-gradient(circle at 35% 24%, #b8b8b8, #0d0d0d 72%);
+    box-shadow: 0 0 22px rgb(255 255 255 / 20%);
+  }
+
+  #heartbox-shell .envelope-copy {
+    transform: translateY(48px);
+  }
+
+  #heartbox-shell .envelope-copy h3 {
+    font-size: clamp(1.24rem, 5.4vw, 2rem);
+  }
+
+  #heartbox-shell .sealed-hint {
+    background: rgb(255 255 255 / 8%);
+    color: rgb(242 242 242 / 70%);
+  }
+
+  #heartbox-shell .revealed-persona {
+    background: rgb(12 12 12 / 88%);
+    border-color: rgb(255 255 255 / 13%);
+    box-shadow: 0 0 52px rgb(255 255 255 / 6%);
+  }
+
+  #heartbox-shell .revealed-persona blockquote,
+  #heartbox-shell .second-layer,
+  #heartbox-shell .fragment-ribbon span,
+  #heartbox-shell .daily-prompt-strip,
+  #heartbox-shell .comment-preview,
+  #heartbox-shell .current-stage-card,
+  #heartbox-shell .journey-step,
+  #heartbox-shell .chat-bubble,
+  #heartbox-shell .chat-composer input,
+  #heartbox-shell .comment-composer input {
+    border-color: rgb(255 255 255 / 10%);
+    background: rgb(255 255 255 / 6%);
+    color: rgb(242 242 242 / 82%);
+  }
+
+  #heartbox-shell .post-card::before {
+    height: 1px;
+    background: rgb(255 255 255 / 18%);
+  }
+
+  #heartbox-shell .post-body {
+    color: #f2f2f2;
+    font-size: clamp(0.92rem, 3vw, 1.08rem);
+    font-weight: 400;
+    line-height: 1.58;
+  }
+
+  #heartbox-shell .chat-line-me .chat-bubble,
+  #heartbox-shell .chat-composer button,
+  #heartbox-shell .comment-composer button {
+    background: #f2f2f2;
+    color: #000;
+  }
+
+  #heartbox-shell .bg-\[var\(--wine\)\] {
+    background: #f2f2f2;
+    color: #000;
   }
 
   @keyframes envelope-open {
