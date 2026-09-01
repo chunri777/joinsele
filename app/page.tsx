@@ -497,7 +497,7 @@ function DesktopSidebar({
         <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
           匿名探索、双向揭晓、举报拉黑常驻。Heart+ 不能绕过同意。
         </p>
-        <Link className="reset-demo-button mt-4" href="/beta">
+        <Link className="reset-demo-button mt-4" href="beta">
           <Sparkles className="h-4 w-4" />
           Private Beta
         </Link>
@@ -567,7 +567,7 @@ function OnboardingFlow({
                 开始第一次体验
                 <ArrowRight className="h-4 w-4" />
               </button>
-              <Link className="pill-secondary" href="/beta">
+              <Link className="pill-secondary" href="beta">
                 查看 Private Beta
                 <Sparkles className="h-4 w-4" />
               </Link>
@@ -1733,7 +1733,7 @@ function MineView({
           <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
             内测页说明适合谁、怎么测试、反馈重点，以及当前 Demo 的边界。
           </p>
-          <Link className="pill-secondary mt-4 w-full" href="/beta">
+          <Link className="pill-secondary mt-4 w-full" href="beta">
             打开 Private Beta 页面
             <ArrowRight className="h-4 w-4" />
           </Link>
@@ -1825,7 +1825,7 @@ function ContextPanel({
       <Panel className="p-5">
         <p className="eyebrow">Private beta</p>
         <h3 className="mt-2 text-xl font-semibold">准备给真实用户测试</h3>
-        <Link className="pill-secondary mt-4 w-full" href="/beta">
+        <Link className="pill-secondary mt-4 w-full" href="beta">
           查看内测页
         </Link>
       </Panel>

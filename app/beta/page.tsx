@@ -49,7 +49,7 @@ export default function PrivateBetaPage() {
       <div className="grain" />
       <section className="beta-frame">
         <nav className="beta-nav">
-          <Link className="brand-lockup" href="/">
+          <Link className="brand-lockup" href="./">
             <span className="brand-mark">S</span>
             <span>
               <span className="block text-base font-semibold">SELE</span>
@@ -58,7 +58,7 @@ export default function PrivateBetaPage() {
               </span>
             </span>
           </Link>
-          <Link className="beta-back-link" href="/">
+          <Link className="beta-back-link" href="./">
             <ArrowLeft className="h-4 w-4" />
             返回体验 Demo
           </Link>
@@ -78,7 +78,7 @@ export default function PrivateBetaPage() {
                 申请内测
                 <ArrowRight className="h-4 w-4" />
               </a>
-              <Link className="pill-secondary" href="/">
+              <Link className="pill-secondary" href="./">
                 直接体验 Demo
                 <PackageOpen className="h-4 w-4" />
               </Link>
