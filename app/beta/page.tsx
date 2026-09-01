@@ -52,9 +52,9 @@ export default function PrivateBetaPage() {
           <Link className="brand-lockup" href="./">
             <span className="brand-mark">S</span>
             <span>
-              <span className="block text-base font-semibold">SELE</span>
+              <span className="block text-sm font-medium">SELE</span>
               <span className="block text-xs text-[var(--muted-ink)]">
-                Sele Private Beta
+                Heartbox
               </span>
             </span>
           </Link>

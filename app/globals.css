@@ -127,6 +127,8 @@
 body {
   overflow-x: hidden;
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
 }
 
 button {
@@ -176,7 +178,7 @@ button {
     border: 1px solid rgba(17, 17, 17, 0.08);
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.72);
-    padding: clamp(1rem, 3vw, 2rem);
+    padding: clamp(0.9rem, 2.5vw, 1.65rem);
     box-shadow: 0 24px 80px rgb(0 0 0 / 8%);
     backdrop-filter: blur(18px);
   }
@@ -185,17 +187,17 @@ button {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.5rem;
-    margin-top: 1.2rem;
+    margin-top: 1rem;
   }
 
   .onboarding-step {
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.58);
-    padding: 0.55rem 0.45rem;
+    padding: 0.46rem 0.4rem;
     color: var(--muted-ink);
     text-align: center;
-    font-size: 0.8rem;
-    font-weight: 800;
+    font-size: 0.72rem;
+    font-weight: 560;
   }
 
   .onboarding-step-active {
@@ -205,8 +207,8 @@ button {
 
   .onboarding-pane {
     display: grid;
-    gap: 1rem;
-    margin-top: 1.25rem;
+    gap: 0.85rem;
+    margin-top: 1rem;
     border-radius: 16px;
     background:
       linear-gradient(
@@ -215,14 +217,14 @@ button {
         rgba(255, 255, 255, 0.72)
       ),
       rgba(255, 255, 255, 0.68);
-    padding: clamp(1.1rem, 4vw, 2.2rem);
+    padding: clamp(1rem, 3.4vw, 1.85rem);
   }
 
   .onboarding-pane h1 {
     max-width: 760px;
     color: var(--wine);
-    font-size: clamp(1.95rem, 6vw, 4.2rem);
-    font-weight: 760;
+    font-size: clamp(1.7rem, 5.2vw, 3.55rem);
+    font-weight: 560;
     letter-spacing: 0;
     line-height: 0.98;
   }
@@ -230,17 +232,19 @@ button {
   .onboarding-pane p {
     max-width: 680px;
     color: var(--soft-ink);
-    line-height: 1.8;
+    font-size: 0.94rem;
+    line-height: 1.68;
   }
 
   .onboarding-textarea {
-    min-height: 150px;
+    min-height: 128px;
     resize: none;
     border: 1px solid rgba(24, 24, 24, 0.1);
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.82);
-    padding: 1rem;
-    line-height: 1.7;
+    padding: 0.85rem;
+    font-size: 0.94rem;
+    line-height: 1.62;
     outline: none;
   }
 
@@ -251,7 +255,7 @@ button {
     border: 1px solid rgba(24, 24, 24, 0.1);
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.82);
-    padding: 1rem;
+    padding: 0.85rem;
   }
 
   .onboarding-mini-card span {
@@ -261,7 +265,8 @@ button {
 
   .onboarding-mini-card strong {
     color: var(--wine);
-    font-size: 1.5rem;
+    font-size: 1.28rem;
+    font-weight: 560;
   }
 
   .onboarding-mini-card small {
@@ -294,11 +299,11 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
+    gap: 0.6rem;
     margin: 0 -14px 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.72);
     background: rgba(247, 247, 247, 0.84);
-    padding: max(0.8rem, env(safe-area-inset-top)) 14px 0.8rem;
+    padding: max(0.72rem, env(safe-area-inset-top)) 14px 0.62rem;
     backdrop-filter: blur(24px);
   }
 
@@ -307,14 +312,14 @@ button {
     align-items: flex-end;
     justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
     padding-top: 0.35rem;
   }
 
   .wallet-strip {
     display: none;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0.45rem;
     border: 1px solid rgba(24, 24, 24, 0.1);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.56);
@@ -331,9 +336,9 @@ button {
     white-space: nowrap;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.72);
-    padding: 0.45rem 0.62rem;
-    font-size: 0.78rem;
-    font-weight: 700;
+    padding: 0.38rem 0.56rem;
+    font-size: 0.72rem;
+    font-weight: 520;
   }
 
   .brand-lockup {
@@ -346,15 +351,15 @@ button {
 
   .brand-mark {
     display: grid;
-    width: 2.45rem;
-    height: 2.45rem;
+    width: 2.25rem;
+    height: 2.25rem;
     flex: 0 0 auto;
     place-items: center;
     border-radius: 0.7rem;
     background: var(--wine);
     color: white;
     font-size: 0.95rem;
-    font-weight: 800;
+    font-weight: 620;
     box-shadow: 0 12px 28px rgb(0 0 0 / 16%);
   }
 
@@ -370,7 +375,7 @@ button {
     align-items: center;
     gap: 0.75rem;
     border-radius: 0.85rem;
-    padding: 0.82rem 0.9rem;
+    padding: 0.7rem 0.82rem;
     color: var(--soft-ink);
     transition:
       transform 180ms ease,
@@ -405,7 +410,7 @@ button {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     border-top: 1px solid rgba(255, 255, 255, 0.78);
     background: rgba(247, 247, 247, 0.86);
-    padding: 0.55rem 0.55rem calc(0.65rem + env(safe-area-inset-bottom));
+    padding: 0.5rem 0.6rem calc(0.58rem + env(safe-area-inset-bottom));
     backdrop-filter: blur(24px);
   }
 
@@ -414,22 +419,23 @@ button {
     min-width: 0;
     place-items: center;
     gap: 0.18rem;
-    min-height: 56px;
-    border-radius: 0.85rem;
-    padding: 0.48rem 0.24rem;
+    min-height: 50px;
+    border-radius: 0.7rem;
+    padding: 0.38rem 0.2rem;
     color: var(--muted-ink);
-    font-size: 0.74rem;
-    font-weight: 700;
+    font-size: 0.68rem;
+    font-weight: 480;
   }
 
   .mobile-nav-active {
-    background: rgba(17, 17, 17, 0.12);
+    background: rgba(17, 17, 17, 0.09);
     color: var(--wine) !important;
   }
 
   .mobile-nav svg {
-    width: 1.45rem;
-    height: 1.45rem;
+    width: 1.28rem;
+    height: 1.28rem;
+    stroke-width: 1.8;
   }
 
   .mobile-nav-create span {
@@ -437,8 +443,8 @@ button {
   }
 
   .mobile-nav-create svg {
-    width: 1.62rem;
-    height: 1.62rem;
+    width: 1.42rem;
+    height: 1.42rem;
   }
 
   .glass-panel {
@@ -451,23 +457,24 @@ button {
   }
 
   .eyebrow {
-    font-size: 0.72rem;
-    font-weight: 700;
+    font-size: 0.62rem;
+    font-weight: 520;
     letter-spacing: 0;
     text-transform: uppercase;
-    color: var(--berry);
+    color: var(--muted-ink);
   }
 
   .pill-primary,
   .pill-secondary {
     display: inline-flex;
-    min-height: 46px;
+    min-height: 40px;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     border-radius: 12px;
-    padding: 0.82rem 1.15rem;
-    font-weight: 700;
+    padding: 0.68rem 0.98rem;
+    font-size: 0.92rem;
+    font-weight: 560;
     transition:
       transform 180ms ease,
       background 180ms ease,
@@ -513,9 +520,9 @@ button {
     gap: 0.85rem;
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.76);
-    padding: 1rem;
+    padding: 0.82rem;
     text-align: left;
-    font-weight: 700;
+    font-weight: 540;
     color: var(--wine);
     transition:
       transform 180ms ease,
@@ -532,7 +539,7 @@ button {
     border: 1px solid rgba(24, 24, 24, 0.08);
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.76);
-    padding: 0.85rem;
+    padding: 0.72rem;
   }
 
   .state-chip {
@@ -542,23 +549,24 @@ button {
     border: 1px solid rgba(24, 24, 24, 0.08);
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.76);
-    padding: 0.78rem;
+    padding: 0.66rem;
   }
 
   .state-chip strong {
     color: var(--wine);
-    font-size: 0.92rem;
+    font-size: 0.84rem;
+    font-weight: 560;
   }
 
   .state-chip span {
     color: var(--muted-ink);
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     line-height: 1.45;
   }
 
   .mini-stat p {
-    font-size: 0.78rem;
-    font-weight: 700;
+    font-size: 0.72rem;
+    font-weight: 520;
     color: var(--muted-ink);
   }
 
@@ -566,7 +574,8 @@ button {
     display: block;
     margin-top: 0.22rem;
     color: var(--wine);
-    font-size: 1.35rem;
+    font-size: 1.15rem;
+    font-weight: 560;
     line-height: 1;
   }
 
@@ -581,7 +590,7 @@ button {
     gap: 0.75rem;
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.76);
-    padding: 0.82rem;
+    padding: 0.72rem;
     transition:
       transform 180ms ease,
       background 180ms ease;
@@ -596,13 +605,13 @@ button {
 
   .unbox-panel {
     overflow: hidden;
-    padding: 1rem;
+    padding: 0.82rem;
   }
 
   .unbox-stage {
     position: relative;
     display: grid;
-    min-height: 560px;
+    min-height: 500px;
     place-items: center;
     overflow: hidden;
     border-radius: 16px;
@@ -625,7 +634,7 @@ button {
     position: relative;
     display: grid;
     width: min(86vw, 520px);
-    min-height: 330px;
+    min-height: 292px;
     place-items: center;
     overflow: hidden;
     border: 1px solid rgba(24, 24, 24, 0.13);
@@ -694,8 +703,8 @@ button {
     position: absolute;
     z-index: 2;
     display: grid;
-    width: 4.7rem;
-    height: 4.7rem;
+    width: 4.15rem;
+    height: 4.15rem;
     place-items: center;
     border-radius: 999px;
     background: radial-gradient(circle at 34% 26%, #737373, var(--wine) 70%);
@@ -707,16 +716,16 @@ button {
     position: relative;
     z-index: 3;
     max-width: 360px;
-    padding: 2rem;
+    padding: 1.6rem;
     text-align: center;
-    transform: translateY(72px);
+    transform: translateY(62px);
   }
 
   .envelope-copy h3 {
     margin-top: 0.35rem;
     color: var(--wine);
-    font-size: clamp(1.72rem, 7vw, 3.05rem);
-    font-weight: 700;
+    font-size: clamp(1.48rem, 6vw, 2.5rem);
+    font-weight: 560;
     letter-spacing: 0;
     line-height: 1;
   }
@@ -734,8 +743,8 @@ button {
     background: rgba(24, 24, 24, 0.08);
     padding: 0.45rem 0.72rem;
     color: var(--berry);
-    font-size: 0.78rem;
-    font-weight: 800;
+    font-size: 0.72rem;
+    font-weight: 540;
   }
 
   .revealed-persona {
@@ -745,7 +754,7 @@ button {
     border: 1px solid rgba(17, 17, 17, 0.08);
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.86);
-    padding: clamp(1rem, 4vw, 1.7rem);
+    padding: clamp(0.9rem, 3.3vw, 1.4rem);
     box-shadow: 0 28px 76px rgb(0 0 0 / 12%);
     animation: reveal-card 520ms ease both;
   }
@@ -753,14 +762,14 @@ button {
   .chip {
     display: inline-flex;
     align-items: center;
-    min-height: 2rem;
+    min-height: 1.78rem;
     border: 1px solid rgba(24, 24, 24, 0.1);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.58);
-    padding: 0.35rem 0.72rem;
+    padding: 0.28rem 0.62rem;
     color: var(--soft-ink);
-    font-size: 0.86rem;
-    font-weight: 600;
+    font-size: 0.78rem;
+    font-weight: 480;
   }
 
   .second-layer {
@@ -769,7 +778,7 @@ button {
     margin-top: 1rem;
     border-radius: 14px;
     background: rgba(238, 238, 238, 0.44);
-    padding: 1rem;
+    padding: 0.82rem;
     color: var(--soft-ink);
     line-height: 1.7;
   }
@@ -784,9 +793,9 @@ button {
     border-left: 3px solid rgba(52, 52, 52, 0.42);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.42);
-    padding: 0.65rem 0.8rem;
+    padding: 0.55rem 0.72rem;
     color: var(--wine);
-    font-size: 0.92rem;
+    font-size: 0.86rem;
     line-height: 1.55;
   }
 
@@ -799,9 +808,9 @@ button {
     border: 1px solid rgba(52, 52, 52, 0.15);
     border-radius: 14px;
     background: rgba(232, 232, 232, 0.38);
-    padding: 0.85rem;
+    padding: 0.76rem;
     color: var(--wine);
-    font-size: 0.9rem;
+    font-size: 0.84rem;
     line-height: 1.55;
   }
 
@@ -810,8 +819,8 @@ button {
     align-items: flex-start;
     gap: 0.55rem;
     border-radius: 14px;
-    padding: 0.78rem;
-    font-size: 0.88rem;
+    padding: 0.68rem;
+    font-size: 0.82rem;
     line-height: 1.55;
   }
 
@@ -836,8 +845,8 @@ button {
   .unbox-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    padding: 1rem 0 0;
+    gap: 0.55rem;
+    padding: 0.75rem 0 0;
   }
 
   .post-card {
@@ -865,12 +874,12 @@ button {
 
   .circle-layout {
     display: grid;
-    gap: 1rem;
+    gap: 0.8rem;
   }
 
   .circle-topic-panel {
     display: grid;
-    gap: 1rem;
+    gap: 0.75rem;
     align-content: start;
   }
 
@@ -890,13 +899,13 @@ button {
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.56);
     color: var(--soft-ink);
-    font-size: 0.82rem;
-    font-weight: 700;
+    font-size: 0.74rem;
+    font-weight: 500;
     line-height: 1.2;
   }
 
   .topic-pill {
-    padding: 0.58rem 0.72rem;
+    padding: 0.48rem 0.62rem;
   }
 
   .topic-pill-active,
@@ -907,23 +916,23 @@ button {
 
   .topic-detail-panel {
     display: grid;
-    gap: 1rem;
-    padding: 1.1rem;
+    gap: 0.8rem;
+    padding: 0.95rem;
   }
 
   .topic-detail-panel h2 {
     margin-top: 0.35rem;
     color: var(--wine);
-    font-size: clamp(1.35rem, 4vw, 2rem);
-    font-weight: 760;
+    font-size: clamp(1.18rem, 3.5vw, 1.7rem);
+    font-weight: 560;
     line-height: 1.12;
   }
 
   .topic-detail-panel p {
     margin-top: 0.45rem;
     color: var(--soft-ink);
-    font-size: 0.92rem;
-    line-height: 1.65;
+    font-size: 0.86rem;
+    line-height: 1.55;
   }
 
   .topic-detail-meta {
@@ -933,7 +942,7 @@ button {
     justify-content: space-between;
     gap: 0.75rem;
     color: var(--muted-ink);
-    font-size: 0.82rem;
+    font-size: 0.74rem;
   }
 
   .topic-detail-meta div {
@@ -946,8 +955,8 @@ button {
 
   .topic-detail-meta button {
     border-radius: 999px;
-    padding: 0.42rem 0.7rem;
-    font-weight: 800;
+    padding: 0.34rem 0.6rem;
+    font-weight: 540;
   }
 
   .topic-mode-active {
@@ -960,7 +969,7 @@ button {
     gap: 0.25rem;
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.46);
-    padding: 0.9rem 1rem;
+    padding: 0.75rem 0.85rem;
     color: var(--soft-ink);
     backdrop-filter: blur(18px);
   }
@@ -968,40 +977,41 @@ button {
   .daily-prompt-strip span,
   .post-meta {
     color: var(--muted-ink);
-    font-size: 0.76rem;
-    font-weight: 700;
+    font-size: 0.68rem;
+    font-weight: 500;
   }
 
   .daily-prompt-strip strong {
     color: var(--wine);
-    font-size: 0.98rem;
+    font-size: 0.9rem;
+    font-weight: 560;
     line-height: 1.45;
   }
 
   .post-prompt {
     margin-top: 0.55rem;
     color: var(--berry);
-    font-size: 0.86rem;
-    font-weight: 800;
+    font-size: 0.8rem;
+    font-weight: 540;
     line-height: 1.45;
   }
 
   .post-body {
     margin-top: 0.75rem;
     color: var(--ink);
-    font-size: clamp(1.05rem, 3.6vw, 1.42rem);
-    font-weight: 620;
-    line-height: 1.72;
+    font-size: clamp(0.98rem, 3.2vw, 1.22rem);
+    font-weight: 430;
+    line-height: 1.66;
   }
 
   .post-mood {
     width: fit-content;
     border-radius: 999px;
     background: rgba(238, 238, 238, 0.58);
-    padding: 0.38rem 0.68rem;
+    padding: 0.32rem 0.58rem;
     color: var(--berry);
-    font-size: 0.78rem;
-    font-weight: 800;
+    font-size: 0.7rem;
+    font-weight: 520;
   }
 
   .post-topics {
@@ -1012,7 +1022,7 @@ button {
   }
 
   .topic-link {
-    padding: 0.42rem 0.68rem;
+    padding: 0.34rem 0.6rem;
   }
 
   .comment-preview {
@@ -1023,17 +1033,17 @@ button {
     border-left: 2px solid rgba(118, 118, 118, 0.36);
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.45);
-    padding: 0.7rem 0.8rem;
+    padding: 0.6rem 0.7rem;
     color: var(--soft-ink);
-    font-size: 0.86rem;
+    font-size: 0.8rem;
     line-height: 1.5;
   }
 
   .comment-like-mini {
     flex: 0 0 auto;
     color: var(--muted-ink);
-    font-size: 0.78rem;
-    font-weight: 800;
+    font-size: 0.72rem;
+    font-weight: 520;
   }
 
   .comment-like-active {
@@ -1044,7 +1054,7 @@ button {
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem;
-    margin-top: 1rem;
+    margin-top: 0.8rem;
   }
 
   .soft-command {
@@ -1055,11 +1065,11 @@ button {
     border: 1px solid rgba(24, 24, 24, 0.1);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.56);
-    min-height: 40px;
-    padding: 0.56rem 0.76rem;
+    min-height: 36px;
+    padding: 0.46rem 0.66rem;
     color: var(--wine);
-    font-size: 0.82rem;
-    font-weight: 700;
+    font-size: 0.74rem;
+    font-weight: 500;
   }
 
   .soft-command-active {
@@ -1076,10 +1086,38 @@ button {
     border: 1px solid rgba(24, 24, 24, 0.12);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.58);
-    padding: 0.72rem 0.9rem;
+    padding: 0.62rem 0.8rem;
     color: var(--wine);
-    font-size: 0.88rem;
-    font-weight: 800;
+    font-size: 0.8rem;
+    font-weight: 540;
+  }
+
+  .glass-panel.p-5,
+  .glass-panel.p-6,
+  .glass-panel.p-7 {
+    padding: 1rem !important;
+  }
+
+  .glass-panel h2,
+  .glass-panel h3 {
+    font-weight: 560;
+  }
+
+  .glass-panel p,
+  .glass-panel span,
+  .glass-panel button,
+  .glass-panel input,
+  .glass-panel textarea {
+    font-weight: 400;
+  }
+
+  .glass-panel .font-medium,
+  .glass-panel strong,
+  .pill-primary,
+  .pill-secondary,
+  .soft-command,
+  .reset-demo-button {
+    font-weight: 540;
   }
 
   .beta-shell {
@@ -1114,15 +1152,15 @@ button {
     border: 1px solid rgba(24, 24, 24, 0.1);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.56);
-    padding: 0.7rem 0.95rem;
+    padding: 0.58rem 0.82rem;
     color: var(--wine);
-    font-size: 0.9rem;
-    font-weight: 800;
+    font-size: 0.8rem;
+    font-weight: 540;
   }
 
   .beta-hero {
     display: grid;
-    gap: 1rem;
+    gap: 0.85rem;
     align-items: stretch;
   }
 
@@ -1147,14 +1185,14 @@ button {
         rgba(255, 255, 255, 0.7)
       ),
       rgba(255, 255, 255, 0.72);
-    padding: clamp(1.2rem, 5vw, 3rem);
+    padding: clamp(1.05rem, 4.4vw, 2.45rem);
   }
 
   .beta-hero-copy h1 {
     max-width: 780px;
     color: var(--wine);
-    font-size: clamp(2.25rem, 7vw, 5.2rem);
-    font-weight: 780;
+    font-size: clamp(1.9rem, 6vw, 4.25rem);
+    font-weight: 560;
     letter-spacing: 0;
     line-height: 0.98;
   }
@@ -1163,32 +1201,33 @@ button {
   .beta-panel p {
     max-width: 680px;
     color: var(--soft-ink);
-    line-height: 1.75;
+    font-size: 0.94rem;
+    line-height: 1.62;
   }
 
   .beta-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.6rem;
     margin-top: 0.4rem;
   }
 
   .beta-invite-card {
     display: grid;
     align-content: space-between;
-    min-height: 390px;
+    min-height: 330px;
     overflow: hidden;
     background:
       linear-gradient(155deg, rgba(17, 17, 17, 0.98), rgba(52, 52, 52, 0.9)),
       var(--wine);
-    padding: clamp(1.2rem, 4vw, 2rem);
+    padding: clamp(1rem, 3.4vw, 1.65rem);
     color: white;
   }
 
   .beta-invite-card h2 {
     max-width: 420px;
-    font-size: clamp(2rem, 6vw, 3.4rem);
-    font-weight: 760;
+    font-size: clamp(1.68rem, 5vw, 2.82rem);
+    font-weight: 560;
     letter-spacing: 0;
     line-height: 1.02;
   }
@@ -1196,7 +1235,8 @@ button {
   .beta-invite-card p {
     max-width: 420px;
     color: rgba(255, 255, 255, 0.78);
-    line-height: 1.8;
+    font-size: 0.92rem;
+    line-height: 1.62;
   }
 
   .beta-envelope-mini {
@@ -1207,34 +1247,35 @@ button {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.12);
-    padding: 0.78rem 0.95rem;
+    padding: 0.62rem 0.78rem;
     color: rgba(255, 255, 255, 0.9);
-    font-weight: 800;
+    font-size: 0.86rem;
+    font-weight: 540;
   }
 
   .beta-grid {
     display: grid;
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
   }
 
   .beta-panel {
     background: rgba(255, 255, 255, 0.72);
-    padding: clamp(1rem, 3vw, 1.5rem);
+    padding: clamp(0.9rem, 2.5vw, 1.28rem);
   }
 
   .beta-panel h2 {
     margin-top: 0.45rem;
     color: var(--wine);
-    font-size: clamp(1.7rem, 4vw, 2.6rem);
-    font-weight: 760;
+    font-size: clamp(1.42rem, 3.3vw, 2.12rem);
+    font-weight: 560;
     line-height: 1.08;
   }
 
   .beta-list {
     display: grid;
-    gap: 0.65rem;
-    margin-top: 1rem;
+    gap: 0.52rem;
+    margin-top: 0.8rem;
   }
 
   .beta-list p {
@@ -1243,7 +1284,7 @@ button {
     gap: 0.55rem;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.78);
-    padding: 0.85rem;
+    padding: 0.68rem;
   }
 
   .beta-list svg {
@@ -1253,8 +1294,8 @@ button {
 
   .beta-flow-panel {
     display: grid;
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
   }
 
   .beta-flow {
@@ -1266,25 +1307,26 @@ button {
   .beta-feedback-grid div {
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.78);
-    padding: 1rem;
+    padding: 0.78rem;
   }
 
   .beta-flow span {
     display: grid;
-    width: 2rem;
-    height: 2rem;
+    width: 1.72rem;
+    height: 1.72rem;
     place-items: center;
     border-radius: 999px;
     background: var(--wine);
     color: white;
-    font-weight: 800;
+    font-size: 0.82rem;
+    font-weight: 560;
   }
 
   .beta-flow h3 {
     margin-top: 0.8rem;
     color: var(--wine);
-    font-size: 1.15rem;
-    font-weight: 760;
+    font-size: 1rem;
+    font-weight: 560;
   }
 
   .beta-flow p {
@@ -1302,13 +1344,13 @@ button {
     gap: 0.75rem;
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.78);
-    padding: 1rem;
+    padding: 0.82rem;
   }
 
   .beta-form p {
     color: var(--soft-ink);
-    font-size: 0.9rem;
-    line-height: 1.65;
+    font-size: 0.84rem;
+    line-height: 1.55;
   }
 
   .beta-feedback-grid {
@@ -1328,10 +1370,10 @@ button {
   .invite-step {
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.76);
-    padding: 0.58rem 0.7rem;
+    padding: 0.48rem 0.62rem;
     color: var(--soft-ink);
-    font-size: 0.82rem;
-    font-weight: 700;
+    font-size: 0.74rem;
+    font-weight: 500;
   }
 
   .invite-step-active {
@@ -1340,7 +1382,7 @@ button {
   }
 
   .invite-card-preview {
-    min-height: 330px;
+    min-height: 292px;
     margin-top: 1rem;
     border-radius: 16px;
     background:
@@ -1355,15 +1397,15 @@ button {
         rgba(118, 118, 118, 0.68)
       ),
       var(--wine);
-    padding: 1.2rem;
+    padding: 1rem;
     color: white;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   }
 
   .invite-card-preview h3 {
     margin-top: 0.8rem;
-    font-size: clamp(1.7rem, 8vw, 2.5rem);
-    font-weight: 700;
+    font-size: clamp(1.45rem, 6.8vw, 2.08rem);
+    font-weight: 560;
     letter-spacing: 0;
     line-height: 1.08;
   }
@@ -1371,7 +1413,8 @@ button {
   .invite-card-preview p {
     margin-top: 0.8rem;
     color: rgba(255, 255, 255, 0.78);
-    line-height: 1.7;
+    font-size: 0.92rem;
+    line-height: 1.58;
   }
 
   .share-card-seal {
@@ -1379,10 +1422,10 @@ button {
     border: 1px solid rgba(255, 255, 255, 0.28);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.12);
-    padding: 0.45rem 0.7rem;
+    padding: 0.36rem 0.6rem;
     color: rgba(255, 255, 255, 0.82);
-    font-size: 0.78rem;
-    font-weight: 800;
+    font-size: 0.68rem;
+    font-weight: 520;
     text-transform: uppercase;
   }
 
@@ -1406,14 +1449,14 @@ button {
 
   .chat-panel {
     display: flex;
-    min-height: 660px;
+    min-height: 600px;
     flex-direction: column;
     overflow: hidden;
   }
 
   .no-message-state {
     display: grid;
-    min-height: 320px;
+    min-height: 260px;
     place-items: center;
     align-content: center;
     gap: 0.75rem;
@@ -1423,13 +1466,14 @@ button {
 
   .no-message-state h3 {
     color: var(--wine);
-    font-size: 1.35rem;
-    font-weight: 760;
+    font-size: 1.16rem;
+    font-weight: 560;
   }
 
   .no-message-state p {
     max-width: 360px;
-    line-height: 1.7;
+    font-size: 0.9rem;
+    line-height: 1.58;
   }
 
   .chat-header {
@@ -1438,7 +1482,7 @@ button {
     justify-content: space-between;
     gap: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.72);
-    padding: 1rem;
+    padding: 0.82rem;
   }
 
   .mobile-back {
@@ -1449,12 +1493,12 @@ button {
     flex: 1;
     min-height: 0;
     overflow: auto;
-    padding: 1rem;
+    padding: 0.82rem;
   }
 
   .chat-line {
     display: flex;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.65rem;
   }
 
   .chat-line-me {
@@ -1469,9 +1513,10 @@ button {
     max-width: min(82%, 560px);
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.66);
-    padding: 0.85rem 1rem;
+    padding: 0.72rem 0.85rem;
     color: var(--soft-ink);
-    line-height: 1.7;
+    font-size: 0.92rem;
+    line-height: 1.58;
   }
 
   .chat-line-me .chat-bubble {
@@ -1483,17 +1528,17 @@ button {
     max-width: 92%;
     background: rgba(232, 232, 232, 0.45);
     color: var(--wine);
-    font-size: 0.9rem;
+    font-size: 0.82rem;
   }
 
   .chat-input-area {
     border-top: 1px solid rgba(255, 255, 255, 0.72);
-    padding: 1rem;
+    padding: 0.82rem;
   }
 
   .chat-composer {
     display: flex;
-    gap: 0.65rem;
+    gap: 0.52rem;
   }
 
   .chat-composer input {
@@ -1502,14 +1547,14 @@ button {
     border: 1px solid rgba(24, 24, 24, 0.1);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.72);
-    padding: 0.82rem 1rem;
+    padding: 0.68rem 0.85rem;
     outline: none;
   }
 
   .chat-composer button {
     display: grid;
-    width: 3rem;
-    height: 3rem;
+    width: 2.6rem;
+    height: 2.6rem;
     flex: 0 0 auto;
     place-items: center;
     border-radius: 999px;
@@ -1523,7 +1568,7 @@ button {
     gap: 0.72rem;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.48);
-    padding: 0.75rem;
+    padding: 0.62rem;
   }
 
   .current-stage-card {
@@ -1532,23 +1577,25 @@ button {
     margin-top: 1rem;
     border-radius: 14px;
     background: rgba(24, 24, 24, 0.1);
-    padding: 1rem;
+    padding: 0.82rem;
     color: var(--wine);
   }
 
   .current-stage-card span {
     font-size: 0.82rem;
-    font-weight: 800;
+    font-weight: 520;
   }
 
   .current-stage-card strong {
-    font-size: 1.7rem;
+    font-size: 1.42rem;
+    font-weight: 560;
     line-height: 1;
   }
 
   .current-stage-card p {
     color: var(--soft-ink);
-    line-height: 1.6;
+    font-size: 0.9rem;
+    line-height: 1.52;
   }
 
   .protected-list {
@@ -1556,7 +1603,7 @@ button {
     gap: 0.55rem;
     margin-top: 1rem;
     color: var(--soft-ink);
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     line-height: 1.55;
   }
 
@@ -1586,13 +1633,13 @@ button {
   .history-card {
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.55);
-    padding: 1rem;
+    padding: 0.82rem;
   }
 
   .history-card h3 {
     color: var(--wine);
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 560;
   }
 
   .history-card p {
@@ -1607,9 +1654,9 @@ button {
     gap: 0.75rem;
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.55);
-    padding: 0.72rem;
+    padding: 0.62rem;
     color: var(--soft-ink);
-    font-size: 0.86rem;
+    font-size: 0.8rem;
   }
 
   .reward-row strong {
@@ -1634,7 +1681,7 @@ button {
     border: 1px solid rgba(255, 255, 255, 0.72);
     border-radius: 16px;
     background: rgba(250, 250, 250, 0.95);
-    padding: 1.2rem;
+    padding: 1rem;
     box-shadow: 0 28px 80px rgb(0 0 0 / 24%);
     max-height: calc(100svh - 2rem);
     overflow: auto;
@@ -1662,7 +1709,7 @@ button {
     gap: 0.8rem;
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.62);
-    padding: 0.92rem;
+    padding: 0.76rem;
     color: var(--wine);
     text-align: left;
   }
@@ -1694,27 +1741,27 @@ button {
     justify-content: space-between;
     gap: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.7);
-    padding: 1rem 3rem 0.9rem 1rem;
+    padding: 0.82rem 2.8rem 0.72rem 0.82rem;
   }
 
   .comment-modal-header h2 {
     margin-top: 0.25rem;
     color: var(--wine);
-    font-size: 1.22rem;
-    font-weight: 760;
+    font-size: 1.04rem;
+    font-weight: 560;
   }
 
   .comment-modal-post {
-    margin: 0.9rem 1rem 0;
+    margin: 0.72rem 0.82rem 0;
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.56);
-    padding: 0.9rem;
+    padding: 0.72rem;
   }
 
   .comment-modal-post p {
     color: var(--ink);
-    font-size: 1rem;
-    font-weight: 620;
+    font-size: 0.9rem;
+    font-weight: 430;
     line-height: 1.65;
   }
 
@@ -1722,20 +1769,20 @@ button {
     display: inline-flex;
     margin-top: 0.65rem;
     color: var(--berry);
-    font-size: 0.8rem;
-    font-weight: 800;
+    font-size: 0.72rem;
+    font-weight: 520;
   }
 
   .comment-list {
     flex: 1;
     min-height: 0;
     overflow: auto;
-    padding: 0.9rem 1rem;
+    padding: 0.72rem 0.82rem;
   }
 
   .comment-empty {
     display: grid;
-    min-height: 180px;
+    min-height: 150px;
     place-items: center;
     align-content: center;
     gap: 0.7rem;
@@ -1753,7 +1800,7 @@ button {
     gap: 0.6rem;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.5);
-    padding: 0.9rem;
+    padding: 0.72rem;
   }
 
   .comment-item + .comment-item {
@@ -1769,7 +1816,7 @@ button {
   .comment-item-main p {
     margin-top: 0.35rem;
     color: var(--soft-ink);
-    font-size: 0.94rem;
+    font-size: 0.86rem;
     line-height: 1.6;
   }
 
@@ -1779,8 +1826,8 @@ button {
     gap: 0.75rem;
     margin-top: 0.55rem;
     color: var(--muted-ink);
-    font-size: 0.78rem;
-    font-weight: 800;
+    font-size: 0.72rem;
+    font-weight: 520;
   }
 
   .reply-list {
@@ -1800,7 +1847,7 @@ button {
 
   .comment-composer-area {
     border-top: 1px solid rgba(255, 255, 255, 0.72);
-    padding: 0.75rem 1rem 1rem;
+    padding: 0.62rem 0.82rem 0.82rem;
   }
 
   .replying-chip {
@@ -1814,7 +1861,7 @@ button {
     padding: 0.38rem 0.6rem;
     color: var(--wine);
     font-size: 0.78rem;
-    font-weight: 800;
+    font-weight: 520;
   }
 
   .replying-chip button {
@@ -1832,14 +1879,14 @@ button {
     border: 1px solid rgba(17, 17, 17, 0.1);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.72);
-    padding: 0.78rem 0.95rem;
+    padding: 0.64rem 0.82rem;
     outline: none;
   }
 
   .comment-composer button {
     display: grid;
-    width: 2.8rem;
-    height: 2.8rem;
+    width: 2.45rem;
+    height: 2.45rem;
     flex: 0 0 auto;
     place-items: center;
     border-radius: 999px;
@@ -1911,7 +1958,7 @@ button {
 
   @media (min-width: 768px) {
     .app-frame {
-      padding-bottom: 104px;
+      padding-bottom: 92px;
     }
 
     .main-stage {
@@ -1993,7 +2040,7 @@ button {
     }
 
     .glass-panel {
-      border-radius: 28px;
+      border-radius: 16px;
     }
 
     .messages-grid {
@@ -2087,18 +2134,19 @@ button {
     }
 
     .beta-back-link {
-      padding: 0.62rem 0.75rem;
-      font-size: 0.8rem;
+      padding: 0.52rem 0.65rem;
+      font-size: 0.74rem;
     }
 
     .beta-hero-copy,
     .beta-panel,
     .beta-invite-card {
-      border-radius: 24px;
+      border-radius: 18px;
     }
 
     .beta-hero-copy h1 {
-      font-size: 2.18rem;
+      font-size: 1.72rem;
+      line-height: 1.04;
     }
 
     .beta-actions .pill-primary,
@@ -2108,11 +2156,11 @@ button {
     }
 
     .beta-invite-card {
-      min-height: 350px;
+      min-height: 292px;
     }
 
     .beta-invite-card h2 {
-      font-size: 2.05rem;
+      font-size: 1.62rem;
     }
 
     .onboarding-shell {
@@ -2123,8 +2171,8 @@ button {
 
     .onboarding-card {
       align-self: center;
-      border-radius: 26px;
-      padding: 0.85rem;
+      border-radius: 18px;
+      padding: 0.72rem;
     }
 
     .onboarding-progress {
@@ -2132,23 +2180,23 @@ button {
     }
 
     .onboarding-step {
-      padding: 0.48rem 0.2rem;
-      font-size: 0.72rem;
+      padding: 0.4rem 0.18rem;
+      font-size: 0.66rem;
     }
 
     .onboarding-pane {
-      border-radius: 22px;
-      padding: 1rem;
+      border-radius: 16px;
+      padding: 0.86rem;
     }
 
     .onboarding-pane h1 {
-      font-size: 2rem;
+      font-size: 1.68rem;
       line-height: 1.04;
     }
 
     .onboarding-textarea {
-      min-height: 128px;
-      border-radius: 20px;
+      min-height: 116px;
+      border-radius: 14px;
     }
 
     .mobile-topbar {
@@ -2161,9 +2209,9 @@ button {
     }
 
     .mobile-topbar .brand-mark {
-      width: 2.1rem;
-      height: 2.1rem;
-      border-radius: 0.82rem;
+      width: 1.95rem;
+      height: 1.95rem;
+      border-radius: 0.66rem;
     }
 
     .mobile-topbar .status-pill {
@@ -2177,15 +2225,15 @@ button {
     }
 
     .top-status h1 {
-      font-size: 1.55rem;
+      font-size: 1.28rem;
     }
 
     .top-status .eyebrow {
-      font-size: 0.68rem;
+      font-size: 0.6rem;
     }
 
     .glass-panel {
-      border-radius: 22px;
+      border-radius: 16px;
     }
 
     .state-chip {
@@ -2202,9 +2250,9 @@ button {
 
     .pill-primary,
     .pill-secondary {
-      min-height: 44px;
-      padding: 0.72rem 0.95rem;
-      font-size: 0.92rem;
+      min-height: 38px;
+      padding: 0.58rem 0.78rem;
+      font-size: 0.84rem;
     }
 
     .mini-stat {
@@ -2221,32 +2269,32 @@ button {
     }
 
     .unbox-stage {
-      min-height: 470px;
+      min-height: 410px;
     }
 
     .sealed-envelope {
       width: min(100%, 348px);
-      min-height: 276px;
-      border-radius: 28px;
+      min-height: 238px;
+      border-radius: 18px;
     }
 
     .envelope-copy {
-      padding: 1rem;
-      transform: translateY(68px);
+      padding: 0.85rem;
+      transform: translateY(56px);
     }
 
     .envelope-copy h3 {
-      font-size: 1.72rem;
+      font-size: 1.42rem;
     }
 
     .revealed-persona h3 {
-      font-size: 1.62rem;
+      font-size: 1.32rem;
     }
 
     .revealed-persona blockquote {
-      padding: 1rem;
-      font-size: 1rem;
-      line-height: 1.7;
+      padding: 0.78rem;
+      font-size: 0.94rem;
+      line-height: 1.62;
     }
 
     .chip {
@@ -2260,16 +2308,16 @@ button {
     }
 
     .circle-topic-panel .glass-panel {
-      padding: 1rem;
+      padding: 0.86rem;
     }
 
     .circle-topic-panel h2 {
-      font-size: 1.34rem;
+      font-size: 1.12rem;
     }
 
     .circle-topic-panel p {
-      font-size: 0.86rem;
-      line-height: 1.55;
+      font-size: 0.8rem;
+      line-height: 1.48;
     }
 
     .topic-list {
@@ -2285,25 +2333,25 @@ button {
 
     .topic-pill {
       flex: 0 0 auto;
-      padding: 0.54rem 0.68rem;
-      font-size: 0.78rem;
+      padding: 0.42rem 0.56rem;
+      font-size: 0.7rem;
     }
 
     .topic-detail-panel {
-      padding: 1rem;
+      padding: 0.84rem;
     }
 
     .topic-detail-panel h2 {
-      font-size: 1.26rem;
+      font-size: 1.08rem;
     }
 
     .post-card {
-      padding: 1rem !important;
+      padding: 0.86rem !important;
     }
 
     .post-body {
-      font-size: 1.05rem;
-      line-height: 1.72;
+      font-size: 0.96rem;
+      line-height: 1.62;
     }
 
     .post-actions {
@@ -2313,10 +2361,10 @@ button {
 
     .soft-command {
       width: 100%;
-      min-height: 42px;
+      min-height: 34px;
       padding-right: 0.55rem;
       padding-left: 0.55rem;
-      font-size: 0.76rem;
+      font-size: 0.7rem;
     }
 
     .comment-preview {
@@ -2328,7 +2376,7 @@ button {
     }
 
     .chat-panel {
-      min-height: calc(100svh - 188px);
+      min-height: calc(100svh - 170px);
     }
 
     .relationship-list {
@@ -2337,16 +2385,16 @@ button {
     }
 
     .invite-card-preview {
-      min-height: 300px;
+      min-height: 260px;
     }
 
     .invite-card-preview h3 {
-      font-size: 1.75rem;
+      font-size: 1.42rem;
     }
 
     .conversion-modal {
-      border-radius: 24px 24px 18px 18px;
-      padding: 1rem;
+      border-radius: 18px 18px 14px 14px;
+      padding: 0.86rem;
     }
 
     .comment-modal {
@@ -2354,7 +2402,7 @@ button {
       max-height: calc(
         100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 1rem
       );
-      border-radius: 24px 24px 18px 18px;
+      border-radius: 18px 18px 14px 14px;
     }
 
     .comment-modal-header {

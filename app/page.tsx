@@ -468,9 +468,9 @@ function DesktopSidebar({
       <button className="brand-lockup" onClick={() => onSwitch('discover')}>
         <span className="brand-mark">S</span>
         <span>
-          <span className="block text-base font-semibold">SELE</span>
+          <span className="block text-sm font-medium">SELE</span>
           <span className="block text-xs text-[var(--muted-ink)]">
-            Sele Heartbox
+            Heartbox
           </span>
         </span>
       </button>
@@ -493,7 +493,7 @@ function DesktopSidebar({
         })}
       </nav>
       <div className="mt-auto rounded-[24px] border border-[var(--berry)]/12 bg-[var(--mist)]/35 p-4">
-        <p className="text-sm font-semibold text-[var(--wine)]">18+ 安全边界</p>
+        <p className="text-sm font-medium text-[var(--wine)]">18+ 安全边界</p>
         <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
           匿名探索、双向揭晓、举报拉黑常驻。Heart+ 不能绕过同意。
         </p>
@@ -536,7 +536,7 @@ function OnboardingFlow({
         <div className="brand-lockup">
           <span className="brand-mark">S</span>
           <span>
-            <span className="block text-base font-semibold">SELE</span>
+            <span className="block text-sm font-medium">SELE</span>
             <span className="block text-xs text-[var(--muted-ink)]">
               先拆开人格，再靠近关系
             </span>
@@ -656,9 +656,9 @@ function MobileTopbar({
       <div className="brand-lockup">
         <span className="brand-mark">S</span>
         <span>
-          <span className="block text-sm font-semibold">SELE</span>
+          <span className="block text-sm font-medium">SELE</span>
           <span className="block text-[11px] text-[var(--muted-ink)]">
-            Sele Heartbox
+            Heartbox
           </span>
         </span>
       </div>
@@ -692,7 +692,7 @@ function TopStatus({
     <div className="top-status">
       <div>
         <p className="eyebrow">SELE Beta</p>
-        <h1 className="mt-1 text-2xl font-semibold sm:text-4xl">
+        <h1 className="mt-1 text-xl font-medium sm:text-3xl">
           {titles[view]}
         </h1>
       </div>
@@ -731,7 +731,7 @@ function DiscoverView(props: {
           <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
             <div>
               <p className="eyebrow">Heartbox</p>
-              <h2 className="mt-2 text-3xl font-semibold sm:text-5xl">
+              <h2 className="mt-2 text-2xl font-medium sm:text-4xl">
                 今天会遇见一个什么样的人？
               </h2>
               <p className="mt-4 max-w-2xl text-[var(--soft-ink)]">
@@ -768,7 +768,7 @@ function DiscoverView(props: {
             {themes.map((theme) => (
               <button key={theme.id} className="theme-row">
                 <span>
-                  <span className="block font-semibold text-[var(--wine)]">
+                  <span className="block font-medium text-[var(--wine)]">
                     {theme.title}
                   </span>
                   <span className="text-sm text-[var(--muted-ink)]">
@@ -801,14 +801,14 @@ function DiscoverView(props: {
                   <Gift className="h-4 w-4" />
                 </span>
                 <span className="min-w-0 flex-1 text-left">
-                  <span className="block truncate font-semibold">
+                  <span className="block truncate font-medium">
                     {box.title}
                   </span>
                   <span className="block truncate text-sm text-[var(--muted-ink)]">
                     {box.cityHint} · {box.ageHint}
                   </span>
                 </span>
-                <span className="text-sm font-semibold text-[var(--berry)]">
+                <span className="text-sm font-medium text-[var(--berry)]">
                   有回声
                 </span>
               </button>
@@ -877,18 +877,18 @@ function UnboxingSurface({
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="eyebrow">First layer</p>
-                <h3 className="mt-2 text-3xl font-semibold">
+                <h3 className="mt-2 text-xl font-medium">
                   {box.firstLayer.alias}
                 </h3>
                 <p className="mt-1 text-[var(--soft-ink)]">
                   {box.firstLayer.archetype}
                 </p>
               </div>
-              <span className="rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm font-semibold text-[var(--berry)]">
+              <span className="rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm font-medium text-[var(--berry)]">
                 第一层
               </span>
             </div>
-            <blockquote className="mt-5 rounded-[24px] bg-white/65 p-5 text-lg leading-8">
+            <blockquote className="mt-4 rounded-[18px] bg-white/65 p-4 text-base leading-7">
               “{box.firstLayer.fragment}”
             </blockquote>
             <div className="state-strip waiting-state mt-4">
@@ -1044,7 +1044,7 @@ function CircleView({
       <section className="circle-topic-panel">
         <Panel className="h-fit p-5 sm:p-6">
           <p className="eyebrow">此刻</p>
-          <h2 className="mt-3 text-2xl font-semibold leading-tight">
+          <h2 className="mt-3 text-xl font-medium leading-tight">
             看看大家此刻在想什么
           </h2>
           <p className="mt-3 text-sm text-[var(--soft-ink)]">
@@ -1250,7 +1250,7 @@ function CreateView({
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
       <Panel className="p-5 sm:p-7">
         <p className="eyebrow">Personality fragment</p>
-        <h2 className="mt-2 text-3xl font-semibold">写下今日人格碎片</h2>
+        <h2 className="mt-2 text-xl font-medium">写下今日人格碎片</h2>
         <p className="mt-3 text-[var(--soft-ink)]">{dailyPrompt.title}</p>
         <textarea
           className="mt-5 min-h-44 w-full resize-none rounded-[24px] border border-[var(--wine)]/10 bg-white/70 p-5 text-base leading-7 outline-none focus:border-[var(--berry)]"
@@ -1279,7 +1279,7 @@ function CreateView({
       </Panel>
       <Panel className="p-5 sm:p-6">
         <p className="eyebrow">Leave a box</p>
-        <h2 className="mt-2 text-2xl font-semibold">给朋友留一个盲盒</h2>
+        <h2 className="mt-2 text-xl font-medium">给朋友留一个盲盒</h2>
         <InviteFlow step={inviteStep} onStep={onInviteStep} />
       </Panel>
     </div>
@@ -1337,7 +1337,7 @@ function InviteFlow({
             <h3>{invite.shareMessage}</h3>
             <div className="mt-5 rounded-[22px] border border-white/20 bg-white/12 p-4 text-sm text-white/82">
               <p>这不是注册链接，是一只给你留着的盲盒。</p>
-              <p className="mt-2 font-semibold text-white">
+              <p className="mt-2 font-medium text-white">
                 邀请码：{invite.code}
               </p>
             </div>
@@ -1448,7 +1448,7 @@ function MessagesView({
                 <HeartHandshake className="h-4 w-4" />
               </span>
               <span className="min-w-0 text-left">
-                <span className="block truncate font-semibold">
+                <span className="block truncate font-medium">
                   {relationship.alias}
                 </span>
                 <span className="block truncate text-sm text-[var(--muted-ink)]">
@@ -1466,7 +1466,7 @@ function MessagesView({
           </button>
           <div>
             <p className="eyebrow">Anonymous relationship</p>
-            <h2 className="text-2xl font-semibold">
+            <h2 className="text-lg font-medium">
               {selectedRelationship.alias}
             </h2>
           </div>
@@ -1576,7 +1576,7 @@ function JourneyPanel({
           >
             <span className="journey-dot" />
             <span>
-              <span className="block font-semibold">
+              <span className="block font-medium">
                 {stageMeta[stage].label}
               </span>
               <span className="text-sm text-[var(--muted-ink)]">
@@ -1588,7 +1588,7 @@ function JourneyPanel({
       </div>
       <div className="mt-5 rounded-[22px] bg-white/55 p-4">
         <div className="flex items-center justify-between text-sm">
-          <span className="font-semibold text-[var(--wine)]">
+          <span className="font-medium text-[var(--wine)]">
             接下来可能发生
           </span>
           <span>慢慢来</span>
@@ -1655,14 +1655,14 @@ function MineView({
           <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="eyebrow">My personality card</p>
-              <h2 className="mt-2 text-3xl font-semibold">{card.alias}</h2>
+              <h2 className="mt-2 text-lg font-medium">{card.alias}</h2>
               <p className="mt-2 text-[var(--soft-ink)]">
                 {profile.ageRange} · {profile.city} · {card.archetype}
               </p>
-              <p className="mt-5 max-w-2xl text-xl leading-8">“{card.quote}”</p>
+              <p className="mt-4 max-w-2xl text-base leading-7">“{card.quote}”</p>
             </div>
             <div className="rounded-[24px] bg-white/55 p-4 text-center">
-              <p className="text-3xl font-semibold text-[var(--wine)]">
+              <p className="text-lg font-medium text-[var(--wine)]">
                 {card.completeness}%
               </p>
               <p className="text-sm text-[var(--muted-ink)]">人格卡完整度</p>
@@ -1705,7 +1705,7 @@ function MineView({
         </Panel>
         <Panel className="p-5">
           <p className="eyebrow">Invite progress</p>
-          <h3 className="mt-2 text-2xl font-semibold">给朋友留一个盲盒</h3>
+          <h3 className="mt-2 text-lg font-medium">给朋友留一个盲盒</h3>
           <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
             3 位朋友打开，2 位完成人格卡，1 个奖励待领取。
           </p>
@@ -1729,7 +1729,7 @@ function MineView({
         </Panel>
         <Panel className="p-5">
           <p className="eyebrow">Private beta</p>
-          <h3 className="mt-2 text-xl font-semibold">邀请真实用户试用</h3>
+          <h3 className="mt-2 text-lg font-medium">邀请真实用户试用</h3>
           <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
             内测页说明适合谁、怎么测试、反馈重点，以及当前 Demo 的边界。
           </p>
@@ -1757,7 +1757,7 @@ function MineView({
         </Panel>
         <Panel className="p-5">
           <p className="eyebrow">Demo testing</p>
-          <h3 className="mt-2 text-xl font-semibold">重新体验新用户路径</h3>
+          <h3 className="mt-2 text-lg font-medium">重新体验新用户路径</h3>
           <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
             测试入口会恢复 onboarding、免费次数、第一只盲盒、回声状态、关系
             Journey 和邀请流程。
@@ -1804,7 +1804,7 @@ function ContextPanel({
       {view === 'discover' && (
         <Panel className="p-5">
           <p className="eyebrow">Selected box</p>
-          <h3 className="mt-2 text-2xl font-semibold">{selectedBox.title}</h3>
+          <h3 className="mt-2 text-lg font-medium">{selectedBox.title}</h3>
           <p className="mt-3 text-sm leading-6 text-[var(--soft-ink)]">
             {selectedBox.theme} · {selectedBox.cityHint} ·{' '}
             {selectedBox.echoScore}% 回声
@@ -1814,7 +1814,7 @@ function ContextPanel({
       {view === 'messages' && (
         <Panel className="p-5">
           <p className="eyebrow">Journey</p>
-          <h3 className="mt-2 text-2xl font-semibold">
+          <h3 className="mt-2 text-lg font-medium">
             {stageMeta[relationship.stage].label}
           </h3>
           <p className="mt-3 text-sm leading-6 text-[var(--soft-ink)]">
@@ -1824,14 +1824,14 @@ function ContextPanel({
       )}
       <Panel className="p-5">
         <p className="eyebrow">Private beta</p>
-        <h3 className="mt-2 text-xl font-semibold">准备给真实用户测试</h3>
+        <h3 className="mt-2 text-lg font-medium">准备给真实用户测试</h3>
         <Link className="pill-secondary mt-4 w-full" href="beta">
           查看内测页
         </Link>
       </Panel>
       <Panel className="p-5">
         <p className="eyebrow">Invite</p>
-        <h3 className="mt-2 text-xl font-semibold">
+        <h3 className="mt-2 text-lg font-medium">
           有人觉得这里有一个你会想认识的人
         </h3>
         <button className="pill-primary mt-4 w-full" onClick={onInvite}>
@@ -2007,7 +2007,7 @@ function ConversionModal({
           ×
         </button>
         <p className="eyebrow">More openings</p>
-        <h2 className="mt-2 text-3xl font-semibold">今天的免费拆盒用完了</h2>
+        <h2 className="mt-2 text-lg font-medium">今天的免费拆盒用完了</h2>
         <p className="mt-3 text-[var(--soft-ink)]">
           你可以明天自动恢复，也可以用 Heart、邀请朋友或了解 Heart+ 继续探索。
         </p>
@@ -2096,7 +2096,7 @@ function EmptyState({
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-[24px] bg-[var(--wine)] text-white">
           <Sparkles className="h-7 w-7" />
         </div>
-        <h3 className="mt-5 text-2xl font-semibold">{title}</h3>
+        <h3 className="mt-5 text-lg font-medium">{title}</h3>
         <p className="mt-3 max-w-md text-[var(--soft-ink)]">{body}</p>
         <button className="pill-primary mt-6" onClick={onAction}>
           {action}
