@@ -24,7 +24,7 @@ const testerFit = [
 const betaFlow = [
   {
     title: '写下一件小事',
-    body: '不用介绍全部的你，只要一件具体的小事。',
+    body: '不用介绍完整的你，只留一件小事。',
   },
   {
     title: '拆开一只盲盒',
@@ -179,6 +179,14 @@ export default function PrivateBetaPage() {
             </div>
           </div>
         </section>
+
+        <footer className="beta-signoff" aria-label="SELE beta signoff">
+          <div className="beta-signoff-rule" aria-hidden="true" />
+          <div>
+            <p>SELE</p>
+            <span>有些相遇，本来就应该慢一点。</span>
+          </div>
+        </footer>
       </section>
     </main>
   );
