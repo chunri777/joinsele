@@ -6,19 +6,24 @@ import Link from 'next/link';
 import {
   ArrowRight,
   Ban,
+  Bell,
   Check,
   ChevronLeft,
   Copy,
+  Feather,
   Flag,
   Gift,
   Heart,
   HeartHandshake,
+  Headphones,
   House,
   LockKeyhole,
   MessageCircle,
   PackageOpen,
+  PenLine,
   Plus,
   RefreshCw,
+  Search,
   Send,
   ShieldAlert,
   ShieldCheck,
@@ -46,7 +51,6 @@ import {
   referralRewards,
   relationships,
   stageMeta,
-  themes,
   topics,
   wallet as initialWallet,
 } from '@/lib/heartbox-data';
@@ -687,31 +691,104 @@ function TopStatus({
   onOpenWallet: () => void;
 }) {
   const titles: Record<AppView, string> = {
-    discover: '发现盲盒',
+    discover: '发现',
     circle: '此刻',
     create: '发布 / 投递',
     messages: '消息',
     mine: '我的',
   };
   return (
-    <div className="top-status">
+    <div className={cx('top-status', view === 'discover' && 'discover-top')}>
       <div>
-        <p className="eyebrow">SELE Beta</p>
-        <h1 className="mt-1 text-xl font-medium sm:text-3xl">
-          {titles[view]}
-        </h1>
+        {view === 'discover' ? (
+          <>
+            <h1 className="mt-1 text-xl font-medium sm:text-3xl">
+              {titles[view]}
+            </h1>
+            <p className="discover-subtitle">有些人，适合晚一点看见。</p>
+          </>
+        ) : (
+          <>
+            <p className="eyebrow">SELE Beta</p>
+            <h1 className="mt-1 text-xl font-medium sm:text-3xl">
+              {titles[view]}
+            </h1>
+          </>
+        )}
       </div>
-      <button className="wallet-strip" onClick={onOpenWallet}>
-        <span>
-          <PackageOpen className="h-4 w-4" /> 今日 {freeOpens}/3
-        </span>
-        <span>
-          <Heart className="h-4 w-4" /> {hearts}
-        </span>
-      </button>
+      {view === 'discover' ? (
+        <div className="discover-top-actions">
+          <button aria-label="通知">
+            <Bell className="h-5 w-5" />
+            <span />
+          </button>
+          <button aria-label="搜索">
+            <Search className="h-5 w-5" />
+          </button>
+        </div>
+      ) : (
+        <button className="wallet-strip" onClick={onOpenWallet}>
+          <span>
+            <PackageOpen className="h-4 w-4" /> 今日 {freeOpens}/3
+          </span>
+          <span>
+            <Heart className="h-4 w-4" /> {hearts}
+          </span>
+        </button>
+      )}
     </div>
   );
 }
+
+const happeningCards = [
+  {
+    label: '影像碎片征集',
+    title: '拍下你没有说出口的那一刻。',
+    body: '用影像，留下没说的话。',
+    tone: 'soft-light',
+  },
+  {
+    label: '城市盲盒计划',
+    title: '一座城市，会替人保留秘密。',
+    body: '参与城市主题盲盒。',
+    tone: 'rain-light',
+  },
+];
+
+const quickEntrances = [
+  {
+    title: '回答一个问题',
+    body: '一个问题，开启一次相遇',
+    icon: Feather,
+  },
+  {
+    title: '听一段声音',
+    body: '声音，也可以表达',
+    icon: Headphones,
+  },
+  {
+    title: '写下一件小事',
+    body: '不必完整，只要真实',
+    icon: PenLine,
+  },
+];
+
+const possibleMoments = [
+  {
+    title: '在等一段风经过',
+    meta: '25 岁 · 北京',
+    quote: '最近在学着和自己相处。',
+    count: 3,
+    tone: 'window',
+  },
+  {
+    title: '收集傍晚的人',
+    meta: '27 岁 · 广州',
+    quote: '喜欢能把日常过成诗的人。',
+    count: 2,
+    tone: 'dusk',
+  },
+];
 
 function DiscoverView(props: {
   box: BlindBox;
@@ -730,97 +807,113 @@ function DiscoverView(props: {
   onMessages: () => void;
 }) {
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-      <section className="space-y-5">
-        <Panel className="overflow-hidden p-5 sm:p-7">
-          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
-            <div>
-              <p className="eyebrow">Heartbox</p>
-              <h2 className="mt-2 text-2xl font-medium sm:text-4xl">
-                今天会遇见一个什么样的人？
-              </h2>
-              <p className="mt-4 max-w-2xl text-[var(--soft-ink)]">
-                先拆开一只 Heartbox。看见一句话，再决定要不要靠近。
-              </p>
-              <div className="mt-5 grid gap-2 sm:grid-cols-3">
-                <StateChip label="未知" body="信封还没打开" />
-                <StateChip label="人格" body="先看见一个片刻" />
-                <StateChip label="回声" body="喜欢就留一句" />
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-center sm:min-w-[310px]">
-              <MiniStat label="今日可拆" value={`${props.freeOpens}/3`} />
-              <MiniStat label="Heart" value={String(props.hearts)} />
-              <MiniStat label="盒子池" value={`${props.boxes.length} 只`} />
-            </div>
-          </div>
-        </Panel>
-        {props.boxes.length === 0 ? (
-          <EmptyState
-            title="今晚还没有合适的盲盒"
-            body="系统会保留你的免费次数，并在新的投递进入后提醒你。"
-            action="去此刻发现人格碎片"
-            onAction={props.onNeedMore}
-          />
-        ) : (
-          <UnboxingSurface {...props} />
-        )}
+    <div className="discover-page">
+      <section className="discover-hero-card">
+        <div className="discover-hero-copy">
+          <p className="discover-card-label">
+            今日心动盲盒 <PackageOpen className="h-4 w-4" />
+          </p>
+          <h2>
+            拆开一个人
+            <br />
+            留下的片刻
+          </h2>
+          <p>
+            你不会知道是谁，
+            <br />
+            但可以先认识一点点。
+          </p>
+          <button className="discover-open-button" onClick={props.onOpen}>
+            拆开一个
+            <ArrowRight className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="discover-box-visual" aria-hidden="true">
+          <span />
+        </div>
+        <p className="discover-open-count">今日剩余 {props.freeOpens} 次</p>
       </section>
-      <aside className="space-y-5">
-        <Panel className="p-5">
-          <p className="eyebrow">Theme boxes</p>
-          <div className="mt-4 grid gap-3">
-            {themes.map((theme) => (
-              <button key={theme.id} className="theme-row">
-                <span>
-                  <span className="block font-medium text-[var(--wine)]">
-                    {theme.title}
-                  </span>
-                  <span className="text-sm text-[var(--muted-ink)]">
-                    {theme.note}
-                  </span>
-                </span>
-                <span className="rounded-full bg-white/65 px-3 py-1 text-sm">
-                  {theme.count}
-                </span>
+
+      {props.openingState !== 'sealed' && (
+        <section className="discover-unbox-live">
+          <UnboxingSurface {...props} />
+        </section>
+      )}
+
+      <section className="discover-section">
+        <div className="discover-section-head">
+          <h2>正在发生</h2>
+          <button>
+            查看全部
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="happening-rail">
+          {happeningCards.map((card) => (
+            <article
+              key={card.label}
+              className={cx('happening-card', `happening-${card.tone}`)}
+            >
+              <span>{card.label}</span>
+              <h3>{card.title}</h3>
+              <p>{card.body}</p>
+              <button>
+                查看详情
+                <ArrowRight className="h-4 w-4" />
               </button>
-            ))}
-          </div>
-        </Panel>
-        <Panel className="p-5">
-          <p className="eyebrow">Recommended</p>
-          <div className="mt-4 space-y-3">
-            {props.boxes.length === 0 && (
-              <div className="state-strip waiting-state">
-                <RefreshCw className="h-4 w-4" />
-                正在等待新的同频盲盒进入池子。
-              </div>
-            )}
-            {props.boxes.map((box) => (
-              <button
-                key={box.id}
-                className="box-list-item"
-                onClick={() => props.onSelectBox(box.id)}
-              >
-                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--wine)] text-white">
-                  <Gift className="h-4 w-4" />
-                </span>
-                <span className="min-w-0 flex-1 text-left">
-                  <span className="block truncate font-medium">
-                    {box.title}
-                  </span>
-                  <span className="block truncate text-sm text-[var(--muted-ink)]">
-                    {box.cityHint} · {box.ageHint}
-                  </span>
-                </span>
-                <span className="text-sm font-medium text-[var(--berry)]">
-                  有回声
-                </span>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="discover-section">
+        <div className="discover-section-head">
+          <h2>先认识一点</h2>
+          <button>
+            换一批
+            <RefreshCw className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="quick-entrance-grid">
+          {quickEntrances.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button key={item.title} className="quick-entrance-card">
+                <Icon className="h-7 w-7" />
+                <span>{item.title}</span>
+                <small>{item.body}</small>
               </button>
-            ))}
-          </div>
-        </Panel>
-      </aside>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="discover-section">
+        <div className="discover-section-head">
+          <h2>可能遇见的人</h2>
+          <button>
+            查看全部
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="possible-moment-list">
+          {possibleMoments.map((moment, index) => (
+            <button
+              key={moment.title}
+              className="possible-moment-row"
+              onClick={() => props.onSelectBox(props.boxes[index]?.id ?? props.box.id)}
+            >
+              <span className={cx('moment-thumb', `moment-${moment.tone}`)} />
+              <span className="moment-copy">
+                <strong>{moment.title}</strong>
+                <small>{moment.meta}</small>
+                <em>“{moment.quote}”</em>
+              </span>
+              <span className="moment-count">片刻 {moment.count}</span>
+            </button>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
@@ -2104,15 +2197,6 @@ function MiniStat({ label, value }: { label: string; value: string }) {
     <div className="mini-stat">
       <p>{label}</p>
       <strong>{value}</strong>
-    </div>
-  );
-}
-
-function StateChip({ label, body }: { label: string; body: string }) {
-  return (
-    <div className="state-chip">
-      <strong>{label}</strong>
-      <span>{body}</span>
     </div>
   );
 }
