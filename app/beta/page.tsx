@@ -153,7 +153,7 @@ export default function PrivateBetaPage() {
               </p>
               <p>
                 <Sparkles className="h-4 w-4" />
-                不默认公开真实姓名、联系方式和位置
+                真实信息不默认公开
               </p>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function PrivateBetaPage() {
             <div>
               <p className="eyebrow">Join beta</p>
               <h2>留下一种可以联系你的方式</h2>
-              <p>申请会通过飞书表单完成，仅用于内测联系。</p>
+              <p>申请会通过飞书完成，只用于内测联系。</p>
             </div>
             <div className="beta-form">
               <a

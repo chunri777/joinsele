@@ -1212,7 +1212,7 @@ button {
   .beta-hero-copy p,
   .beta-panel p {
     max-width: 680px;
-    color: #3f3f3f;
+    color: #343434;
     font-size: 0.94rem;
     line-height: 1.5;
   }
@@ -1432,7 +1432,8 @@ button {
     border-radius: 0;
     background: transparent;
     padding: 0;
-    color: #1d1d1d;
+    color: #171717;
+    font-weight: 430;
   }
 
   .beta-list svg {
@@ -1508,8 +1509,9 @@ button {
   .beta-flow p {
     margin-top: 0.35rem;
     max-width: 14.5rem;
-    color: #555555;
+    color: #444444;
     font-size: 0.88rem;
+    font-weight: 430;
     line-height: 1.58;
   }
 
@@ -1517,6 +1519,10 @@ button {
     display: grid;
     gap: 1.15rem;
     align-items: center;
+  }
+
+  .beta-join h2 + p {
+    margin-top: 0.54rem;
   }
 
   .beta-form {
@@ -1532,9 +1538,9 @@ button {
 
   .beta-signoff {
     display: grid;
-    gap: 1.1rem;
-    margin: 1.35rem auto 0;
-    padding: 0.5rem 0 0.4rem;
+    gap: 0.82rem;
+    margin: 1.1rem auto 0;
+    padding: 0.24rem 0 0.12rem;
     text-align: center;
   }
 
@@ -1566,9 +1572,10 @@ button {
 
   .beta-signoff span {
     display: block;
-    margin-top: 0.52rem;
-    color: #3b3b3b;
+    margin-top: 0.42rem;
+    color: #2e2e2e;
     font-size: 0.92rem;
+    font-weight: 460;
     line-height: 1.6;
   }
 
