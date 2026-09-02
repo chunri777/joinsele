@@ -1133,8 +1133,8 @@ button {
     z-index: 1;
     width: min(100%, 1220px);
     margin: 0 auto;
-    padding: max(1rem, env(safe-area-inset-top)) 1rem
-      max(2rem, env(safe-area-inset-bottom));
+    padding: max(0.86rem, env(safe-area-inset-top)) 1rem
+      max(1.5rem, env(safe-area-inset-bottom));
   }
 
   .beta-nav {
@@ -1142,7 +1142,7 @@ button {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.5rem 0 1.25rem;
+    padding: 0.45rem 0 1rem;
   }
 
   .beta-back-link {
@@ -1160,7 +1160,7 @@ button {
 
   .beta-hero {
     display: grid;
-    gap: 0.85rem;
+    gap: 0.7rem;
     align-items: stretch;
   }
 
@@ -1177,7 +1177,7 @@ button {
   .beta-hero-copy {
     display: grid;
     align-content: center;
-    gap: 1rem;
+    gap: 0.78rem;
     background:
       linear-gradient(
         145deg,
@@ -1185,7 +1185,7 @@ button {
         rgba(255, 255, 255, 0.7)
       ),
       rgba(255, 255, 255, 0.72);
-    padding: clamp(1.05rem, 4.4vw, 2.45rem);
+    padding: clamp(0.95rem, 3.6vw, 2.1rem);
   }
 
   .beta-hero-copy h1 {
@@ -1202,7 +1202,7 @@ button {
     max-width: 680px;
     color: #3f3f3f;
     font-size: 0.94rem;
-    line-height: 1.62;
+    line-height: 1.5;
   }
 
   .beta-hero-subtitle {
@@ -1219,25 +1219,25 @@ button {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
-    margin-top: 0.4rem;
+    margin-top: 0.24rem;
   }
 
   .beta-invite-card {
     display: grid;
     align-content: space-between;
-    min-height: 330px;
+    min-height: 292px;
     overflow: hidden;
     background:
       linear-gradient(155deg, rgba(17, 17, 17, 0.98), rgba(52, 52, 52, 0.9)),
       var(--wine);
-    padding: clamp(1rem, 3.4vw, 1.65rem);
+    padding: clamp(0.9rem, 2.8vw, 1.42rem);
     color: white;
   }
 
   .beta-invite-card h2 {
     max-width: 420px;
-    font-size: clamp(1.68rem, 5vw, 2.82rem);
-    font-weight: 560;
+    font-size: clamp(1.52rem, 4.5vw, 2.48rem);
+    font-weight: 520;
     letter-spacing: 0;
     line-height: 1.02;
   }
@@ -1257,35 +1257,54 @@ button {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.12);
-    padding: 0.62rem 0.78rem;
+    padding: 0.48rem 0.68rem;
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.86rem;
-    font-weight: 540;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  .echo-dots {
+    display: inline-flex;
+    gap: 0.02rem;
+    margin-left: -0.12rem;
+  }
+
+  .echo-dots span {
+    animation: echo-dot-pulse 1.6s ease-in-out infinite;
+    opacity: 0.36;
+  }
+
+  .echo-dots span:nth-child(2) {
+    animation-delay: 0.18s;
+  }
+
+  .echo-dots span:nth-child(3) {
+    animation-delay: 0.36s;
   }
 
   .beta-grid {
     display: grid;
-    gap: 0.8rem;
-    margin-top: 0.8rem;
+    gap: 0.62rem;
+    margin-top: 0.62rem;
   }
 
   .beta-panel {
     background: rgba(255, 255, 255, 0.72);
-    padding: clamp(0.9rem, 2.5vw, 1.28rem);
+    padding: clamp(0.78rem, 2.1vw, 1.08rem);
   }
 
   .beta-panel h2 {
-    margin-top: 0.45rem;
+    margin-top: 0.32rem;
     color: var(--wine);
-    font-size: clamp(1.42rem, 3.3vw, 2.12rem);
-    font-weight: 560;
+    font-size: clamp(1.24rem, 2.8vw, 1.86rem);
+    font-weight: 520;
     line-height: 1.08;
   }
 
   .beta-list {
     display: grid;
-    gap: 0.52rem;
-    margin-top: 0.8rem;
+    gap: 0.4rem;
+    margin-top: 0.62rem;
   }
 
   .beta-list p {
@@ -1293,8 +1312,8 @@ button {
     align-items: flex-start;
     gap: 0.55rem;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.78);
-    padding: 0.68rem;
+    background: rgba(255, 255, 255, 0.64);
+    padding: 0.52rem 0.58rem;
   }
 
   .beta-list svg {
@@ -1304,39 +1323,40 @@ button {
 
   .beta-flow-panel {
     display: grid;
-    gap: 0.8rem;
-    margin-top: 0.8rem;
+    gap: 0.62rem;
+    margin-top: 0.62rem;
   }
 
   .beta-flow {
+    position: relative;
     display: grid;
-    gap: 0.75rem;
+    gap: 0.55rem;
   }
 
-  .beta-flow article,
-  .beta-feedback-grid div {
+  .beta-flow article {
+    position: relative;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.78);
-    padding: 0.78rem;
+    background: rgba(255, 255, 255, 0.64);
+    padding: 0.62rem;
   }
 
   .beta-flow span {
     display: grid;
-    width: 1.72rem;
-    height: 1.72rem;
+    width: 1.34rem;
+    height: 1.34rem;
     place-items: center;
     border-radius: 999px;
     background: var(--wine);
     color: white;
-    font-size: 0.82rem;
-    font-weight: 560;
+    font-size: 0.7rem;
+    font-weight: 520;
   }
 
   .beta-flow h3 {
-    margin-top: 0.8rem;
+    margin-top: 0.54rem;
     color: var(--wine);
     font-size: 1rem;
-    font-weight: 560;
+    font-weight: 520;
   }
 
   .beta-flow p {
@@ -1345,16 +1365,16 @@ button {
 
   .beta-join {
     display: grid;
-    gap: 1rem;
+    gap: 0.72rem;
     align-items: start;
   }
 
   .beta-form {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.55rem;
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.78);
-    padding: 0.82rem;
+    background: rgba(255, 255, 255, 0.64);
+    padding: 0.62rem;
   }
 
   .beta-form p {
@@ -1369,6 +1389,19 @@ button {
     margin-top: 1rem;
     color: var(--soft-ink);
     line-height: 1.6;
+  }
+
+  @keyframes echo-dot-pulse {
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+
+    45% {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
   }
 
   .invite-steps {

@@ -17,30 +17,23 @@ const BETA_FORM_URL =
 
 const testerFit = [
   '18 岁以上',
-  '愿意认真表达，而不是只看头像',
-  '接受这是一次早期体验',
+  '愿意认真表达',
+  '愿意给未知留一点时间',
 ];
 
 const betaFlow = [
   {
-    title: '写下一段真实片刻',
+    title: '写下一件小事',
     body: '不用介绍全部的你，只要一件具体的小事。',
   },
   {
-    title: '拆开第一只盲盒',
-    body: '先看见一个人的片刻，再决定要不要继续读下去。',
+    title: '拆开一只盲盒',
+    body: '先看见片刻，再决定要不要继续。',
   },
   {
     title: '留下一段回声',
-    body: '如果有一点好奇，就留下一句轻一点的回应。',
+    body: '有一点好奇，就轻轻回应一句。',
   },
-];
-
-const feedbackFocus = [
-  '哪一句让你停了一下',
-  '你是否愿意继续拆下一层',
-  '哪个地方让你感到不安或困惑',
-  '你会不会把它发给朋友',
 ];
 
 export default function PrivateBetaPage() {
@@ -85,11 +78,15 @@ export default function PrivateBetaPage() {
           </div>
           <div className="beta-invite-card" aria-label="Heartbox beta card">
             <div className="share-card-seal">Sealed for beta</div>
-            <h2>给你留了一只还没拆开的 Heartbox。</h2>
-            <p>先别急着看见全部。读一句话，看看你会不会想多问一句。</p>
+            <h2>有一段话，还没有被打开。</h2>
             <div className="beta-envelope-mini">
               <HeartHandshake className="h-5 w-5" />
-              一段回声正在靠近。
+              <span>一段回声正在靠近</span>
+              <span className="echo-dots" aria-hidden="true">
+                <span>·</span>
+                <span>·</span>
+                <span>·</span>
+              </span>
             </div>
           </div>
         </div>
@@ -131,9 +128,6 @@ export default function PrivateBetaPage() {
           <div>
             <p className="eyebrow">First time</p>
             <h2>第一次，可以这样开始</h2>
-            <p>
-              写下一段真实片刻；拆开第一只盲盒；如果有一点好奇，就留下一段回声。
-            </p>
           </div>
           <div className="beta-flow">
             {betaFlow.map((item, index) => (
@@ -151,12 +145,9 @@ export default function PrivateBetaPage() {
             <div>
               <p className="eyebrow">Join beta</p>
               <h2>留下一种可以联系你的方式</h2>
-              <p>
-                申请信息会通过飞书表单收集，仅用于内测联系和体验反馈。
-              </p>
+              <p>申请会通过飞书表单完成，仅用于内测联系。</p>
             </div>
             <div className="beta-form">
-              <p>打开申请表后，会在新标签页填写联系方式和申请理由。</p>
               <a
                 className="pill-primary"
                 href={BETA_FORM_URL}
@@ -167,16 +158,6 @@ export default function PrivateBetaPage() {
                 <ArrowRight className="h-4 w-4" />
               </a>
             </div>
-          </div>
-        </section>
-
-        <section className="beta-panel">
-          <p className="eyebrow">Feedback</p>
-          <h2>我们想听见什么</h2>
-          <div className="beta-feedback-grid">
-            {feedbackFocus.map((item) => (
-              <div key={item}>{item}</div>
-            ))}
           </div>
         </section>
       </section>
