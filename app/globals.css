@@ -1124,17 +1124,19 @@ button {
     position: relative;
     min-height: 100svh;
     overflow-x: hidden;
-    background: var(--cream);
+    background:
+      linear-gradient(180deg, #050505 0, #0d0d0d 39rem, #f5f4f1 39rem),
+      #f5f4f1;
     color: var(--ink);
   }
 
   .beta-frame {
     position: relative;
     z-index: 1;
-    width: min(100%, 1220px);
+    width: min(100%, 1180px);
     margin: 0 auto;
-    padding: max(0.86rem, env(safe-area-inset-top)) 1rem
-      max(1.5rem, env(safe-area-inset-bottom));
+    padding: max(1.3rem, env(safe-area-inset-top)) 1.25rem
+      max(1.7rem, env(safe-area-inset-bottom));
   }
 
   .beta-nav {
@@ -1142,59 +1144,69 @@ button {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.45rem 0 1rem;
+    padding: 0 0 1.85rem;
+    color: white;
+  }
+
+  .beta-nav .brand-lockup {
+    color: white;
+  }
+
+  .beta-nav .brand-mark {
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+  }
+
+  .beta-nav .brand-lockup .text-\[var\(--muted-ink\)\] {
+    color: rgba(255, 255, 255, 0.56);
   }
 
   .beta-back-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    border: 1px solid rgba(24, 24, 24, 0.1);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.56);
-    padding: 0.58rem 0.82rem;
-    color: #111111;
-    font-size: 0.8rem;
-    font-weight: 540;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.48rem 1.35rem;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 0.72rem;
+    font-weight: 520;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    backdrop-filter: blur(18px);
   }
 
   .beta-hero {
     display: grid;
-    gap: 0.7rem;
+    min-height: clamp(24rem, 48vw, 33rem);
+    gap: clamp(1.2rem, 4vw, 3.4rem);
     align-items: stretch;
+    color: white;
   }
 
   .beta-hero-copy,
   .beta-panel,
-  .beta-invite-card {
+  .beta-invite-card,
+  .beta-intro-card {
     min-width: 0;
-    border: 1px solid rgba(17, 17, 17, 0.08);
-    border-radius: 16px;
-    box-shadow: 0 22px 64px rgb(0 0 0 / 8%);
-    backdrop-filter: blur(18px);
   }
 
   .beta-hero-copy {
     display: grid;
-    align-content: center;
-    gap: 0.78rem;
-    background:
-      linear-gradient(
-        145deg,
-        rgba(0, 0, 0, 0.055),
-        rgba(255, 255, 255, 0.7)
-      ),
-      rgba(255, 255, 255, 0.72);
-    padding: clamp(0.95rem, 3.6vw, 2.1rem);
+    align-content: start;
+    gap: clamp(1rem, 2vw, 1.42rem);
+    padding: clamp(0.5rem, 1.2vw, 1rem) 0 2.5rem;
   }
 
   .beta-hero-copy h1 {
-    max-width: 780px;
-    color: var(--wine);
-    font-size: clamp(1.9rem, 6vw, 4.25rem);
-    font-weight: 560;
+    max-width: 600px;
+    color: #f4f4f2;
+    font-size: clamp(3.05rem, 6.3vw, 5.8rem);
+    font-weight: 520;
     letter-spacing: 0;
-    line-height: 0.98;
+    line-height: 1.04;
   }
 
   .beta-hero-copy p,
@@ -1203,6 +1215,18 @@ button {
     color: #3f3f3f;
     font-size: 0.94rem;
     line-height: 1.5;
+  }
+
+  .beta-hero-copy .eyebrow {
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  .beta-hero-rule {
+    width: min(11rem, 38vw);
+    height: 1px;
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.82), transparent),
+      rgba(255, 255, 255, 0.14);
   }
 
   .beta-hero-subtitle {
@@ -1223,44 +1247,107 @@ button {
   }
 
   .beta-invite-card {
-    display: grid;
-    align-content: space-between;
-    min-height: 292px;
+    position: relative;
+    min-height: clamp(18rem, 40vw, 31rem);
     overflow: hidden;
+    border-radius: 0;
     background:
-      linear-gradient(155deg, rgba(17, 17, 17, 0.98), rgba(52, 52, 52, 0.9)),
-      var(--wine);
-    padding: clamp(0.9rem, 2.8vw, 1.42rem);
-    color: white;
+      radial-gradient(circle at 72% 45%, rgba(255, 255, 255, 0.1), transparent 27%),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02), transparent 42%),
+      #080808;
+    isolation: isolate;
   }
 
-  .beta-invite-card h2 {
-    max-width: 420px;
-    font-size: clamp(1.52rem, 4.5vw, 2.48rem);
-    font-weight: 520;
-    letter-spacing: 0;
-    line-height: 1.02;
+  .beta-invite-card::before {
+    position: absolute;
+    right: 18%;
+    bottom: 0;
+    z-index: -1;
+    width: min(22rem, 52vw);
+    height: 58%;
+    background:
+      radial-gradient(ellipse at top, rgba(255, 255, 255, 0.4), transparent 58%);
+    filter: blur(34px);
+    opacity: 0.7;
+    transform: skewX(-14deg);
+    content: '';
   }
 
-  .beta-invite-card p {
-    max-width: 420px;
-    color: rgba(255, 255, 255, 0.78);
-    font-size: 0.92rem;
-    line-height: 1.62;
+  .beta-invite-card::after {
+    position: absolute;
+    right: 30%;
+    bottom: 0;
+    width: min(19rem, 46vw);
+    height: 38%;
+    background:
+      linear-gradient(105deg, rgba(255, 255, 255, 0.26), transparent 68%);
+    filter: blur(15px);
+    opacity: 0.5;
+    transform: perspective(400px) rotateX(58deg) skewX(-18deg);
+    transform-origin: bottom;
+    content: '';
+  }
+
+  .beta-door {
+    position: absolute;
+    right: clamp(2rem, 12vw, 8rem);
+    top: 10%;
+    width: clamp(6rem, 14vw, 9rem);
+    height: 68%;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03), transparent 22%),
+      linear-gradient(115deg, #060606, #181818 62%, #090909);
+    box-shadow:
+      1.3rem 0 4.6rem rgba(255, 255, 255, 0.2),
+      -2.5rem 0 5.5rem rgba(255, 255, 255, 0.05);
+    transform: perspective(760px) rotateY(-11deg);
+  }
+
+  .beta-door::before {
+    position: absolute;
+    inset: 0 -0.22rem 0 auto;
+    width: 0.34rem;
+    background:
+      linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.76) 42%, rgba(255, 255, 255, 0.54), transparent);
+    filter: blur(0.5px);
+    content: '';
+  }
+
+  .beta-door::after {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    width: 0.58rem;
+    height: 0.1rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.44);
+    content: '';
+  }
+
+  .beta-door span {
+    position: absolute;
+    inset: -18% -80% 0 auto;
+    width: 120%;
+    background:
+      radial-gradient(ellipse at left, rgba(255, 255, 255, 0.34), transparent 58%);
+    filter: blur(26px);
+    opacity: 0.6;
   }
 
   .beta-envelope-mini {
     display: inline-flex;
     width: fit-content;
     align-items: center;
-    gap: 0.55rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    gap: 0.58rem;
+    border: 1px solid rgba(255, 255, 255, 0.38);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    padding: 0.48rem 0.68rem;
+    background: rgba(255, 255, 255, 0.07);
+    padding: 0.72rem 1.08rem;
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.78rem;
-    font-weight: 500;
+    font-size: 0.96rem;
+    font-weight: 460;
+    backdrop-filter: blur(16px);
   }
 
   .echo-dots {
@@ -1284,19 +1371,49 @@ button {
 
   .beta-grid {
     display: grid;
-    gap: 0.62rem;
-    margin-top: 0.62rem;
+    gap: 0.66rem;
+    margin-top: 0.66rem;
+  }
+
+  .beta-panel,
+  .beta-intro-card {
+    border: 1px solid rgba(17, 17, 17, 0.09);
+    border-radius: 14px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(248, 248, 246, 0.74)),
+      rgba(255, 255, 255, 0.86);
+    box-shadow: 0 18px 54px rgb(0 0 0 / 7%);
+    backdrop-filter: blur(18px);
+  }
+
+  .beta-intro-card {
+    display: grid;
+    gap: 1.4rem;
+    align-items: center;
+    margin-top: clamp(-4.2rem, -5vw, -2rem);
+    padding: clamp(1.25rem, 3.1vw, 2rem);
+  }
+
+  .beta-intro-card h2 {
+    margin-top: 0.54rem;
+    color: #0b0b0b;
+    font-size: clamp(1.82rem, 4vw, 3.2rem);
+    font-weight: 520;
+    line-height: 1.08;
+  }
+
+  .beta-intro-card .beta-hero-subtitle {
+    margin-top: 0.68rem;
   }
 
   .beta-panel {
-    background: rgba(255, 255, 255, 0.72);
-    padding: clamp(0.78rem, 2.1vw, 1.08rem);
+    padding: clamp(1rem, 2vw, 1.45rem);
   }
 
   .beta-panel h2 {
-    margin-top: 0.32rem;
+    margin-top: 0.34rem;
     color: var(--wine);
-    font-size: clamp(1.24rem, 2.8vw, 1.86rem);
+    font-size: clamp(1.28rem, 2.55vw, 1.78rem);
     font-weight: 520;
     line-height: 1.08;
   }
@@ -1310,41 +1427,58 @@ button {
   .beta-list p {
     display: flex;
     align-items: flex-start;
-    gap: 0.55rem;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.64);
-    padding: 0.52rem 0.58rem;
+    gap: 0.58rem;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    color: #1d1d1d;
   }
 
   .beta-list svg {
     flex: 0 0 auto;
-    color: var(--berry);
+    color: #111111;
+    stroke-width: 1.7;
   }
 
   .beta-flow-panel {
     display: grid;
-    gap: 0.62rem;
-    margin-top: 0.62rem;
+    gap: 1.1rem;
+    margin-top: 0.66rem;
   }
 
   .beta-flow {
     position: relative;
     display: grid;
-    gap: 0.55rem;
+    gap: 0.8rem;
   }
 
   .beta-flow article {
     position: relative;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.64);
-    padding: 0.62rem;
+    display: grid;
+    justify-items: center;
+    border-radius: 13px;
+    background:
+      radial-gradient(circle at 50% 2.1rem, rgba(0, 0, 0, 0.045), transparent 3.4rem),
+      rgba(255, 255, 255, 0.48);
+    padding: 0.3rem 0.52rem 0.65rem;
+    text-align: center;
+  }
+
+  .beta-flow article:not(:last-child)::after {
+    position: absolute;
+    top: 2.62rem;
+    left: calc(50% + 2.6rem);
+    width: calc(100% - 5.2rem);
+    border-top: 1px dashed rgba(17, 17, 17, 0.18);
+    content: '';
   }
 
   .beta-flow span {
     display: grid;
-    width: 1.34rem;
-    height: 1.34rem;
+    width: 1.38rem;
+    height: 1.38rem;
     place-items: center;
+    transform: translateY(-0.15rem);
     border-radius: 999px;
     background: var(--wine);
     color: white;
@@ -1352,43 +1486,47 @@ button {
     font-weight: 520;
   }
 
+  .beta-flow-icon {
+    margin-top: 0.45rem;
+    width: 2.9rem;
+    height: 2.9rem;
+    padding: 0.84rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.045);
+    color: #111111;
+    stroke-width: 1.6;
+  }
+
   .beta-flow h3 {
-    margin-top: 0.54rem;
+    margin-top: 0.62rem;
     color: var(--wine);
-    font-size: 1rem;
+    font-size: 1.08rem;
     font-weight: 520;
   }
 
   .beta-flow p {
     margin-top: 0.35rem;
+    max-width: 13rem;
+    color: #555555;
+    font-size: 0.88rem;
+    line-height: 1.58;
   }
 
   .beta-join {
     display: grid;
-    gap: 0.72rem;
-    align-items: start;
+    gap: 1rem;
+    align-items: center;
   }
 
   .beta-form {
-    display: grid;
-    gap: 0.55rem;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.64);
-    padding: 0.62rem;
+    display: flex;
+    justify-content: flex-end;
   }
 
   .beta-form p {
     color: #3f3f3f;
     font-size: 0.84rem;
     line-height: 1.55;
-  }
-
-  .beta-feedback-grid {
-    display: grid;
-    gap: 0.75rem;
-    margin-top: 1rem;
-    color: var(--soft-ink);
-    line-height: 1.6;
   }
 
   @keyframes echo-dot-pulse {
@@ -2467,9 +2605,13 @@ button {
     }
 
     .beta-grid,
-    .beta-flow,
-    .beta-feedback-grid {
+    .beta-flow {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .beta-intro-card,
+    .beta-join {
+      grid-template-columns: minmax(0, 1.1fr) minmax(13rem, 0.9fr);
     }
   }
 
@@ -2533,17 +2675,16 @@ button {
       grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
     }
 
-    .beta-flow-panel,
     .beta-join {
       grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
     }
 
-    .beta-flow {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .beta-intro-card {
+      grid-template-columns: minmax(0, 1.28fr) minmax(15.5rem, 0.72fr);
     }
 
-    .beta-feedback-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+    .beta-flow {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
@@ -2582,6 +2723,12 @@ button {
   }
 
   @media (max-width: 520px) {
+    .beta-shell {
+      background:
+        linear-gradient(180deg, #050505 0, #0d0d0d 41rem, #f5f4f1 41rem),
+        #f5f4f1;
+    }
+
     .app-frame {
       padding-bottom: 104px;
     }
@@ -2596,28 +2743,67 @@ button {
     }
 
     .beta-frame {
-      padding-right: 0.85rem;
-      padding-left: 0.85rem;
+      padding-top: max(1rem, env(safe-area-inset-top));
+      padding-right: 0.86rem;
+      padding-left: 0.86rem;
     }
 
     .beta-nav {
-      align-items: flex-start;
+      align-items: center;
+      padding-bottom: 1.35rem;
     }
 
     .beta-back-link {
-      padding: 0.52rem 0.65rem;
-      font-size: 0.74rem;
+      padding: 0.42rem 0.72rem;
+      font-size: 0.64rem;
+      letter-spacing: 0.15em;
     }
 
-    .beta-hero-copy,
     .beta-panel,
-    .beta-invite-card {
-      border-radius: 18px;
+    .beta-intro-card {
+      border-radius: 15px;
+    }
+
+    .beta-hero {
+      min-height: 34rem;
+      gap: 0.8rem;
+    }
+
+    .beta-hero-copy {
+      padding-bottom: 0.2rem;
     }
 
     .beta-hero-copy h1 {
-      font-size: 1.72rem;
-      line-height: 1.04;
+      font-size: 2.72rem;
+      line-height: 1.08;
+    }
+
+    .beta-envelope-mini {
+      padding: 0.62rem 0.86rem;
+      font-size: 0.82rem;
+    }
+
+    .beta-invite-card {
+      min-height: 18rem;
+      border-radius: 0;
+    }
+
+    .beta-door {
+      right: 17%;
+      top: 9%;
+      width: 5.6rem;
+      height: 72%;
+    }
+
+    .beta-intro-card {
+      gap: 0.9rem;
+      margin-top: -2.65rem;
+      padding: 1.05rem;
+    }
+
+    .beta-intro-card h2 {
+      font-size: 1.9rem;
+      line-height: 1.12;
     }
 
     .beta-actions .pill-primary,
@@ -2626,12 +2812,54 @@ button {
       width: 100%;
     }
 
-    .beta-invite-card {
-      min-height: 292px;
+    .beta-panel {
+      padding: 0.95rem;
     }
 
-    .beta-invite-card h2 {
-      font-size: 1.62rem;
+    .beta-flow-panel {
+      gap: 0.82rem;
+    }
+
+    .beta-flow {
+      gap: 0.36rem;
+    }
+
+    .beta-flow article {
+      grid-template-columns: auto 1fr;
+      justify-items: start;
+      gap: 0.1rem 0.7rem;
+      padding: 0.42rem 0.1rem;
+      background: transparent;
+      text-align: left;
+    }
+
+    .beta-flow article:not(:last-child)::after {
+      top: 2rem;
+      left: 0.69rem;
+      width: 0;
+      height: calc(100% - 1rem);
+      border-top: 0;
+      border-left: 1px solid rgba(17, 17, 17, 0.12);
+    }
+
+    .beta-flow span {
+      grid-row: span 3;
+      transform: translateY(0.1rem);
+    }
+
+    .beta-flow-icon {
+      display: none;
+    }
+
+    .beta-flow h3 {
+      margin-top: 0;
+      font-size: 1rem;
+    }
+
+    .beta-flow p {
+      margin-top: 0.12rem;
+      font-size: 0.84rem;
+      line-height: 1.5;
     }
 
     .onboarding-shell {

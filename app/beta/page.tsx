@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import {
-  ArrowLeft,
   ArrowRight,
   Check,
   HeartHandshake,
   LockKeyhole,
+  PenLine,
   PackageOpen,
   ShieldCheck,
   Sparkles,
@@ -51,34 +51,20 @@ export default function PrivateBetaPage() {
               </span>
             </span>
           </Link>
-          <Link className="beta-back-link" href="./">
-            <ArrowLeft className="h-4 w-4" />
-            返回体验 Demo
-          </Link>
+          <a className="beta-back-link" href="#join-beta">
+            Private Beta
+          </a>
         </nav>
 
         <div className="beta-hero">
           <div className="beta-hero-copy">
             <p className="eyebrow">SELE private beta</p>
-            <h1>有些人，适合晚一点看见。</h1>
-            <p className="beta-hero-subtitle">
-              <span>先认识一点，再决定要不要靠近。</span>
-              <strong>SELE 正在邀请第一批体验者。</strong>
-            </p>
-            <div className="beta-actions">
-              <a className="pill-primary" href="#join-beta">
-                申请内测
-                <ArrowRight className="h-4 w-4" />
-              </a>
-              <Link className="pill-secondary" href="./">
-                直接体验 Demo
-                <PackageOpen className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-          <div className="beta-invite-card" aria-label="Heartbox beta card">
-            <div className="share-card-seal">Sealed for beta</div>
-            <h2>有一段话，还没有被打开。</h2>
+            <h1>
+              有一段话，
+              <br />
+              还没有被打开。
+            </h1>
+            <div className="beta-hero-rule" aria-hidden="true" />
             <div className="beta-envelope-mini">
               <HeartHandshake className="h-5 w-5" />
               <span>一段回声正在靠近</span>
@@ -89,7 +75,56 @@ export default function PrivateBetaPage() {
               </span>
             </div>
           </div>
+          <div className="beta-invite-card" aria-label="Heartbox beta card">
+            <div className="beta-door" aria-hidden="true">
+              <span />
+            </div>
+          </div>
         </div>
+
+        <section className="beta-intro-card">
+          <div>
+            <p className="eyebrow">SELE private beta</p>
+            <h2>有些人，适合晚一点看见。</h2>
+            <p className="beta-hero-subtitle">
+              <span>先认识一点，再决定要不要靠近。</span>
+              <strong>SELE 正在邀请第一批体验者。</strong>
+            </p>
+          </div>
+          <div className="beta-actions">
+            <a className="pill-primary" href="#join-beta">
+              申请内测
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <Link className="pill-secondary" href="./">
+              直接体验 Demo
+              <PackageOpen className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+
+        <section className="beta-panel beta-flow-panel">
+          <div>
+            <p className="eyebrow">First time</p>
+            <h2>第一次，可以这样开始</h2>
+          </div>
+          <div className="beta-flow">
+            {betaFlow.map((item, index) => (
+              <article key={item.title}>
+                <span>{index + 1}</span>
+                {index === 0 ? (
+                  <PenLine className="beta-flow-icon h-6 w-6" />
+                ) : index === 1 ? (
+                  <PackageOpen className="beta-flow-icon h-6 w-6" />
+                ) : (
+                  <HeartHandshake className="beta-flow-icon h-6 w-6" />
+                )}
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
 
         <section className="beta-grid">
           <div className="beta-panel">
@@ -121,22 +156,6 @@ export default function PrivateBetaPage() {
                 不默认公开真实姓名、联系方式和位置
               </p>
             </div>
-          </div>
-        </section>
-
-        <section className="beta-panel beta-flow-panel">
-          <div>
-            <p className="eyebrow">First time</p>
-            <h2>第一次，可以这样开始</h2>
-          </div>
-          <div className="beta-flow">
-            {betaFlow.map((item, index) => (
-              <article key={item.title}>
-                <span>{index + 1}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-              </article>
-            ))}
           </div>
         </section>
 
