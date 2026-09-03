@@ -279,7 +279,9 @@ export default function Home() {
             onSwitch={switchView}
             onReset={resetDemo}
           />
-          <section className="main-stage">
+          <section
+            className={cx('main-stage', view === 'discover' && 'discover-stage')}
+          >
             {view !== 'discover' && (
               <MobileTopbar freeOpens={freeOpens} hearts={hearts} />
             )}

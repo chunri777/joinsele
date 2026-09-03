@@ -2336,13 +2336,13 @@ button {
 
   #heartbox-shell .discover-top {
     align-items: flex-start;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
   }
 
   #heartbox-shell .discover-subtitle {
-    margin-top: 0.42rem;
-    color: rgb(242 242 242 / 70%);
-    font-size: clamp(0.95rem, 4vw, 1.18rem);
+    margin-top: 0.5rem;
+    color: #8e8e93;
+    font-size: 0.88rem;
     line-height: 1.35;
   }
 
@@ -2384,7 +2384,7 @@ button {
 
   #heartbox-shell .discover-page {
     display: grid;
-    gap: 1.65rem;
+    gap: 1.5rem;
     overflow: hidden;
     padding-bottom: 0.9rem;
   }
@@ -2392,16 +2392,16 @@ button {
   #heartbox-shell .discover-hero-card {
     position: relative;
     display: grid;
-    min-height: clamp(25.2rem, 54vw, 31rem);
+    min-height: clamp(22.5rem, 48vw, 25rem);
     overflow: hidden;
     border: 1px solid rgb(255 255 255 / 12%);
-    border-radius: 20px;
+    border-radius: 24px;
     background:
       radial-gradient(circle at 72% 30%, rgb(255 255 255 / 14%), transparent 25%),
       radial-gradient(circle at 52% 92%, rgb(255 255 255 / 10%), transparent 30%),
       linear-gradient(135deg, rgb(255 255 255 / 8%), rgb(255 255 255 / 3%)),
       #080808;
-    padding: clamp(1.35rem, 4vw, 2rem);
+    padding: clamp(1.25rem, 3.5vw, 1.7rem);
     isolation: isolate;
   }
 
@@ -2420,7 +2420,7 @@ button {
     z-index: 2;
     display: grid;
     align-content: start;
-    width: min(62%, 26rem);
+    width: min(58%, 24rem);
   }
 
   #heartbox-shell .discover-card-label {
@@ -2429,38 +2429,38 @@ button {
     align-items: center;
     gap: 0.38rem;
     color: rgb(242 242 242 / 66%);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
   #heartbox-shell .discover-hero-copy h2 {
-    margin-top: 1.28rem;
+    margin-top: 4.25rem;
     color: #f2f2f2;
-    font-size: clamp(2.2rem, 8.6vw, 4rem);
-    font-weight: 430;
+    font-size: clamp(1.75rem, 6.5vw, 2.85rem);
+    font-weight: 600;
     letter-spacing: 0;
     line-height: 1.1;
   }
 
   #heartbox-shell .discover-hero-copy p:not(.discover-card-label) {
-    margin-top: 1.15rem;
-    color: rgb(242 242 242 / 66%);
-    font-size: clamp(1rem, 4.4vw, 1.2rem);
-    line-height: 1.55;
+    margin-top: 1.38rem;
+    color: #b0b0b5;
+    font-size: 0.88rem;
+    line-height: 1.72;
   }
 
   #heartbox-shell .discover-open-button {
     display: inline-flex;
     width: fit-content;
-    min-height: 3.35rem;
+    min-height: 3rem;
     align-items: center;
     gap: 1.45rem;
-    margin-top: 2.2rem;
+    margin-top: 2.5rem;
     border: 1px solid rgb(255 255 255 / 18%);
     border-radius: 999px;
     background: rgb(255 255 255 / 6%);
-    padding: 0 1.48rem;
+    padding: 0 1.4rem;
     color: #f2f2f2;
-    font-size: 0.98rem;
+    font-size: 0.88rem;
     backdrop-filter: blur(14px);
   }
 
@@ -2473,16 +2473,16 @@ button {
     right: 1.42rem;
     bottom: 1.24rem;
     color: rgb(242 242 242 / 70%);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
   #heartbox-shell .discover-box-visual {
     position: absolute;
-    right: clamp(0.3rem, 4.5vw, 4.6rem);
-    top: 24%;
-    width: clamp(9.4rem, 27vw, 17rem);
-    height: 49%;
-    transform: perspective(860px) rotateY(-16deg) rotateX(2deg);
+    right: clamp(0.7rem, 5vw, 4.6rem);
+    top: 30%;
+    width: clamp(8.5rem, 25vw, 15.5rem);
+    height: 40%;
+    transform: none;
   }
 
   #heartbox-shell .discover-box-visual::before,
@@ -2495,19 +2495,19 @@ button {
     inset: 0;
     border: 1px solid rgb(255 255 255 / 8%);
     background:
-      linear-gradient(90deg, #050505 0 48%, rgb(255 255 255 / 65%) 49%, #060606 51%),
-      linear-gradient(145deg, #171717, #020202);
+      linear-gradient(90deg, #050505 0 49%, rgb(255 255 255 / 75%) 49.5% 50.5%, #060606 51%),
+      linear-gradient(145deg, #151515, #020202);
     box-shadow:
       inset 0 1px 24px rgb(255 255 255 / 9%),
       0 3rem 5rem rgb(0 0 0 / 40%),
-      1rem 0 4rem rgb(255 255 255 / 12%);
+      0 0 4rem rgb(255 255 255 / 8%);
   }
 
   #heartbox-shell .discover-box-visual::after {
-    left: 12%;
-    right: 12%;
-    top: -15%;
-    height: 25%;
+    left: 5%;
+    right: 5%;
+    top: -16%;
+    height: 28%;
     background:
       radial-gradient(ellipse at center, rgb(255 255 255 / 58%), transparent 64%);
     filter: blur(10px);
@@ -2516,10 +2516,10 @@ button {
 
   #heartbox-shell .discover-box-visual span {
     position: absolute;
-    left: 44%;
-    bottom: -18%;
-    width: 48%;
-    height: 48%;
+    left: 34%;
+    bottom: -24%;
+    width: 64%;
+    height: 50%;
     background:
       linear-gradient(100deg, rgb(255 255 255 / 24%), transparent 70%);
     filter: blur(12px);
@@ -2576,7 +2576,7 @@ button {
 
   #heartbox-shell .discover-section {
     display: grid;
-    gap: 0.85rem;
+    gap: 1rem;
   }
 
   #heartbox-shell .discover-section-head {
@@ -2588,8 +2588,8 @@ button {
 
   #heartbox-shell .discover-section-head h2 {
     color: #f2f2f2;
-    font-size: 1.22rem;
-    font-weight: 480;
+    font-size: 1.12rem;
+    font-weight: 600;
     line-height: 1.2;
   }
 
@@ -2600,7 +2600,7 @@ button {
     gap: 0.35rem;
     border: 0;
     background: transparent;
-    color: rgb(242 242 242 / 55%);
+    color: #8e8e93;
     font-size: 0.86rem;
   }
 
@@ -2617,15 +2617,15 @@ button {
     align-content: end;
     overflow: hidden;
     border: 1px solid rgb(255 255 255 / 11%);
-    border-radius: 17px;
+    border-radius: 16px;
     background: #101010;
     padding: 1.15rem;
   }
 
   #heartbox-shell .happening-card-featured {
     width: 100%;
-    min-height: clamp(13rem, 29vw, 17.5rem);
-    padding: clamp(1.12rem, 3vw, 1.55rem);
+    min-height: clamp(12.5rem, 28vw, 14.5rem);
+    padding: 1.25rem;
   }
 
   #heartbox-shell .happening-card::before {
@@ -2672,15 +2672,15 @@ button {
     margin-top: 1.18rem;
     max-width: 16rem;
     color: #f2f2f2;
-    font-size: 1.24rem;
-    font-weight: 440;
+    font-size: 1.08rem;
+    font-weight: 600;
     line-height: 1.28;
   }
 
   #heartbox-shell .happening-card p {
     margin-top: 0.46rem;
     color: rgb(242 242 242 / 58%);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     line-height: 1.55;
   }
 
@@ -2725,11 +2725,11 @@ button {
     min-height: 8.6rem;
     justify-items: center;
     border: 1px solid rgb(255 255 255 / 10%);
-    border-radius: 15px;
+    border-radius: 16px;
     background:
       radial-gradient(circle at 50% 18%, rgb(255 255 255 / 10%), transparent 42%),
       rgb(255 255 255 / 5%);
-    padding: 1rem 0.55rem 0.86rem;
+    padding: 1.08rem 0.55rem 0.86rem;
     text-align: center;
   }
 
@@ -2743,20 +2743,26 @@ button {
   #heartbox-shell .quick-entrance-card span {
     margin-top: 1.02rem;
     color: #f2f2f2;
-    font-size: 0.9rem;
-    font-weight: 430;
+    font-size: 0.88rem;
+    font-weight: 560;
   }
 
   #heartbox-shell .quick-entrance-card small {
     margin-top: 0.28rem;
     color: rgb(242 242 242 / 52%);
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     line-height: 1.35;
   }
 
   #heartbox-shell .possible-moment-list {
     display: grid;
-    gap: 0.76rem;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 16px;
+    background:
+      linear-gradient(90deg, rgb(255 255 255 / 7%), rgb(255 255 255 / 4%)),
+      #090909;
   }
 
   #heartbox-shell .possible-moment-row {
@@ -2765,18 +2771,21 @@ button {
     align-items: center;
     gap: 0.8rem;
     width: 100%;
-    border: 1px solid rgb(255 255 255 / 10%);
-    border-radius: 16px;
-    background:
-      linear-gradient(90deg, rgb(255 255 255 / 7%), rgb(255 255 255 / 4%)),
-      #090909;
-    padding: 0.78rem;
+    min-height: 5.5rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0.75rem;
     text-align: left;
+  }
+
+  #heartbox-shell .possible-moment-row + .possible-moment-row {
+    border-top: 1px solid rgb(255 255 255 / 12%);
   }
 
   #heartbox-shell .moment-thumb {
     display: block;
-    width: 4.35rem;
+    width: 4rem;
     aspect-ratio: 1;
     overflow: hidden;
     border: 1px solid rgb(255 255 255 / 11%);
@@ -2815,7 +2824,7 @@ button {
     color: #f2f2f2;
     font-size: 1rem;
     font-style: normal;
-    font-weight: 520;
+    font-weight: 600;
   }
 
   #heartbox-shell .moment-copy small {
@@ -3296,76 +3305,86 @@ button {
       padding-bottom: 18px;
     }
 
+    .discover-stage {
+      padding: max(2rem, env(safe-area-inset-top)) 20px 18px;
+    }
+
     .view-stack,
     .top-status {
       max-width: 100%;
     }
 
     #heartbox-shell .discover-top {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     #heartbox-shell .discover-top-actions {
-      gap: 0.55rem;
+      gap: 0.86rem;
+      padding-top: 0.26rem;
     }
 
     #heartbox-shell .discover-top-actions button {
-      width: 2.1rem;
-      height: 2.1rem;
+      width: 2rem;
+      height: 2rem;
     }
 
     #heartbox-shell .discover-top-actions svg {
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1.68rem;
+      height: 1.68rem;
+      stroke-width: 1.45;
     }
 
     #heartbox-shell .discover-page {
-      gap: 1.35rem;
+      gap: 1.5rem;
     }
 
     #heartbox-shell .discover-hero-card {
-      min-height: 25.6rem;
-      border-radius: 18px;
-      padding: 1.38rem 1.1rem;
+      min-height: 22.5rem;
+      border-radius: 24px;
+      padding: 1.25rem;
     }
 
     #heartbox-shell .discover-hero-copy {
-      width: 66%;
+      width: 59%;
     }
 
     #heartbox-shell .discover-card-label {
-      font-size: 0.8rem;
+      font-size: 0.88rem;
     }
 
     #heartbox-shell .discover-hero-copy h2 {
-      margin-top: 1.05rem;
-      font-size: 2.45rem;
+      margin-top: 4.05rem;
+      font-size: 1.75rem;
+      font-weight: 600;
+      line-height: 1.16;
     }
 
     #heartbox-shell .discover-hero-copy p:not(.discover-card-label) {
-      margin-top: 0.95rem;
-      font-size: 0.98rem;
+      margin-top: 1.35rem;
+      color: #b0b0b5;
+      font-size: 0.88rem;
+      line-height: 1.75;
     }
 
     #heartbox-shell .discover-open-button {
       min-height: 3rem;
       gap: 1.05rem;
-      margin-top: 1.8rem;
+      margin-top: 2.42rem;
       padding: 0 1.28rem;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     #heartbox-shell .discover-open-count {
-      right: 1.08rem;
-      bottom: 1rem;
-      font-size: 0.82rem;
+      right: 1.25rem;
+      bottom: 1.25rem;
+      font-size: 0.88rem;
     }
 
     #heartbox-shell .discover-box-visual {
-      right: -1.15rem;
-      top: 31%;
-      width: 10.4rem;
-      height: 35%;
+      right: 1.25rem;
+      top: 36%;
+      width: 8.15rem;
+      height: 33%;
     }
 
     #heartbox-shell .box-detail-page {
@@ -3385,58 +3404,63 @@ button {
     }
 
     #heartbox-shell .happening-card {
-      min-height: 11.7rem;
-      padding: 1rem;
+      min-height: 12.5rem;
+      padding: 1.25rem;
     }
 
     #heartbox-shell .happening-card-featured {
-      min-height: 12.4rem;
+      min-height: 12.5rem;
+    }
+
+    #heartbox-shell .happening-card span {
+      font-size: 0.72rem;
     }
 
     #heartbox-shell .happening-card h3 {
-      max-width: 13rem;
-      font-size: 1.08rem;
+      max-width: 15rem;
+      font-size: 1.06rem;
       line-height: 1.32;
     }
 
     #heartbox-shell .happening-card p {
-      font-size: 0.76rem;
+      font-size: 0.78rem;
     }
 
     #heartbox-shell .quick-entrance-grid {
-      gap: 0.48rem;
+      gap: 0.5rem;
     }
 
     #heartbox-shell .quick-entrance-card {
-      min-height: 8rem;
-      padding: 0.92rem 0.42rem 0.75rem;
+      min-height: 7.5rem;
+      padding: 1.08rem 0.42rem 0.75rem;
     }
 
     #heartbox-shell .quick-entrance-card span {
-      font-size: 0.82rem;
+      font-size: 0.86rem;
     }
 
     #heartbox-shell .quick-entrance-card small {
-      font-size: 0.68rem;
+      font-size: 0.74rem;
     }
 
     #heartbox-shell .possible-moment-row {
-      grid-template-columns: 3.8rem minmax(0, 1fr) auto;
-      gap: 0.68rem;
-      padding: 0.68rem;
+      grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+      gap: 0.82rem;
+      min-height: 5.5rem;
+      padding: 0.72rem;
     }
 
     #heartbox-shell .moment-thumb {
-      width: 3.8rem;
-      border-radius: 11px;
+      width: 3.5rem;
+      border-radius: 10px;
     }
 
     #heartbox-shell .moment-copy strong {
-      font-size: 0.92rem;
+      font-size: 0.95rem;
     }
 
     #heartbox-shell .moment-count {
-      font-size: 0.72rem;
+      font-size: 0.82rem;
     }
 
     .beta-frame {
