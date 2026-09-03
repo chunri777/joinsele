@@ -2420,7 +2420,7 @@ button {
     z-index: 2;
     display: grid;
     align-content: start;
-    width: min(58%, 26rem);
+    width: min(62%, 26rem);
   }
 
   #heartbox-shell .discover-card-label {
@@ -2478,10 +2478,10 @@ button {
 
   #heartbox-shell .discover-box-visual {
     position: absolute;
-    right: clamp(1.1rem, 5vw, 5rem);
-    top: 20%;
-    width: clamp(10.4rem, 32vw, 21rem);
-    height: 58%;
+    right: clamp(0.3rem, 4.5vw, 4.6rem);
+    top: 24%;
+    width: clamp(9.4rem, 27vw, 17rem);
+    height: 49%;
     transform: perspective(860px) rotateY(-16deg) rotateX(2deg);
   }
 
@@ -2529,8 +2529,20 @@ button {
   #heartbox-shell .box-detail-page {
     display: grid;
     gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     overflow: hidden;
     padding-bottom: 0.9rem;
+  }
+
+  #heartbox-shell .box-detail-page .unbox-panel,
+  #heartbox-shell .box-detail-page .unbox-stage,
+  #heartbox-shell .box-detail-page .revealed-persona,
+  #heartbox-shell .box-detail-page .sealed-envelope {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   #heartbox-shell .box-detail-back {
@@ -2660,7 +2672,7 @@ button {
     margin-top: 1.18rem;
     max-width: 16rem;
     color: #f2f2f2;
-    font-size: 1.35rem;
+    font-size: 1.24rem;
     font-weight: 440;
     line-height: 1.28;
   }
@@ -2668,7 +2680,8 @@ button {
   #heartbox-shell .happening-card p {
     margin-top: 0.46rem;
     color: rgb(242 242 242 / 58%);
-    font-size: 0.86rem;
+    font-size: 0.8rem;
+    line-height: 1.55;
   }
 
   #heartbox-shell .happening-card button {
@@ -3317,7 +3330,7 @@ button {
     }
 
     #heartbox-shell .discover-hero-copy {
-      width: 58%;
+      width: 66%;
     }
 
     #heartbox-shell .discover-card-label {
@@ -3349,14 +3362,18 @@ button {
     }
 
     #heartbox-shell .discover-box-visual {
-      right: -0.35rem;
-      top: 25%;
-      width: 12.8rem;
-      height: 44%;
+      right: -1.15rem;
+      top: 31%;
+      width: 10.4rem;
+      height: 35%;
     }
 
     #heartbox-shell .box-detail-page {
       gap: 0.9rem;
+    }
+
+    #heartbox-shell .box-detail-page .unbox-panel {
+      padding: 0.58rem;
     }
 
     #heartbox-shell .box-detail-heading h2 {
@@ -3374,6 +3391,16 @@ button {
 
     #heartbox-shell .happening-card-featured {
       min-height: 12.4rem;
+    }
+
+    #heartbox-shell .happening-card h3 {
+      max-width: 13rem;
+      font-size: 1.08rem;
+      line-height: 1.32;
+    }
+
+    #heartbox-shell .happening-card p {
+      font-size: 0.76rem;
     }
 
     #heartbox-shell .quick-entrance-grid {

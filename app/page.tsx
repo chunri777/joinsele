@@ -280,7 +280,9 @@ export default function Home() {
             onReset={resetDemo}
           />
           <section className="main-stage">
-            <MobileTopbar freeOpens={freeOpens} hearts={hearts} />
+            {view !== 'discover' && (
+              <MobileTopbar freeOpens={freeOpens} hearts={hearts} />
+            )}
             <TopStatus
               view={view}
               freeOpens={freeOpens}
