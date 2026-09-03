@@ -2526,8 +2526,40 @@ button {
     transform: skewX(-18deg);
   }
 
-  #heartbox-shell .discover-unbox-live {
-    margin-top: -0.4rem;
+  #heartbox-shell .box-detail-page {
+    display: grid;
+    gap: 1rem;
+    overflow: hidden;
+    padding-bottom: 0.9rem;
+  }
+
+  #heartbox-shell .box-detail-back {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.3rem;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 5%);
+    padding: 0.55rem 0.82rem;
+    color: rgb(242 242 242 / 68%);
+    font-size: 0.78rem;
+  }
+
+  #heartbox-shell .box-detail-back svg {
+    stroke-width: 1.55;
+  }
+
+  #heartbox-shell .box-detail-heading {
+    max-width: 33rem;
+  }
+
+  #heartbox-shell .box-detail-heading h2 {
+    margin-top: 0.38rem;
+    color: #f2f2f2;
+    font-size: clamp(1.35rem, 5vw, 2rem);
+    font-weight: 430;
+    line-height: 1.25;
   }
 
   #heartbox-shell .discover-section {
@@ -2560,19 +2592,10 @@ button {
     font-size: 0.86rem;
   }
 
-  #heartbox-shell .happening-rail {
+  #heartbox-shell .happening-showcase {
     display: grid;
-    grid-auto-columns: minmax(16.5rem, 70%);
-    grid-auto-flow: column;
     gap: 0.72rem;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    padding-bottom: 0.15rem;
-    scrollbar-width: none;
-  }
-
-  #heartbox-shell .happening-rail::-webkit-scrollbar {
-    display: none;
+    overflow: hidden;
   }
 
   #heartbox-shell .happening-card {
@@ -2585,6 +2608,12 @@ button {
     border-radius: 17px;
     background: #101010;
     padding: 1.15rem;
+  }
+
+  #heartbox-shell .happening-card-featured {
+    width: 100%;
+    min-height: clamp(13rem, 29vw, 17.5rem);
+    padding: clamp(1.12rem, 3vw, 1.55rem);
   }
 
   #heartbox-shell .happening-card::before {
@@ -2652,6 +2681,24 @@ button {
     background: transparent;
     color: #f2f2f2;
     font-size: 0.86rem;
+  }
+
+  #heartbox-shell .happening-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.34rem;
+  }
+
+  #heartbox-shell .happening-dots span {
+    width: 0.28rem;
+    height: 0.28rem;
+    border-radius: 999px;
+    background: rgb(242 242 242 / 20%);
+  }
+
+  #heartbox-shell .happening-dots .happening-dot-active {
+    width: 1.2rem;
+    background: rgb(242 242 242 / 72%);
   }
 
   #heartbox-shell .quick-entrance-grid {
@@ -3308,15 +3355,25 @@ button {
       height: 44%;
     }
 
-    #heartbox-shell .happening-rail {
-      grid-auto-columns: minmax(16.2rem, 82%);
-      margin-right: -0.75rem;
-      padding-right: 0.75rem;
+    #heartbox-shell .box-detail-page {
+      gap: 0.9rem;
+    }
+
+    #heartbox-shell .box-detail-heading h2 {
+      font-size: 1.38rem;
+    }
+
+    #heartbox-shell .happening-showcase {
+      width: 100%;
     }
 
     #heartbox-shell .happening-card {
       min-height: 11.7rem;
       padding: 1rem;
+    }
+
+    #heartbox-shell .happening-card-featured {
+      min-height: 12.4rem;
     }
 
     #heartbox-shell .quick-entrance-grid {

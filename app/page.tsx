@@ -81,6 +81,7 @@ export default function Home() {
   const [onboardingStep, setOnboardingStep] =
     useState<OnboardingStep>('landing');
   const [selectedBoxId, setSelectedBoxId] = useState(blindBoxes[0].id);
+  const [discoverDetailOpen, setDiscoverDetailOpen] = useState(false);
   const [openingState, setOpeningState] = useState<
     'sealed' | 'opening' | 'first' | 'second' | 'echo' | 'matched'
   >('sealed');
@@ -154,6 +155,7 @@ export default function Home() {
     setView('discover');
     setOnboardingStep('landing');
     setSelectedBoxId(blindBoxes[0].id);
+    setDiscoverDetailOpen(false);
     setOpeningState('sealed');
     setFreeOpens(initialWallet.dailyFreeOpensRemaining);
     setHearts(initialWallet.hearts);
@@ -196,6 +198,7 @@ export default function Home() {
       setShowConversion(true);
       return;
     }
+    setDiscoverDetailOpen(true);
     setFreeOpens((value) => value - 1);
     setOpeningState('opening');
     window.setTimeout(() => setOpeningState('first'), 720);
@@ -203,6 +206,13 @@ export default function Home() {
 
   function resetOpening(boxId?: string) {
     if (boxId) setSelectedBoxId(boxId);
+    setDiscoverDetailOpen(false);
+    setOpeningState('sealed');
+  }
+
+  function previewBox(boxId: string) {
+    setSelectedBoxId(boxId);
+    setDiscoverDetailOpen(true);
     setOpeningState('sealed');
   }
 
@@ -278,27 +288,33 @@ export default function Home() {
               onOpenWallet={() => switchView('mine')}
             />
             <div className="view-stack">
-              {view === 'discover' && (
-                <DiscoverView
-                  box={selectedBox}
-                  boxes={blindBoxes}
-                  openingState={openingState}
-                  freeOpens={freeOpens}
-                  hearts={hearts}
-                  onOpen={beginOpening}
-                  onSecondLayer={() => setOpeningState('second')}
-                  onEcho={() => setOpeningState('echo')}
-                  onMatched={() => {
-                    setOpeningState('matched');
-                    setSelectedRelationshipId(relationships[0].id);
-                  }}
-                  onLater={() => resetOpening(blindBoxes[1]?.id)}
-                  onPass={() => resetOpening(blindBoxes[2]?.id)}
-                  onSelectBox={(boxId) => resetOpening(boxId)}
-                  onNeedMore={() => setShowConversion(true)}
-                  onMessages={() => switchView('messages')}
-                />
-              )}
+              {view === 'discover' &&
+                (discoverDetailOpen ? (
+                  <DiscoverBoxDetail
+                    box={selectedBox}
+                    openingState={openingState}
+                    onBack={() => resetOpening()}
+                    onOpen={beginOpening}
+                    onSecondLayer={() => setOpeningState('second')}
+                    onEcho={() => setOpeningState('echo')}
+                    onMatched={() => {
+                      setOpeningState('matched');
+                      setSelectedRelationshipId(relationships[0].id);
+                    }}
+                    onLater={() => resetOpening(blindBoxes[1]?.id)}
+                    onPass={() => resetOpening(blindBoxes[2]?.id)}
+                    onNeedMore={() => setShowConversion(true)}
+                    onMessages={() => switchView('messages')}
+                  />
+                ) : (
+                  <DiscoverView
+                    box={selectedBox}
+                    boxes={blindBoxes}
+                    freeOpens={freeOpens}
+                    onOpen={beginOpening}
+                    onSelectBox={previewBox}
+                  />
+                ))}
               {view === 'circle' && (
                 <CircleView
                   fragments={allFragments}
@@ -403,6 +419,7 @@ export default function Home() {
             if (hearts >= 8) {
               setHearts((value) => value - 8);
               setShowConversion(false);
+              setDiscoverDetailOpen(true);
               setOpeningState('opening');
               window.setTimeout(() => setOpeningState('first'), 720);
             }
@@ -793,18 +810,9 @@ const possibleMoments = [
 function DiscoverView(props: {
   box: BlindBox;
   boxes: BlindBox[];
-  openingState: 'sealed' | 'opening' | 'first' | 'second' | 'echo' | 'matched';
   freeOpens: number;
-  hearts: number;
   onOpen: () => void;
-  onSecondLayer: () => void;
-  onEcho: () => void;
-  onMatched: () => void;
-  onLater: () => void;
-  onPass: () => void;
   onSelectBox: (boxId: string) => void;
-  onNeedMore: () => void;
-  onMessages: () => void;
 }) {
   return (
     <div className="discover-page">
@@ -834,12 +842,6 @@ function DiscoverView(props: {
         <p className="discover-open-count">今日剩余 {props.freeOpens} 次</p>
       </section>
 
-      {props.openingState !== 'sealed' && (
-        <section className="discover-unbox-live">
-          <UnboxingSurface {...props} />
-        </section>
-      )}
-
       <section className="discover-section">
         <div className="discover-section-head">
           <h2>正在发生</h2>
@@ -848,21 +850,29 @@ function DiscoverView(props: {
             <ArrowRight className="h-4 w-4" />
           </button>
         </div>
-        <div className="happening-rail">
-          {happeningCards.map((card) => (
-            <article
-              key={card.label}
-              className={cx('happening-card', `happening-${card.tone}`)}
-            >
-              <span>{card.label}</span>
-              <h3>{card.title}</h3>
-              <p>{card.body}</p>
-              <button>
-                查看详情
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </article>
-          ))}
+        <div className="happening-showcase">
+          <article
+            className={cx(
+              'happening-card happening-card-featured',
+              `happening-${happeningCards[0].tone}`,
+            )}
+          >
+            <span>{happeningCards[0].label}</span>
+            <h3>{happeningCards[0].title}</h3>
+            <p>{happeningCards[0].body}</p>
+            <button>
+              查看详情
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </article>
+          <div className="happening-dots" aria-label="正在发生轮播进度">
+            {happeningCards.map((card, index) => (
+              <span
+                key={card.label}
+                className={index === 0 ? 'happening-dot-active' : undefined}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -901,7 +911,9 @@ function DiscoverView(props: {
             <button
               key={moment.title}
               className="possible-moment-row"
-              onClick={() => props.onSelectBox(props.boxes[index]?.id ?? props.box.id)}
+              onClick={() =>
+                props.onSelectBox(props.boxes[index]?.id ?? props.box.id)
+              }
             >
               <span className={cx('moment-thumb', `moment-${moment.tone}`)} />
               <span className="moment-copy">
@@ -914,6 +926,57 @@ function DiscoverView(props: {
           ))}
         </div>
       </section>
+    </div>
+  );
+}
+
+function DiscoverBoxDetail({
+  box,
+  openingState,
+  onBack,
+  onOpen,
+  onSecondLayer,
+  onEcho,
+  onMatched,
+  onLater,
+  onPass,
+  onNeedMore,
+  onMessages,
+}: {
+  box: BlindBox;
+  openingState: 'sealed' | 'opening' | 'first' | 'second' | 'echo' | 'matched';
+  onBack: () => void;
+  onOpen: () => void;
+  onSecondLayer: () => void;
+  onEcho: () => void;
+  onMatched: () => void;
+  onLater: () => void;
+  onPass: () => void;
+  onNeedMore: () => void;
+  onMessages: () => void;
+}) {
+  return (
+    <div className="box-detail-page">
+      <button className="box-detail-back" onClick={onBack}>
+        <ChevronLeft className="h-4 w-4" />
+        返回发现
+      </button>
+      <div className="box-detail-heading">
+        <p className="eyebrow">Heartbox detail</p>
+        <h2>先看见一点，再决定要不要靠近。</h2>
+      </div>
+      <UnboxingSurface
+        box={box}
+        openingState={openingState}
+        onOpen={onOpen}
+        onSecondLayer={onSecondLayer}
+        onEcho={onEcho}
+        onMatched={onMatched}
+        onLater={onLater}
+        onPass={onPass}
+        onNeedMore={onNeedMore}
+        onMessages={onMessages}
+      />
     </div>
   );
 }
