@@ -907,7 +907,6 @@ function DiscoverView(props: {
               <button key={item.title} className="quick-entrance-card">
                 <Icon className="h-7 w-7" />
                 <span>{item.title}</span>
-                <small>{item.body}</small>
               </button>
             );
           })}
