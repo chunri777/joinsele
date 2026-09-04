@@ -539,11 +539,7 @@ function DesktopSidebar({
 }
 
 function OnboardingFlow({
-  step,
-  fragmentDraft,
-  onDraft,
-  onStep,
-  onFinish,
+  onFinish: _onFinish,
 }: {
   step: OnboardingStep;
   fragmentDraft: string;
@@ -551,136 +547,33 @@ function OnboardingFlow({
   onStep: (step: OnboardingStep) => void;
   onFinish: () => void;
 }) {
-  const [ageConfirmed, setAgeConfirmed] = useState(false);
-  const steps = [
-    { id: 'landing', label: '01' },
-    { id: 'age', label: '02' },
-    { id: 'prompt', label: '03' },
-    { id: 'done', label: '04' },
-  ] as const;
-  const activeStepIndex =
-    steps.findIndex((item) => item.id === step) === -1
-      ? steps.length - 1
-      : steps.findIndex((item) => item.id === step);
   return (
     <section className="onboarding-shell">
       <div className="onboarding-card">
-        <div className="onboarding-status">
-          <span>9:41</span>
-          <span className="onboarding-signal" aria-hidden="true" />
-        </div>
-        <div className="onboarding-progress">
-          {steps.map((item, index) => (
-            <span
-              key={item.id}
-              className={cx(
-                'onboarding-step',
-                index <= activeStepIndex && 'onboarding-step-active',
-              )}
-            >
-              {item.label}
-            </span>
-          ))}
-        </div>
-        {step === 'landing' && (
-          <div className="onboarding-pane onboarding-door-pane">
-            <div className="onboarding-door-mark">SELE</div>
-            <div className="onboarding-door-visual" aria-hidden="true">
-              <span />
-            </div>
-            <div className="onboarding-door-copy">
-              <h1>
-                有些人，
-                <br />
-                适合晚一点看见。
-              </h1>
-              <i />
-              <p>
-                先认识一点，
-                <br />
-                再决定要不要靠近。
-              </p>
-            </div>
-            <button className="pill-primary onboarding-main-cta" onClick={() => onStep('age')}>
-              开始第一次体验
-              <ArrowRight className="h-4 w-4" />
-            </button>
-            <button className="onboarding-text-link" type="button">
-              了解 SELE
-            </button>
+        <div className="onboarding-pane onboarding-door-pane">
+          <div className="onboarding-door-mark">SELE</div>
+          <div className="onboarding-door-visual" aria-hidden="true">
+            <span />
           </div>
-        )}
-        {step === 'age' && (
-          <div className="onboarding-pane onboarding-age-pane">
-            <button className="onboarding-back" onClick={() => onStep('landing')}>
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <div className="onboarding-age-badge">18+</div>
+          <div className="onboarding-door-copy">
             <h1>
-              SELE 是 18+
+              有些人，
               <br />
-              的空间。
+              适合晚一点看见。
             </h1>
-            <i />
             <p>
-              认真表达，
+              先认识一点，
               <br />
-              也认真靠近。
+              再决定要不要靠近。
             </p>
-            <label className="onboarding-check">
-              <input
-                type="checkbox"
-                checked={ageConfirmed}
-                onChange={(event) => setAgeConfirmed(event.target.checked)}
-              />
-              <span />
-              我已满 18 岁，并同意以尊重的方式参与。
-            </label>
-            <button
-              className="pill-primary onboarding-main-cta"
-              disabled={!ageConfirmed}
-              onClick={() => onStep('prompt')}
-            >
-              进入
-            </button>
-            <small className="onboarding-footnote">未成年人不可进入</small>
           </div>
-        )}
-        {step === 'prompt' && (
-          <div className="onboarding-pane onboarding-prompt-pane">
-            <button className="onboarding-back" onClick={() => onStep('age')}>
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <h1>先留下一件小事。</h1>
-            <p>
-              不用介绍完整的你，
-              <br />
-              只留一个真实的片刻。
-            </p>
-            <textarea
-              value={fragmentDraft}
-              onChange={(event) => onDraft(event.target.value)}
-              className="onboarding-textarea"
-              maxLength={120}
-              placeholder="最近让你停顿三秒的一件事。"
-            />
-            <div className="onboarding-input-meta">
-              <span>
-                <LockKeyhole className="h-3.5 w-3.5" />
-                它只会用于匹配，不会公开展示。
-              </span>
-              <span>{fragmentDraft.length}/120</span>
-            </div>
-            <button
-              className="pill-primary onboarding-main-cta"
-              disabled={!fragmentDraft.trim()}
-              onClick={onFinish}
-            >
-              放进盒子
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-        )}
+          <button className="pill-primary onboarding-main-cta" type="button">
+            开始第一次体验 →
+          </button>
+          <button className="onboarding-text-link" type="button">
+            了解 SELE
+          </button>
+        </div>
       </div>
     </section>
   );
