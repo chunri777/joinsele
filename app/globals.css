@@ -4213,8 +4213,8 @@ button {
     min-height: 100dvh;
     overflow: hidden;
     background:
-      radial-gradient(circle at 76% 47%, rgb(255 238 210 / 2.2%), transparent 18%),
-      radial-gradient(circle at 12% 84%, rgb(255 255 255 / 1.5%), transparent 24%),
+      radial-gradient(circle at 74% 43%, rgb(255 238 210 / 1.35%), transparent 13%),
+      radial-gradient(circle at 20% 86%, rgb(255 255 255 / 0.7%), transparent 18%),
       #050505;
     padding: 0;
   }
@@ -4249,8 +4249,8 @@ button {
     position: absolute;
     top: calc(env(safe-area-inset-top) + 72px);
     left: 28px;
-    z-index: 3;
-    color: rgb(255 255 255 / 86%);
+    z-index: 5;
+    color: rgb(255 255 255 / 76%);
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 8px;
@@ -4278,24 +4278,63 @@ button {
     border: 0;
     border-radius: 999px;
     box-shadow:
-      0 0 18px rgb(255 220 180 / 18%),
-      0 0 54px rgb(255 220 180 / 7%);
+      0 0 16px rgb(255 220 180 / 16%),
+      0 0 42px rgb(255 220 180 / 4.5%);
     opacity: 0.85;
     pointer-events: none;
   }
 
   .onboarding-door-visual::before,
-  .onboarding-door-visual::after,
+  .onboarding-door-visual::after {
+    position: absolute;
+    left: 50%;
+    display: block;
+    height: 1px;
+    content: "";
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+
+  .onboarding-door-visual::before {
+    top: 0;
+    width: 46px;
+    background: linear-gradient(
+      90deg,
+      rgb(255 238 210 / 0%),
+      rgb(255 238 210 / 12%),
+      rgb(255 238 210 / 28%),
+      rgb(255 238 210 / 12%),
+      rgb(255 238 210 / 0%)
+    );
+    box-shadow: 0 0 14px rgb(255 220 180 / 8%);
+    opacity: 0.52;
+  }
+
+  .onboarding-door-visual::after {
+    bottom: 0;
+    width: 64px;
+    background: linear-gradient(
+      90deg,
+      rgb(255 238 210 / 0%),
+      rgb(255 238 210 / 9%),
+      rgb(255 238 210 / 20%),
+      rgb(255 238 210 / 9%),
+      rgb(255 238 210 / 0%)
+    );
+    box-shadow: 0 8px 26px rgb(255 220 180 / 8%);
+    opacity: 0.36;
+  }
+
   .onboarding-door-visual span {
     display: none;
   }
 
   .onboarding-door-copy {
     position: absolute;
-    top: clamp(320px, 52vh, 440px);
+    top: clamp(292px, 48.6vh, 412px);
     right: 28px;
     left: 28px;
-    z-index: 3;
+    z-index: 5;
     display: grid;
     gap: 28px;
     margin: 0;
@@ -4324,23 +4363,24 @@ button {
   .onboarding-main-cta,
   .onboarding-shell .pill-primary.onboarding-main-cta {
     position: absolute;
-    right: 24px;
+    right: 28px;
     bottom: calc(env(safe-area-inset-bottom) + 64px);
-    left: 24px;
-    z-index: 4;
+    left: 28px;
+    z-index: 10;
     width: auto;
     height: 52px;
     min-height: 52px;
     border: 0;
     border-radius: 999px;
-    background: rgb(255 255 255 / 94%);
+    background: rgb(255 255 255 / 92%);
     color: #111111;
     font-size: 15px;
     font-weight: 500;
     letter-spacing: 0;
     box-shadow:
       0 14px 38px rgb(0 0 0 / 36%),
-      inset 0 1px 0 rgb(255 255 255 / 72%);
+      inset 0 1px 0 rgb(255 255 255 / 60%);
+    pointer-events: auto;
   }
 
   .onboarding-text-link {
@@ -4348,7 +4388,7 @@ button {
     right: 0;
     bottom: calc(env(safe-area-inset-bottom) + 24px);
     left: 0;
-    z-index: 4;
+    z-index: 5;
     width: max-content;
     margin: 0 auto;
     border: 0;

@@ -567,7 +567,11 @@ function OnboardingFlow({
               再决定要不要靠近。
             </p>
           </div>
-          <button className="pill-primary onboarding-main-cta" type="button">
+          <button
+            className="pill-primary onboarding-main-cta"
+            type="button"
+            onClick={_onFinish}
+          >
             开始第一次体验 →
           </button>
           <button className="onboarding-text-link" type="button">
