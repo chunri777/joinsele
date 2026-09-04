@@ -169,22 +169,58 @@ button {
     display: grid;
     min-height: 100svh;
     place-items: center;
-    padding: max(1rem, env(safe-area-inset-top)) 1rem
-      max(1rem, env(safe-area-inset-bottom));
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 70% 35%, rgba(255, 255, 255, 0.08), transparent 24%),
+      radial-gradient(circle at 50% 86%, rgba(242, 196, 184, 0.16), transparent 26%),
+      #050505;
+    padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem
+      max(1.25rem, env(safe-area-inset-bottom));
   }
 
   .onboarding-card {
-    width: min(100%, 980px);
-    border: 1px solid rgba(17, 17, 17, 0.08);
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.72);
-    padding: clamp(0.9rem, 2.5vw, 1.65rem);
-    box-shadow: 0 24px 80px rgb(0 0 0 / 8%);
-    backdrop-filter: blur(18px);
+    position: relative;
+    width: min(100%, 390px);
+    min-height: min(92svh, 760px);
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 16%);
+    border-radius: 28px;
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 4%), transparent 42%),
+      #080808;
+    padding: 1.5rem;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 9%),
+      0 32px 90px rgb(0 0 0 / 42%);
+  }
+
+  .onboarding-status {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #f2f2f2;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .onboarding-signal {
+    width: 3.1rem;
+    height: 0.72rem;
+    background:
+      linear-gradient(90deg, transparent 0 44%, #f2f2f2 44% 50%, transparent 50%),
+      radial-gradient(circle at 72% 50%, #f2f2f2 0 0.14rem, transparent 0.16rem),
+      linear-gradient(90deg, #f2f2f2 0 0.9rem, transparent 0.9rem 1.25rem, #f2f2f2 1.25rem 2rem, transparent 2rem);
+    opacity: 0.9;
   }
 
   .onboarding-progress {
-    display: grid;
+    position: absolute;
+    top: 1rem;
+    right: 1.4rem;
+    z-index: 4;
+    display: none;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.5rem;
     margin-top: 1rem;
@@ -206,46 +242,49 @@ button {
   }
 
   .onboarding-pane {
+    position: relative;
+    z-index: 2;
     display: grid;
-    gap: 0.85rem;
-    margin-top: 1rem;
-    border-radius: 16px;
-    background:
-      linear-gradient(
-        145deg,
-        rgba(0, 0, 0, 0.045),
-        rgba(255, 255, 255, 0.72)
-      ),
-      rgba(255, 255, 255, 0.68);
-    padding: clamp(1rem, 3.4vw, 1.85rem);
+    min-height: calc(min(92svh, 760px) - 3rem);
+    align-content: end;
+    gap: 1rem;
+    margin-top: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
   }
 
   .onboarding-pane h1 {
-    max-width: 760px;
-    color: var(--wine);
-    font-size: clamp(1.7rem, 5.2vw, 3.55rem);
-    font-weight: 560;
+    max-width: 17rem;
+    color: #f2f2f2;
+    font-size: 2.12rem;
+    font-weight: 700;
     letter-spacing: 0;
-    line-height: 0.98;
+    line-height: 1.22;
   }
 
   .onboarding-pane p {
-    max-width: 680px;
-    color: #3f3f3f;
-    font-size: 0.94rem;
-    line-height: 1.68;
+    max-width: 15.5rem;
+    color: #a6a6a6;
+    font-size: 1rem;
+    line-height: 1.75;
   }
 
   .onboarding-textarea {
-    min-height: 128px;
+    min-height: 12.2rem;
     resize: none;
-    border: 1px solid rgba(24, 24, 24, 0.1);
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.82);
-    padding: 0.85rem;
-    font-size: 0.94rem;
-    line-height: 1.62;
+    border: 1px solid rgb(255 255 255 / 18%);
+    border-radius: 18px;
+    background: rgb(255 255 255 / 4%);
+    padding: 1.05rem;
+    color: #f2f2f2;
+    font-size: 0.92rem;
+    line-height: 1.72;
     outline: none;
+  }
+
+  .onboarding-textarea::placeholder {
+    color: rgb(166 166 166 / 68%);
   }
 
   .onboarding-mini-card {
@@ -272,6 +311,235 @@ button {
   .onboarding-mini-card small {
     color: var(--soft-ink);
     line-height: 1.6;
+  }
+
+  .onboarding-door-pane {
+    isolation: isolate;
+  }
+
+  .onboarding-door-mark {
+    position: absolute;
+    top: 3.2rem;
+    left: 0;
+    z-index: 3;
+    color: #f2f2f2;
+    font-size: 1.05rem;
+    font-weight: 560;
+    letter-spacing: 0.42em;
+  }
+
+  .onboarding-door-visual {
+    position: absolute;
+    inset: 4.4rem -1.5rem 7.6rem;
+    z-index: -1;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 51% 42%, rgba(255, 235, 216, 0.38), transparent 7%),
+      radial-gradient(ellipse at 51% 67%, rgba(242, 196, 184, 0.28), transparent 18%),
+      linear-gradient(90deg, transparent 0 48.8%, rgba(255, 235, 216, 0.98) 49.6% 50.4%, transparent 51.2%),
+      linear-gradient(112deg, transparent 0 50%, rgba(255, 255, 255, 0.06) 50.2%, transparent 72%),
+      linear-gradient(248deg, transparent 0 50%, rgba(255, 255, 255, 0.05) 50.2%, transparent 72%);
+    filter: saturate(0.9);
+  }
+
+  .onboarding-door-visual::before,
+  .onboarding-door-visual::after {
+    position: absolute;
+    top: 10%;
+    bottom: 0;
+    width: 50%;
+    background: linear-gradient(180deg, #101010, #040404);
+    content: '';
+  }
+
+  .onboarding-door-visual::before {
+    left: 0;
+    transform: skewY(13deg);
+    transform-origin: right center;
+  }
+
+  .onboarding-door-visual::after {
+    right: 0;
+    transform: skewY(-13deg);
+    transform-origin: left center;
+  }
+
+  .onboarding-door-visual span {
+    position: absolute;
+    left: 34%;
+    right: 34%;
+    bottom: 0;
+    height: 34%;
+    background: linear-gradient(180deg, rgba(242, 196, 184, 0.24), transparent);
+    filter: blur(14px);
+  }
+
+  .onboarding-door-copy {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .onboarding-door-copy i,
+  .onboarding-age-pane i {
+    width: 1.9rem;
+    height: 1px;
+    background: #f2c4b8;
+  }
+
+  .onboarding-main-cta {
+    width: 100%;
+    min-height: 3.45rem;
+    border-radius: 999px;
+  }
+
+  .onboarding-shell .pill-primary {
+    background:
+      linear-gradient(90deg, #f2c4b8, #fff5f1);
+    color: #111111;
+    box-shadow: 0 18px 44px rgb(242 196 184 / 18%);
+  }
+
+  .onboarding-shell .pill-primary:hover {
+    background:
+      linear-gradient(90deg, #f2c4b8, #ffffff);
+  }
+
+  .onboarding-shell .pill-primary:disabled {
+    background: rgb(255 255 255 / 14%);
+    color: rgb(242 242 242 / 42%);
+  }
+
+  .onboarding-text-link {
+    justify-self: center;
+    border: 0;
+    background: transparent;
+    color: rgb(166 166 166 / 76%);
+    font-size: 0.82rem;
+  }
+
+  .onboarding-back {
+    position: absolute;
+    top: 2.4rem;
+    left: 0;
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: #f2f2f2;
+  }
+
+  .onboarding-age-pane,
+  .onboarding-prompt-pane {
+    align-content: center;
+  }
+
+  .onboarding-age-pane {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .onboarding-age-badge {
+    display: grid;
+    width: 4rem;
+    height: 4.2rem;
+    place-items: center;
+    margin-bottom: 1.6rem;
+    color: #f2c4b8;
+    font-size: 1.1rem;
+    border: 1px solid #f2c4b8;
+    border-radius: 58% 58% 64% 64%;
+    box-shadow: 0 0 24px rgb(242 196 184 / 18%);
+  }
+
+  .onboarding-age-pane h1 {
+    max-width: 15rem;
+    font-size: 1.86rem;
+    font-weight: 600;
+    line-height: 1.34;
+  }
+
+  .onboarding-age-pane p {
+    max-width: 11rem;
+  }
+
+  .onboarding-age-pane i {
+    justify-self: center;
+  }
+
+  .onboarding-check {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.82rem;
+    width: 100%;
+    margin-top: 1.35rem;
+    border: 1px solid rgb(255 255 255 / 16%);
+    border-radius: 18px;
+    background: rgb(255 255 255 / 4%);
+    padding: 1.05rem;
+    color: rgb(242 242 242 / 78%);
+    text-align: left;
+    font-size: 0.92rem;
+    line-height: 1.75;
+  }
+
+  .onboarding-check input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .onboarding-check span {
+    display: block;
+    width: 1.28rem;
+    height: 1.28rem;
+    border: 1px solid rgb(242 242 242 / 35%);
+    border-radius: 5px;
+    background: rgb(255 255 255 / 5%);
+  }
+
+  .onboarding-check input:checked + span {
+    border-color: #f2c4b8;
+    background:
+      linear-gradient(135deg, #f2c4b8, #fff5f1);
+    box-shadow: inset 0 0 0 0.28rem #121212;
+  }
+
+  .onboarding-footnote {
+    justify-self: center;
+    color: rgb(166 166 166 / 68%);
+    font-size: 0.8rem;
+  }
+
+  .onboarding-prompt-pane {
+    align-content: center;
+  }
+
+  .onboarding-prompt-pane h1 {
+    font-size: 1.82rem;
+    font-weight: 650;
+  }
+
+  .onboarding-prompt-pane p {
+    margin-bottom: 0.5rem;
+  }
+
+  .onboarding-input-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: rgb(166 166 166 / 72%);
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .onboarding-input-meta span:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
   }
 
   .desktop-sidebar,
@@ -3586,14 +3854,15 @@ button {
 
     .onboarding-shell {
       place-items: stretch;
-      padding-right: 0.75rem;
-      padding-left: 0.75rem;
+      padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem
+        max(1.25rem, env(safe-area-inset-bottom));
     }
 
     .onboarding-card {
       align-self: center;
-      border-radius: 18px;
-      padding: 0.72rem;
+      min-height: min(92svh, 760px);
+      border-radius: 28px;
+      padding: 1.5rem;
     }
 
     .onboarding-progress {
@@ -3606,18 +3875,19 @@ button {
     }
 
     .onboarding-pane {
-      border-radius: 16px;
-      padding: 0.86rem;
+      min-height: calc(min(92svh, 760px) - 3rem);
+      border-radius: 0;
+      padding: 0;
     }
 
     .onboarding-pane h1 {
-      font-size: 1.68rem;
-      line-height: 1.04;
+      font-size: 2.12rem;
+      line-height: 1.22;
     }
 
     .onboarding-textarea {
-      min-height: 116px;
-      border-radius: 14px;
+      min-height: 12.2rem;
+      border-radius: 18px;
     }
 
     .mobile-topbar {
@@ -3895,6 +4165,11 @@ button {
     }
 
     .onboarding-pane h1 {
+      font-size: 2rem;
+    }
+
+    .onboarding-age-pane h1,
+    .onboarding-prompt-pane h1 {
       font-size: 1.8rem;
     }
 

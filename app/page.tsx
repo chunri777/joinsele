@@ -7,12 +7,10 @@ import {
   ArrowRight,
   Ban,
   Bell,
-  Check,
   ChevronLeft,
   Copy,
   Feather,
   Flag,
-  Gift,
   Heart,
   HeartHandshake,
   Headphones,
@@ -70,7 +68,7 @@ const stageOrder = [
   'closer',
   'reveal',
 ] as const;
-type OnboardingStep = 'landing' | 'age' | 'prompt' | 'card' | 'ready' | 'done';
+type OnboardingStep = 'landing' | 'age' | 'prompt' | 'done';
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ');
@@ -553,32 +551,31 @@ function OnboardingFlow({
   onStep: (step: OnboardingStep) => void;
   onFinish: () => void;
 }) {
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
   const steps = [
-    { id: 'landing', label: '开始' },
-    { id: 'age', label: '18+' },
-    { id: 'prompt', label: '碎片' },
-    { id: 'card', label: '资料' },
-    { id: 'ready', label: '拆盒' },
+    { id: 'landing', label: '01' },
+    { id: 'age', label: '02' },
+    { id: 'prompt', label: '03' },
+    { id: 'done', label: '04' },
   ] as const;
+  const activeStepIndex =
+    steps.findIndex((item) => item.id === step) === -1
+      ? steps.length - 1
+      : steps.findIndex((item) => item.id === step);
   return (
     <section className="onboarding-shell">
       <div className="onboarding-card">
-        <div className="brand-lockup">
-          <span className="brand-mark">S</span>
-          <span>
-            <span className="block text-sm font-medium">SELE</span>
-            <span className="block text-xs text-[var(--muted-ink)]">
-              先认识一点，再靠近一点
-            </span>
-          </span>
+        <div className="onboarding-status">
+          <span>9:41</span>
+          <span className="onboarding-signal" aria-hidden="true" />
         </div>
         <div className="onboarding-progress">
-          {steps.map((item) => (
+          {steps.map((item, index) => (
             <span
               key={item.id}
               className={cx(
                 'onboarding-step',
-                step === item.id && 'onboarding-step-active',
+                index <= activeStepIndex && 'onboarding-step-active',
               )}
             >
               {item.label}
@@ -586,86 +583,101 @@ function OnboardingFlow({
           ))}
         </div>
         {step === 'landing' && (
-          <div className="onboarding-pane">
-            <p className="eyebrow">SELE / Heartbox</p>
-            <h1>有些人，适合晚一点看见。</h1>
-            <p>
-              先认识一点，再决定要不要靠近。写下一段真实片刻，拆开一个未知的人。
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <button className="pill-primary" onClick={() => onStep('age')}>
-                开始第一次体验
-                <ArrowRight className="h-4 w-4" />
-              </button>
-              <Link className="pill-secondary" href="beta">
-                查看 Private Beta
-                <Sparkles className="h-4 w-4" />
-              </Link>
+          <div className="onboarding-pane onboarding-door-pane">
+            <div className="onboarding-door-mark">SELE</div>
+            <div className="onboarding-door-visual" aria-hidden="true">
+              <span />
             </div>
-          </div>
-        )}
-        {step === 'age' && (
-          <div className="onboarding-pane">
-            <p className="eyebrow">Adults only</p>
-            <h1>SELE 只面向 18+ 成年用户</h1>
-            <p>
-              这里会保护真实身份、联系方式和精确位置。想看见真实的彼此，必须双方都同意。
-            </p>
-            <button className="pill-primary" onClick={() => onStep('prompt')}>
-              我已满 18 岁，继续
+            <div className="onboarding-door-copy">
+              <h1>
+                有些人，
+                <br />
+                适合晚一点看见。
+              </h1>
+              <i />
+              <p>
+                先认识一点，
+                <br />
+                再决定要不要靠近。
+              </p>
+            </div>
+            <button className="pill-primary onboarding-main-cta" onClick={() => onStep('age')}>
+              开始第一次体验
               <ArrowRight className="h-4 w-4" />
+            </button>
+            <button className="onboarding-text-link" type="button">
+              了解 SELE
             </button>
           </div>
         )}
+        {step === 'age' && (
+          <div className="onboarding-pane onboarding-age-pane">
+            <button className="onboarding-back" onClick={() => onStep('landing')}>
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <div className="onboarding-age-badge">18+</div>
+            <h1>
+              SELE 是 18+
+              <br />
+              的空间。
+            </h1>
+            <i />
+            <p>
+              认真表达，
+              <br />
+              也认真靠近。
+            </p>
+            <label className="onboarding-check">
+              <input
+                type="checkbox"
+                checked={ageConfirmed}
+                onChange={(event) => setAgeConfirmed(event.target.checked)}
+              />
+              <span />
+              我已满 18 岁，并同意以尊重的方式参与。
+            </label>
+            <button
+              className="pill-primary onboarding-main-cta"
+              disabled={!ageConfirmed}
+              onClick={() => onStep('prompt')}
+            >
+              进入
+            </button>
+            <small className="onboarding-footnote">未成年人不可进入</small>
+          </div>
+        )}
         {step === 'prompt' && (
-          <div className="onboarding-pane">
-            <p className="eyebrow">Daily prompt</p>
-            <h1>{dailyPrompt.title}</h1>
-            <p>写一个具体片刻就好，不用介绍全部的你。</p>
+          <div className="onboarding-pane onboarding-prompt-pane">
+            <button className="onboarding-back" onClick={() => onStep('age')}>
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <h1>先留下一件小事。</h1>
+            <p>
+              不用介绍完整的你，
+              <br />
+              只留一个真实的片刻。
+            </p>
             <textarea
               value={fragmentDraft}
               onChange={(event) => onDraft(event.target.value)}
               className="onboarding-textarea"
-              placeholder="比如：下班路上有人把伞往陌生人那边偏了一点。"
+              maxLength={120}
+              placeholder="最近让你停顿三秒的一件事。"
             />
+            <div className="onboarding-input-meta">
+              <span>
+                <LockKeyhole className="h-3.5 w-3.5" />
+                它只会用于匹配，不会公开展示。
+              </span>
+              <span>{fragmentDraft.length}/120</span>
+            </div>
             <button
-              className="pill-primary"
+              className="pill-primary onboarding-main-cta"
               disabled={!fragmentDraft.trim()}
-              onClick={() => onStep('card')}
+              onClick={onFinish}
             >
-              生成人格碎片
-              <Sparkles className="h-4 w-4" />
-            </button>
-          </div>
-        )}
-        {step === 'card' && (
-          <div className="onboarding-pane">
-            <p className="eyebrow">Personality card</p>
-            <h1>先这样匿名出现</h1>
-            <p>第一轮只保留最少信息。剩下的，可以等你愿意时再补。</p>
-            <div className="onboarding-mini-card">
-              <span>月台来信</span>
-              <strong>慢热观察者</strong>
-              <small>25-29 · 上海 · 独立电影 / 城市散步 / 边界感</small>
-            </div>
-            <button className="pill-primary" onClick={() => onStep('ready')}>
-              领取今日免费拆盒
-              <Gift className="h-4 w-4" />
-            </button>
-          </div>
-        )}
-        {step === 'ready' && (
-          <div className="onboarding-pane">
-            <p className="eyebrow">Ready</p>
-            <h1>第一只盲盒已经准备好了</h1>
-            <p>你有 3 次今日免费拆盒。先打开一只，看看有没有想留下回声的人。</p>
-            <div className="state-strip success-state">
-              <Check className="h-4 w-4" />
-              人格碎片已进入此刻，盲盒推荐已准备好。
-            </div>
-            <button className="pill-primary" onClick={onFinish}>
-              去拆第一个盲盒
-              <PackageOpen className="h-4 w-4" />
+              放进盒子
+              <ArrowRight className="h-4 w-4" />
             </button>
           </div>
         )}
