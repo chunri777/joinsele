@@ -4194,6 +4194,14 @@ button {
     padding: 0;
   }
 
+  .onboarding-age-pane,
+  .onboarding-prompt-pane {
+    box-sizing: border-box;
+    min-height: 100dvh;
+    padding: max(1.35rem, env(safe-area-inset-top)) 1.35rem
+      max(1.35rem, env(safe-area-inset-bottom));
+  }
+
   #heartbox-shell:has(.onboarding-shell) {
     width: 100%;
     min-height: 100dvh;
@@ -4213,8 +4221,8 @@ button {
     min-height: 100dvh;
     overflow: hidden;
     background:
-      radial-gradient(circle at 74% 43%, rgb(255 238 210 / 1.35%), transparent 13%),
-      radial-gradient(circle at 20% 86%, rgb(255 255 255 / 0.7%), transparent 18%),
+      radial-gradient(circle at 72% 45%, rgb(255 238 210 / 0.9%), transparent 11%),
+      radial-gradient(circle at 18% 86%, rgb(255 255 255 / 0.35%), transparent 14%),
       #050505;
     padding: 0;
   }
@@ -4232,7 +4240,7 @@ button {
     box-shadow: none;
   }
 
-  .onboarding-pane {
+  .onboarding-door-pane {
     position: relative;
     z-index: 2;
     display: block;
@@ -4260,7 +4268,7 @@ button {
   .onboarding-door-visual {
     position: absolute;
     top: 25%;
-    right: 25%;
+    right: 28%;
     z-index: 1;
     width: 1px;
     height: 46vh;
@@ -4297,36 +4305,53 @@ button {
 
   .onboarding-door-visual::before {
     top: 0;
-    width: 46px;
+    width: 44px;
     background: linear-gradient(
       90deg,
       rgb(255 238 210 / 0%),
-      rgb(255 238 210 / 12%),
-      rgb(255 238 210 / 28%),
-      rgb(255 238 210 / 12%),
+      rgb(255 238 210 / 9%),
+      rgb(255 238 210 / 22%),
+      rgb(255 238 210 / 9%),
       rgb(255 238 210 / 0%)
     );
     box-shadow: 0 0 14px rgb(255 220 180 / 8%);
-    opacity: 0.52;
+    opacity: 0.46;
   }
 
   .onboarding-door-visual::after {
     bottom: 0;
-    width: 64px;
+    width: 56px;
     background: linear-gradient(
       90deg,
       rgb(255 238 210 / 0%),
-      rgb(255 238 210 / 9%),
-      rgb(255 238 210 / 20%),
-      rgb(255 238 210 / 9%),
+      rgb(255 238 210 / 6%),
+      rgb(255 238 210 / 15%),
+      rgb(255 238 210 / 6%),
       rgb(255 238 210 / 0%)
     );
     box-shadow: 0 8px 26px rgb(255 220 180 / 8%);
-    opacity: 0.36;
+    opacity: 0.3;
   }
 
   .onboarding-door-visual span {
-    display: none;
+    position: absolute;
+    right: -10px;
+    bottom: -16px;
+    display: block;
+    width: 210px;
+    height: 42px;
+    background: linear-gradient(
+      270deg,
+      rgb(255 232 205 / 14%),
+      rgb(255 232 205 / 5%),
+      rgb(255 232 205 / 0%)
+    );
+    border-radius: 999px;
+    filter: blur(14px);
+    opacity: 0.58;
+    pointer-events: none;
+    transform: rotate(22deg) skewX(-8deg);
+    transform-origin: right center;
   }
 
   .onboarding-door-copy {
@@ -4411,7 +4436,7 @@ button {
     }
 
     .onboarding-door-visual {
-      right: 27%;
+      right: 28%;
     }
 
     .onboarding-main-cta,
