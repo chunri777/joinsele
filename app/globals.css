@@ -4404,27 +4404,60 @@ button {
     width: 210px;
     height: 54px;
     background: transparent;
-    filter: blur(14px);
     opacity: 1;
     pointer-events: none;
     transform: rotate(-25deg);
     transform-origin: right center;
   }
 
-  .onboarding-door-visual span::before {
+  .onboarding-door-visual span i {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to right,
-      rgb(255 225 190 / 0%) 0%,
-      rgb(255 225 190 / 10%) 30%,
-      rgb(255 225 190 / 26%) 62%,
-      rgb(255 225 190 / 42%) 84%,
-      rgb(255 225 190 / 65%) 100%
-    );
-    clip-path: polygon(0 0%, 100% 31%, 100% 69%, 0 100%);
-    content: "";
+    right: 0;
+    top: 50%;
+    display: block;
+    transform: translateY(-50%);
     pointer-events: none;
+  }
+
+  .onboarding-door-visual span i:nth-child(1) {
+    width: 68px;
+    height: 20px;
+    background: linear-gradient(
+      to left,
+      rgb(255 225 190 / 16%) 0%,
+      rgb(255 225 190 / 14%) 34%,
+      rgb(255 225 190 / 11%) 100%
+    );
+    clip-path: polygon(100% 25%, 100% 75%, 0 0, 0 100%);
+    filter: blur(8px);
+  }
+
+  .onboarding-door-visual span i:nth-child(2) {
+    right: 62px;
+    width: 78px;
+    height: 36px;
+    background: linear-gradient(
+      to left,
+      rgb(255 225 190 / 11%) 0%,
+      rgb(255 225 190 / 8%) 45%,
+      rgb(255 225 190 / 5%) 100%
+    );
+    clip-path: polygon(100% 25%, 100% 75%, 0 0, 0 100%);
+    filter: blur(13px);
+  }
+
+  .onboarding-door-visual span i:nth-child(3) {
+    right: 136px;
+    width: 74px;
+    height: 50px;
+    background: linear-gradient(
+      to left,
+      rgb(255 225 190 / 5%) 0%,
+      rgb(255 225 190 / 2.5%) 42%,
+      rgb(255 225 190 / 0%) 100%
+    );
+    clip-path: polygon(100% 20%, 100% 80%, 0 0, 0 100%);
+    filter: blur(21px);
   }
 
   .onboarding-door-copy {

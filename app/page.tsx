@@ -571,7 +571,11 @@ function OnboardingFlow({
               </span>
             </div>
             <div className="onboarding-door-visual" aria-hidden="true">
-              <span />
+              <span>
+                <i />
+                <i />
+                <i />
+              </span>
             </div>
             <div className="onboarding-door-copy">
               <h1>
