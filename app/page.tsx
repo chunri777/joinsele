@@ -558,7 +558,13 @@ function OnboardingFlow({
       <div className="onboarding-card">
         {step === 'landing' && (
           <div className="onboarding-pane onboarding-door-pane">
-            <div className="onboarding-door-mark">SELE</div>
+            <div className="onboarding-door-mark">
+              <span className="onboarding-brand-symbol" aria-hidden="true" />
+              <span className="onboarding-brand-type">
+                <strong>SELE</strong>
+                <small>Heartbox</small>
+              </span>
+            </div>
             <div className="onboarding-door-visual" aria-hidden="true">
               <span />
             </div>
