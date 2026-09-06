@@ -4206,7 +4206,7 @@ button {
     width: 100%;
     min-height: 100dvh;
     overflow: hidden;
-    background: #050505;
+    background: #000000;
   }
 
   #heartbox-shell:has(.onboarding-shell) .grain {
@@ -4221,9 +4221,8 @@ button {
     min-height: 100dvh;
     overflow: hidden;
     background:
-      radial-gradient(circle at 72% 45%, rgb(255 238 210 / 0.9%), transparent 11%),
-      radial-gradient(circle at 18% 86%, rgb(255 255 255 / 0.35%), transparent 14%),
-      #050505;
+      radial-gradient(circle at 72% 45%, rgb(255 225 185 / 0.45%), transparent 8%),
+      #000000;
     padding: 0;
   }
 
@@ -4253,6 +4252,28 @@ button {
     padding: 0;
   }
 
+  .onboarding-door-pane::before {
+    position: absolute;
+    top: calc(25% + min(46vh, 430px) - 26px);
+    right: 24%;
+    z-index: 1;
+    width: 240px;
+    height: 48px;
+    border-radius: 999px;
+    background: linear-gradient(
+      270deg,
+      rgb(255 215 170 / 18%),
+      rgb(255 215 170 / 6%),
+      rgb(255 215 170 / 0%)
+    );
+    content: "";
+    filter: blur(18px);
+    opacity: 0.72;
+    pointer-events: none;
+    transform: rotate(23deg) skewX(-8deg);
+    transform-origin: right center;
+  }
+
   .onboarding-door-mark {
     position: absolute;
     top: calc(env(safe-area-inset-top) + 72px);
@@ -4270,25 +4291,25 @@ button {
     top: 25%;
     right: 28%;
     z-index: 1;
-    width: 1px;
+    width: 1.5px;
     height: 46vh;
     min-height: 320px;
     max-height: 430px;
     overflow: visible;
     background: linear-gradient(
       to bottom,
-      rgb(255 238 210 / 0%),
-      rgb(255 238 210 / 55%),
-      rgb(255 238 210 / 95%),
-      rgb(255 238 210 / 55%),
-      rgb(255 238 210 / 0%)
+      rgb(255 225 185 / 0%),
+      rgb(255 225 185 / 42%),
+      rgb(255 225 185 / 86%),
+      rgb(255 225 185 / 48%),
+      rgb(255 225 185 / 0%)
     );
     border: 0;
     border-radius: 999px;
     box-shadow:
-      0 0 16px rgb(255 220 180 / 16%),
-      0 0 42px rgb(255 220 180 / 4.5%);
-    opacity: 0.85;
+      0 0 10px rgb(255 220 176 / 20%),
+      0 0 28px rgb(255 215 170 / 6%);
+    opacity: 0.9;
     pointer-events: none;
   }
 
@@ -4304,53 +4325,55 @@ button {
   }
 
   .onboarding-door-visual::before {
-    top: 0;
-    width: 44px;
+    top: 1px;
+    width: 58px;
     background: linear-gradient(
       90deg,
-      rgb(255 238 210 / 0%),
-      rgb(255 238 210 / 9%),
-      rgb(255 238 210 / 22%),
-      rgb(255 238 210 / 9%),
-      rgb(255 238 210 / 0%)
+      rgb(255 225 185 / 0%),
+      rgb(255 225 185 / 18%),
+      rgb(255 225 185 / 34%),
+      rgb(255 225 185 / 12%),
+      rgb(255 225 185 / 0%)
     );
-    box-shadow: 0 0 14px rgb(255 220 180 / 8%);
-    opacity: 0.46;
+    box-shadow: 0 0 16px rgb(255 220 176 / 10%);
+    filter: blur(1px);
+    opacity: 0.56;
   }
 
   .onboarding-door-visual::after {
-    bottom: 0;
-    width: 56px;
+    bottom: 1px;
+    width: 70px;
     background: linear-gradient(
       90deg,
-      rgb(255 238 210 / 0%),
-      rgb(255 238 210 / 6%),
-      rgb(255 238 210 / 15%),
-      rgb(255 238 210 / 6%),
-      rgb(255 238 210 / 0%)
+      rgb(255 225 185 / 0%),
+      rgb(255 225 185 / 11%),
+      rgb(255 225 185 / 24%),
+      rgb(255 225 185 / 8%),
+      rgb(255 225 185 / 0%)
     );
-    box-shadow: 0 8px 26px rgb(255 220 180 / 8%);
-    opacity: 0.3;
+    box-shadow: 0 8px 24px rgb(255 215 170 / 9%);
+    filter: blur(1.2px);
+    opacity: 0.42;
   }
 
   .onboarding-door-visual span {
     position: absolute;
-    right: -10px;
-    bottom: -16px;
+    right: -7px;
+    bottom: -24px;
     display: block;
-    width: 210px;
-    height: 42px;
+    width: 238px;
+    height: 48px;
     background: linear-gradient(
       270deg,
-      rgb(255 232 205 / 14%),
-      rgb(255 232 205 / 5%),
-      rgb(255 232 205 / 0%)
+      rgb(255 215 170 / 20%),
+      rgb(255 215 170 / 7%),
+      rgb(255 215 170 / 0%)
     );
     border-radius: 999px;
-    filter: blur(14px);
-    opacity: 0.58;
+    filter: blur(17px);
+    opacity: 0.42;
     pointer-events: none;
-    transform: rotate(22deg) skewX(-8deg);
+    transform: rotate(23deg) skewX(-8deg);
     transform-origin: right center;
   }
 
