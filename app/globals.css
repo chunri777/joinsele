@@ -4333,10 +4333,6 @@ button {
     height: 100%;
     overflow: hidden;
     background-color: #050505;
-    background-image: url("./assets/sele-entry-door-light.png");
-    background-position: 72.3% center;
-    background-repeat: no-repeat;
-    background-size: auto 100%;
     border: 0;
     border-radius: 0;
     box-shadow: none;
@@ -4344,7 +4340,51 @@ button {
     pointer-events: none;
   }
 
-  .onboarding-door-visual::before,
+  .onboarding-door-visual::before {
+    position: absolute;
+    inset: 0;
+    display: block;
+    content: "";
+    background-image: url("./assets/sele-entry-door-light.png");
+    background-position: 72.3% center;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    opacity: 1;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(
+        to right,
+        rgb(0 0 0 / 0%) 0%,
+        rgb(0 0 0 / 100%) 18%,
+        rgb(0 0 0 / 100%) 88%,
+        rgb(0 0 0 / 0%) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        rgb(0 0 0 / 0%) 0%,
+        rgb(0 0 0 / 100%) 12%,
+        rgb(0 0 0 / 100%) 86%,
+        rgb(0 0 0 / 0%) 100%
+      );
+    -webkit-mask-composite: source-in;
+    -webkit-mask-repeat: no-repeat;
+    mask-image: linear-gradient(
+        to right,
+        rgb(0 0 0 / 0%) 0%,
+        rgb(0 0 0 / 100%) 18%,
+        rgb(0 0 0 / 100%) 88%,
+        rgb(0 0 0 / 0%) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        rgb(0 0 0 / 0%) 0%,
+        rgb(0 0 0 / 100%) 12%,
+        rgb(0 0 0 / 100%) 86%,
+        rgb(0 0 0 / 0%) 100%
+      );
+    mask-composite: intersect;
+    mask-repeat: no-repeat;
+  }
+
   .onboarding-door-visual::after {
     display: none;
   }
