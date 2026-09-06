@@ -4285,27 +4285,23 @@ button {
     background: #0d0d0d;
   }
 
-  .onboarding-brand-symbol::before,
-  .onboarding-brand-symbol::after {
+  .onboarding-brand-symbol svg {
     position: absolute;
+    top: 50%;
     left: 50%;
-    width: 13px;
-    height: 9px;
-    border: 1.25px solid rgb(255 255 255 / 72%);
-    content: "";
-    transform: translateX(-50%) rotate(-8deg);
+    width: 20px;
+    height: 20px;
+    overflow: visible;
+    fill: none;
+    stroke: rgb(255 255 255 / 72%);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.35;
+    transform: translate(-50%, -50%);
   }
 
-  .onboarding-brand-symbol::before {
-    top: 7px;
-    border-right-color: transparent;
-    border-radius: 9px 7px 7px 9px;
-  }
-
-  .onboarding-brand-symbol::after {
-    bottom: 7px;
-    border-left-color: transparent;
-    border-radius: 7px 9px 9px 7px;
+  .onboarding-brand-symbol path {
+    vector-effect: non-scaling-stroke;
   }
 
   .onboarding-brand-type {
@@ -4421,9 +4417,10 @@ button {
     background: linear-gradient(
       to right,
       rgb(255 225 190 / 0%) 0%,
-      rgb(255 225 190 / 1%) 42%,
-      rgb(255 225 190 / 5%) 78%,
-      rgb(255 225 190 / 15%) 100%
+      rgb(255 225 190 / 10%) 30%,
+      rgb(255 225 190 / 26%) 62%,
+      rgb(255 225 190 / 42%) 84%,
+      rgb(255 225 190 / 65%) 100%
     );
     clip-path: polygon(0 0%, 100% 31%, 100% 69%, 0 100%);
     content: "";

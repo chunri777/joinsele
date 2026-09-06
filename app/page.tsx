@@ -559,7 +559,12 @@ function OnboardingFlow({
         {step === 'landing' && (
           <div className="onboarding-pane onboarding-door-pane">
             <div className="onboarding-door-mark">
-              <span className="onboarding-brand-symbol" aria-hidden="true" />
+              <span className="onboarding-brand-symbol" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M16.4 5.6C14.4 3.9 11 3.8 8.9 5.5C6.9 7.1 7.1 9.5 9 10.9C10 11.6 11 11.8 12.2 11.8" />
+                  <path d="M11.8 12.2C13 12.2 14 12.4 15 13.1C16.9 14.5 17.1 16.9 15.1 18.5C13 20.2 9.6 20.1 7.6 18.4" />
+                </svg>
+              </span>
               <span className="onboarding-brand-type">
                 <strong>SELE</strong>
                 <small>Heartbox</small>
