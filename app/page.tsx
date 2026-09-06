@@ -570,13 +570,7 @@ function OnboardingFlow({
                 <small>Heartbox</small>
               </span>
             </div>
-            <div className="onboarding-door-visual" aria-hidden="true">
-              <span>
-                <i />
-                <i />
-                <i />
-              </span>
-            </div>
+            <div className="onboarding-door-visual" aria-hidden="true" />
             <div className="onboarding-door-copy">
               <h1>
                 有些人，
