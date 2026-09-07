@@ -4605,6 +4605,134 @@ button {
     opacity: 1;
   }
 
+  /* SELE 03 first moment: a quiet fragment, not a profile form. */
+  .onboarding-prompt-pane {
+    position: relative;
+    isolation: isolate;
+    min-height: 100dvh;
+    align-content: start;
+    justify-items: stretch;
+    gap: 0;
+    overflow: hidden;
+    background: #050505;
+    padding: calc(env(safe-area-inset-top) + 220px) 24px
+      calc(env(safe-area-inset-bottom) + 132px);
+    text-align: left;
+  }
+
+  .onboarding-prompt-pane::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    content: "";
+    background: radial-gradient(circle at 82% 26%, rgb(255 225 190 / 3%), transparent 22%);
+    pointer-events: none;
+  }
+
+  .onboarding-prompt-brand {
+    top: calc(env(safe-area-inset-top) + 30px);
+    left: 24px;
+  }
+
+  .onboarding-prompt-pane .onboarding-back {
+    top: calc(env(safe-area-inset-top) + 78px);
+    left: 24px;
+    z-index: 6;
+    width: 30px;
+    height: 30px;
+    color: rgb(255 255 255 / 46%);
+  }
+
+  .onboarding-prompt-pane h1 {
+    max-width: 17rem;
+    margin: 0;
+    color: rgb(255 255 255 / 92%);
+    font-size: 30px;
+    font-weight: 560;
+    letter-spacing: 0;
+    line-height: 1.34;
+  }
+
+  .onboarding-prompt-pane p {
+    max-width: 16rem;
+    margin: 22px 0 24px;
+    color: rgb(255 255 255 / 46%);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.7;
+  }
+
+  .onboarding-prompt-pane .onboarding-textarea {
+    width: 100%;
+    min-height: 160px;
+    margin: 0;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 18px;
+    background: rgb(255 255 255 / 3%);
+    color: rgb(255 255 255 / 84%);
+    padding: 18px;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.7;
+    outline: none;
+    box-shadow: none;
+  }
+
+  .onboarding-prompt-pane .onboarding-textarea:focus {
+    border-color: rgb(242 196 184 / 28%);
+    background: rgb(255 255 255 / 3.5%);
+  }
+
+  .onboarding-prompt-pane .onboarding-textarea::placeholder {
+    color: rgb(255 255 255 / 28%);
+  }
+
+  .onboarding-prompt-pane .onboarding-input-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+    color: rgb(255 255 255 / 34%);
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+
+  .onboarding-prompt-pane .onboarding-input-meta span:first-child {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .onboarding-prompt-pane .onboarding-input-meta span:last-child {
+    flex: 0 0 auto;
+  }
+
+  .onboarding-prompt-pane .onboarding-main-cta,
+  .onboarding-prompt-pane .pill-primary.onboarding-main-cta {
+    right: 24px;
+    bottom: calc(env(safe-area-inset-bottom) + 64px);
+    left: 24px;
+    width: auto;
+    height: 52px;
+    min-height: 52px;
+    border-radius: 999px;
+    background: #f2c4b8;
+    color: #111111;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: none;
+  }
+
+  .onboarding-prompt-pane .onboarding-main-cta:disabled,
+  .onboarding-prompt-pane .pill-primary.onboarding-main-cta:disabled {
+    background: rgb(255 255 255 / 14%);
+    color: rgb(255 255 255 / 35%);
+    opacity: 1;
+  }
+
   @media (min-width: 760px) {
     .onboarding-door-mark {
       top: calc(env(safe-area-inset-top) + 30px);
