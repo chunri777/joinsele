@@ -4419,6 +4419,192 @@ button {
     letter-spacing: 0;
   }
 
+
+  /* SELE 02 age gate: quiet threshold after the entry door. */
+  .onboarding-age-pane {
+    position: relative;
+    isolation: isolate;
+    min-height: 100dvh;
+    align-content: center;
+    justify-items: center;
+    gap: 0;
+    overflow: hidden;
+    background: #050505;
+    padding: max(1.35rem, env(safe-area-inset-top)) 1.5rem
+      calc(env(safe-area-inset-bottom) + 132px);
+    text-align: center;
+  }
+
+  .onboarding-age-pane::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    content: "";
+    background:
+      radial-gradient(circle at 78% 22%, rgb(255 225 190 / 7%), transparent 24%),
+      radial-gradient(circle at 62% 58%, rgb(242 196 184 / 4%), transparent 20%);
+    pointer-events: none;
+  }
+
+  .onboarding-age-brand {
+    top: calc(env(safe-area-inset-top) + 30px);
+    left: 24px;
+  }
+
+  .onboarding-age-pane .onboarding-back {
+    top: calc(env(safe-area-inset-top) + 78px);
+    left: 24px;
+    z-index: 6;
+    width: 30px;
+    height: 30px;
+    color: rgb(255 255 255 / 46%);
+  }
+
+  .onboarding-age-badge {
+    position: relative;
+    display: grid;
+    width: 60px;
+    height: 60px;
+    place-items: center;
+    margin: 0 0 30px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    box-shadow: none;
+    color: rgb(242 196 184 / 78%);
+    font-size: 19px;
+    font-weight: 450;
+    line-height: 1;
+  }
+
+  .onboarding-age-badge::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    border-radius: inherit;
+    background: conic-gradient(
+      from -28deg,
+      rgb(242 196 184 / 72%) 0deg,
+      rgb(242 196 184 / 72%) 270deg,
+      transparent 270deg,
+      transparent 360deg
+    );
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1px), #000 0);
+    mask: radial-gradient(farthest-side, transparent calc(100% - 1px), #000 0);
+    pointer-events: none;
+  }
+
+  .onboarding-age-pane h1 {
+    max-width: 16rem;
+    margin: 0;
+    color: rgb(255 255 255 / 90%);
+    font-size: 30px;
+    font-weight: 560;
+    line-height: 1.34;
+  }
+
+  .onboarding-age-pane > i {
+    display: none;
+  }
+
+  .onboarding-age-pane p {
+    max-width: 11rem;
+    margin: 22px 0 0;
+    color: rgb(255 255 255 / 46%);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.7;
+  }
+
+  .onboarding-age-pane .onboarding-check {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    width: min(100%, 342px);
+    min-height: 56px;
+    margin: 52px 0 0;
+    padding: 0 2px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: rgb(255 255 255 / 68%);
+    text-align: left;
+    font-size: 14.5px;
+    font-weight: 400;
+    line-height: 1.55;
+  }
+
+  .onboarding-age-pane .onboarding-check input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .onboarding-age-pane .onboarding-check span {
+    position: relative;
+    display: block;
+    width: 21px;
+    height: 21px;
+    border: 1px solid rgb(255 255 255 / 34%);
+    border-radius: 6px;
+    background: transparent;
+  }
+
+  .onboarding-age-pane .onboarding-check span::after {
+    position: absolute;
+    top: 4px;
+    left: 7px;
+    display: none;
+    width: 5px;
+    height: 9px;
+    content: "";
+    border-right: 1.5px solid #111111;
+    border-bottom: 1.5px solid #111111;
+    transform: rotate(42deg);
+  }
+
+  .onboarding-age-pane .onboarding-check input:checked + span {
+    border-color: rgb(242 196 184 / 82%);
+    background: #f2c4b8;
+    box-shadow: none;
+  }
+
+  .onboarding-age-pane .onboarding-check input:checked + span::after {
+    display: block;
+  }
+
+  .onboarding-age-pane .onboarding-footnote {
+    margin-top: 16px;
+    color: rgb(255 255 255 / 28%);
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .onboarding-age-pane .onboarding-main-cta,
+  .onboarding-age-pane .pill-primary.onboarding-main-cta {
+    right: 24px;
+    bottom: calc(env(safe-area-inset-bottom) + 64px);
+    left: 24px;
+    width: auto;
+    height: 52px;
+    min-height: 52px;
+    border-radius: 999px;
+    background: #f2c4b8;
+    color: #111111;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: none;
+  }
+
+  .onboarding-age-pane .onboarding-main-cta:disabled,
+  .onboarding-age-pane .pill-primary.onboarding-main-cta:disabled {
+    background: rgb(255 255 255 / 14%);
+    color: rgb(255 255 255 / 35%);
+    opacity: 1;
+  }
+
   @media (min-width: 760px) {
     .onboarding-door-mark {
       top: calc(env(safe-area-inset-top) + 30px);
