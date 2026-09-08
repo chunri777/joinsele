@@ -13,7 +13,6 @@ import {
   Flag,
   Heart,
   HeartHandshake,
-  Headphones,
   House,
   LockKeyhole,
   MessageCircle,
@@ -69,6 +68,140 @@ const stageOrder = [
   'reveal',
 ] as const;
 type OnboardingStep = 'landing' | 'age' | 'prompt' | 'done';
+type HeartboxStep =
+  | 'detail'
+  | 'echo'
+  | 'success'
+  | 'closer'
+  | 'closer4'
+  | 'closer5'
+  | 'waiting'
+  | 'newMoment';
+
+type HeartboxMoment = {
+  id: string;
+  code: string;
+  body: string;
+  note: string;
+  age: string;
+  city: string;
+  interestTags: string[];
+  timeTag: string;
+  moreMoments: string[];
+  personalityQuestion: {
+    prompt: string;
+    answer: string;
+  };
+  lifestyleFragments: string[];
+  currentUnlockLevel: number;
+};
+
+type HeartboxUnlock = {
+  id: string;
+  title: string;
+  hint: string;
+  content: string;
+  icon: ElementType;
+};
+
+const heartboxMoments: HeartboxMoment[] = [
+  {
+    id: 'moment_0087',
+    code: '#0087',
+    body:
+      '有时候我会在深夜\n突然很想和一个人说话，\n\n但打开对话框又删掉，\n反复几次，\n\n最后还是把那句话\n留在了备忘录里。',
+    note: '不知道你有没有过类似的时刻。\n如果有，我想听听你的。',
+    age: '23',
+    city: '上海',
+    interestTags: ['摄影', '散步', '旧电影'],
+    timeTag: '深夜',
+    moreMoments: [
+      'TA 最近反复想起的一件事：那天没有说出口的道别。',
+      'TA 最近一次突然开心：在便利店听见一首很久没听的歌。',
+    ],
+    personalityQuestion: {
+      prompt: '更喜欢被理解，还是被陪着？',
+      answer: '先被陪着，等到愿意说时再被理解。',
+    },
+    lifestyleFragments: ['常在深夜保持清醒', '周末偏爱一个人散步', '社交不多，但重视长谈'],
+    currentUnlockLevel: 0,
+  },
+  {
+    id: 'moment_0142',
+    code: '#0142',
+    body:
+      '我喜欢傍晚快黑下来的那几分钟，\n路灯还没有完全亮，\n城市像是短暂地松了一口气。\n\n那时候很适合散步，\n也适合把一些话慢慢说出来。',
+    note: '如果你也会被这种时间打动，\n也许我们可以从这里开始。',
+    age: '27',
+    city: '广州',
+    interestTags: ['散步', '城市观察', '做饭'],
+    timeTag: '傍晚',
+    moreMoments: [
+      'TA 最近反复想起的一件事：一场没有目的地的傍晚散步。',
+      'TA 最近一次突然开心：做的第一锅汤刚好合口味。',
+    ],
+    personalityQuestion: {
+      prompt: '发生矛盾时更习惯沉默，还是解释？',
+      answer: '会先安静一会儿，但最后还是想认真解释。',
+    },
+    lifestyleFragments: ['作息偏早', '喜欢慢节奏的城市角落', '周末常去市场或公园'],
+    currentUnlockLevel: 0,
+  },
+  {
+    id: 'moment_0215',
+    code: '#0215',
+    body:
+      '最近我在练习把日子过慢一点。\n\n认真吃一顿饭，\n看完一本书的最后几页，\n在下雨前把窗户打开。\n\n好像人只要慢下来，\n就会更容易听见自己。',
+    note: '我想知道，\n你最近有没有听见自己的某一句话。',
+    age: '25',
+    city: '北京',
+    interestTags: ['阅读', '雨天', '独处'],
+    timeTag: '雨前',
+    moreMoments: [
+      'TA 最近反复想起的一件事：一本书里被折起的那一页。',
+      'TA 最近一次突然开心：下雨前及时收回了晾着的衣服。',
+    ],
+    personalityQuestion: {
+      prompt: '最怕别人误解自己什么？',
+      answer: '沉默不是冷淡，只是需要一点时间整理感受。',
+    },
+    lifestyleFragments: ['习惯早起阅读', '周末更愿意待在家里', '喜欢低频但稳定的联系'],
+    currentUnlockLevel: 0,
+  },
+];
+
+function getMomentUnlocks(moment: HeartboxMoment): HeartboxUnlock[] {
+  return [
+    {
+      id: 'more',
+      title: '更多文字片刻',
+      hint: `TA 还留下了 ${moment.moreMoments.length} 段片刻`,
+      content: moment.moreMoments[0],
+      icon: Copy,
+    },
+    {
+      id: 'tags',
+      title: '兴趣标签',
+      hint: '解锁更多兴趣与生活方式标签',
+      content: moment.interestTags.join(' · '),
+      icon: PenLine,
+    },
+    {
+      id: 'personality',
+      title: '轻人格问答',
+      hint: '解锁 TA 对一个问题的回答',
+      content: `${moment.personalityQuestion.prompt}\n${moment.personalityQuestion.answer}`,
+      icon: MessageCircle,
+    },
+    {
+      id: 'lifestyle',
+      title: '生活方式碎片',
+      hint: '解锁 TA 的日常节奏',
+      content: moment.lifestyleFragments.join(' · '),
+      icon: Feather,
+    },
+  ];
+}
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ');
@@ -80,9 +213,10 @@ export default function Home() {
     useState<OnboardingStep>('landing');
   const [selectedBoxId, setSelectedBoxId] = useState(blindBoxes[0].id);
   const [discoverDetailOpen, setDiscoverDetailOpen] = useState(false);
-  const [openingState, setOpeningState] = useState<
-    'sealed' | 'opening' | 'first' | 'second' | 'echo' | 'matched'
-  >('sealed');
+  const [heartboxStep, setHeartboxStep] = useState<HeartboxStep>('detail');
+  const [selectedMomentIndex, setSelectedMomentIndex] = useState(0);
+  const [echoDraft, setEchoDraft] = useState('');
+  const [unlockedItemIds, setUnlockedItemIds] = useState<string[]>([]);
   const [freeOpens, setFreeOpens] = useState(
     initialWallet.dailyFreeOpensRemaining,
   );
@@ -119,6 +253,8 @@ export default function Home() {
 
   const selectedBox =
     blindBoxes.find((box) => box.id === selectedBoxId) ?? blindBoxes[0];
+  const selectedMoment =
+    heartboxMoments[selectedMomentIndex % heartboxMoments.length];
   const selectedRelationship =
     relationships.find((item) => item.id === selectedRelationshipId) ??
     relationships[0];
@@ -154,7 +290,10 @@ export default function Home() {
     setOnboardingStep('landing');
     setSelectedBoxId(blindBoxes[0].id);
     setDiscoverDetailOpen(false);
-    setOpeningState('sealed');
+    setHeartboxStep('detail');
+    setSelectedMomentIndex(0);
+    setEchoDraft('');
+    setUnlockedItemIds([]);
     setFreeOpens(initialWallet.dailyFreeOpensRemaining);
     setHearts(initialWallet.hearts);
     setShowConversion(false);
@@ -198,20 +337,44 @@ export default function Home() {
     }
     setDiscoverDetailOpen(true);
     setFreeOpens((value) => value - 1);
-    setOpeningState('opening');
-    window.setTimeout(() => setOpeningState('first'), 720);
+    setHeartboxStep('detail');
+    setEchoDraft('');
+    setUnlockedItemIds([]);
   }
 
   function resetOpening(boxId?: string) {
     if (boxId) setSelectedBoxId(boxId);
     setDiscoverDetailOpen(false);
-    setOpeningState('sealed');
+    setHeartboxStep('detail');
+    setEchoDraft('');
+    setUnlockedItemIds([]);
   }
 
   function previewBox(boxId: string) {
     setSelectedBoxId(boxId);
     setDiscoverDetailOpen(true);
-    setOpeningState('sealed');
+    setHeartboxStep('detail');
+    setEchoDraft('');
+    setUnlockedItemIds([]);
+  }
+
+  function putMomentBack(nextIndex?: number) {
+    setSelectedMomentIndex(
+      nextIndex ?? (selectedMomentIndex + 1) % heartboxMoments.length,
+    );
+    setHeartboxStep('newMoment');
+    setEchoDraft('');
+    setUnlockedItemIds([]);
+  }
+
+  function unlockMore() {
+    const nextUnlock = getMomentUnlocks(selectedMoment).find(
+      (item, index) =>
+        index >= selectedMoment.currentUnlockLevel &&
+        !unlockedItemIds.includes(item.id),
+    );
+    if (!nextUnlock) return;
+    setUnlockedItemIds((current) => [...current, nextUnlock.id]);
   }
 
   function publishFragment() {
@@ -278,35 +441,55 @@ export default function Home() {
             onReset={resetDemo}
           />
           <section
-            className={cx('main-stage', view === 'discover' && 'discover-stage')}
+            className={cx(
+              'main-stage',
+              view === 'discover' && 'discover-stage',
+              view === 'discover' && discoverDetailOpen && 'heartbox-detail-stage',
+            )}
           >
             {view !== 'discover' && (
               <MobileTopbar freeOpens={freeOpens} hearts={hearts} />
             )}
-            <TopStatus
-              view={view}
-              freeOpens={freeOpens}
-              hearts={hearts}
-              onOpenWallet={() => switchView('mine')}
-            />
+            {!(view === 'discover' && discoverDetailOpen) && (
+              <TopStatus
+                view={view}
+                freeOpens={freeOpens}
+                hearts={hearts}
+                onOpenWallet={() => switchView('mine')}
+              />
+            )}
             <div className="view-stack">
               {view === 'discover' &&
                 (discoverDetailOpen ? (
                   <DiscoverBoxDetail
-                    box={selectedBox}
-                    openingState={openingState}
+                    moment={selectedMoment}
+                    momentIndex={selectedMomentIndex}
+                    totalMoments={5}
+                    step={heartboxStep}
+                    echoDraft={echoDraft}
+                    unlockedItemIds={unlockedItemIds}
                     onBack={() => resetOpening()}
-                    onOpen={beginOpening}
-                    onSecondLayer={() => setOpeningState('second')}
-                    onEcho={() => setOpeningState('echo')}
-                    onMatched={() => {
-                      setOpeningState('matched');
-                      setSelectedRelationshipId(relationships[0].id);
+                    onEcho={() => setHeartboxStep('echo')}
+                    onEchoDraft={setEchoDraft}
+                    onEchoSent={() => {
+                      setEchoDraft('');
+                      setHeartboxStep('success');
                     }}
-                    onLater={() => resetOpening(blindBoxes[1]?.id)}
-                    onPass={() => resetOpening(blindBoxes[2]?.id)}
-                    onNeedMore={() => setShowConversion(true)}
-                    onMessages={() => switchView('messages')}
+                    onDetail={() => setHeartboxStep('detail')}
+                    onExplore={() => {
+                      setSelectedMomentIndex(
+                        (selectedMomentIndex + 1) % heartboxMoments.length,
+                      );
+                      setHeartboxStep('detail');
+                      setUnlockedItemIds([]);
+                    }}
+                    onCloser={() => setHeartboxStep('closer')}
+                    onUnlockMore={unlockMore}
+                    onCloserFour={() => setHeartboxStep('closer4')}
+                    onCloserFive={() => setHeartboxStep('closer5')}
+                    onWaitForEcho={() => setHeartboxStep('waiting')}
+                    onPutBack={() => putMomentBack()}
+                    onOpenAnother={beginOpening}
                   />
                 ) : (
                   <DiscoverView
@@ -407,7 +590,9 @@ export default function Home() {
           />
         </div>
       )}
-      {onboarded && <MobileNav view={view} onSwitch={switchView} />}
+      {onboarded && !(view === 'discover' && discoverDetailOpen) && (
+        <MobileNav view={view} onSwitch={switchView} />
+      )}
       {showConversion && (
         <ConversionModal
           hearts={hearts}
@@ -797,9 +982,9 @@ const quickEntrances = [
     icon: Feather,
   },
   {
-    title: '听一段声音',
-    body: '声音，也可以表达',
-    icon: Headphones,
+    title: '读一句心事',
+    body: '从一句话开始认识',
+    icon: MessageCircle,
   },
   {
     title: '写下一件小事',
@@ -948,236 +1133,537 @@ function DiscoverView(props: {
 }
 
 function DiscoverBoxDetail({
-  box,
-  openingState,
+  moment,
+  momentIndex,
+  totalMoments,
+  step,
+  echoDraft,
+  unlockedItemIds,
   onBack,
-  onOpen,
-  onSecondLayer,
   onEcho,
-  onMatched,
-  onLater,
-  onPass,
-  onNeedMore,
-  onMessages,
+  onEchoDraft,
+  onEchoSent,
+  onDetail,
+  onExplore,
+  onCloser,
+  onUnlockMore,
+  onCloserFour,
+  onCloserFive,
+  onWaitForEcho,
+  onPutBack,
+  onOpenAnother,
 }: {
-  box: BlindBox;
-  openingState: 'sealed' | 'opening' | 'first' | 'second' | 'echo' | 'matched';
+  moment: HeartboxMoment;
+  momentIndex: number;
+  totalMoments: number;
+  step: HeartboxStep;
+  echoDraft: string;
+  unlockedItemIds: string[];
   onBack: () => void;
-  onOpen: () => void;
-  onSecondLayer: () => void;
   onEcho: () => void;
-  onMatched: () => void;
-  onLater: () => void;
-  onPass: () => void;
-  onNeedMore: () => void;
-  onMessages: () => void;
+  onEchoDraft: (value: string) => void;
+  onEchoSent: () => void;
+  onDetail: () => void;
+  onExplore: () => void;
+  onCloser: () => void;
+  onUnlockMore: () => void;
+  onCloserFour: () => void;
+  onCloserFive: () => void;
+  onWaitForEcho: () => void;
+  onPutBack: () => void;
+  onOpenAnother: () => void;
+}) {
+  if (step === 'echo') {
+    return (
+      <EchoComposer
+        draft={echoDraft}
+        onBack={onDetail}
+        onClose={onDetail}
+        onDraft={onEchoDraft}
+        onSubmit={onEchoSent}
+      />
+    );
+  }
+
+  if (step === 'success') {
+    return (
+      <EchoSuccess onExplore={onExplore} onPutBack={onPutBack} />
+    );
+  }
+
+  if (step === 'closer') {
+    return (
+      <CloserView
+        moment={moment}
+        momentIndex={momentIndex}
+        totalMoments={totalMoments}
+        unlockedItemIds={unlockedItemIds}
+        onBack={onDetail}
+        onUnlockMore={onUnlockMore}
+        onAdvance={onCloserFour}
+      />
+    );
+  }
+
+  if (step === 'closer4') {
+    return (
+      <CloserFourView onBack={onCloser} onAdvance={onCloserFive} />
+    );
+  }
+
+  if (step === 'closer5') {
+    return (
+      <CloserFiveView
+        onBack={onCloserFour}
+        onWait={onWaitForEcho}
+        onPutBack={onPutBack}
+      />
+    );
+  }
+
+  if (step === 'waiting') {
+    return (
+      <WaitingEchoView onExplore={onExplore} onBack={onBack} />
+    );
+  }
+
+  if (step === 'newMoment') {
+    return (
+      <NewMomentView onOpen={onOpenAnother} onBack={onBack} />
+    );
+  }
+
+  return (
+    <MomentDetail
+      moment={moment}
+      momentIndex={momentIndex}
+      totalMoments={totalMoments}
+      onBack={onBack}
+      onEcho={onEcho}
+      onCloser={onCloser}
+      onPutBack={onPutBack}
+      onExplore={onExplore}
+    />
+  );
+}
+
+function DetailTopbar({
+  title,
+  subtitle,
+  indexText,
+  onBack,
+  right,
+}: {
+  title: string;
+  subtitle?: string;
+  indexText?: string;
+  onBack: () => void;
+  right?: ReactNode;
 }) {
   return (
-    <div className="box-detail-page">
-      <button className="box-detail-back" onClick={onBack}>
-        <ChevronLeft className="h-4 w-4" />
-        返回发现
-      </button>
-      <div className="box-detail-heading">
-        <p className="eyebrow">Heartbox detail</p>
-        <h2>先看见一点，再决定要不要靠近。</h2>
+    <header className="heartbox-flow-top">
+      <div className="heartbox-flow-nav">
+        <button aria-label="返回" onClick={onBack}>
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <h2>{title}</h2>
+        {right ?? <span />}
       </div>
-      <UnboxingSurface
-        box={box}
-        openingState={openingState}
-        onOpen={onOpen}
-        onSecondLayer={onSecondLayer}
-        onEcho={onEcho}
-        onMatched={onMatched}
-        onLater={onLater}
-        onPass={onPass}
-        onNeedMore={onNeedMore}
-        onMessages={onMessages}
+      {(subtitle || indexText) && (
+        <div className="heartbox-flow-meta">
+          {subtitle && <p>{subtitle}</p>}
+          {indexText && <span>{indexText}</span>}
+        </div>
+      )}
+    </header>
+  );
+}
+
+function MomentDetail({
+  moment,
+  momentIndex,
+  totalMoments,
+  onBack,
+  onEcho,
+  onCloser,
+  onPutBack,
+  onExplore,
+}: {
+  moment: HeartboxMoment;
+  momentIndex: number;
+  totalMoments: number;
+  onBack: () => void;
+  onEcho: () => void;
+  onCloser: () => void;
+  onPutBack: () => void;
+  onExplore: () => void;
+}) {
+  return (
+    <div className="heartbox-flow-page">
+      <DetailTopbar
+        title="心动盲盒"
+        subtitle="有些人，适合晚一点看见。"
+        indexText={`${momentIndex + 1} / ${totalMoments}`}
+        onBack={onBack}
+        right={<button aria-label="更多">•••</button>}
       />
+
+      <section className="moment-detail-card">
+        <div className="moment-detail-head">
+          <span>SELE</span>
+          <span>{moment.code} · 今天</span>
+        </div>
+        <p className="moment-detail-source">来自一个陌生人的片刻</p>
+        <i />
+        <p className="moment-detail-body">{moment.body}</p>
+        <p className="moment-detail-note">{moment.note}</p>
+        <div className="moment-detail-tags">
+          {[moment.age, moment.city, moment.interestTags[0], moment.timeTag].map(
+            (item) => (
+              <span key={item}>{item}</span>
+            ),
+          )}
+        </div>
+      </section>
+
+      <div className="heartbox-primary-actions">
+        <button className="heartbox-secondary-button" onClick={onEcho}>
+          留下回声
+          <MessageCircle className="h-4 w-4" />
+        </button>
+        <button className="heartbox-primary-button" onClick={onCloser}>
+          继续靠近
+          <ArrowRight className="h-5 w-5" />
+        </button>
+      </div>
+      <div className="heartbox-soft-actions">
+        <button onClick={onPutBack}>
+          <PackageOpen className="h-4 w-4" />
+          放回盒子
+        </button>
+        <button onClick={onExplore}>换一个片刻</button>
+      </div>
     </div>
   );
 }
 
-function UnboxingSurface({
-  box,
-  openingState,
-  onOpen,
-  onSecondLayer,
-  onEcho,
-  onMatched,
-  onLater,
-  onPass,
-  onNeedMore,
-  onMessages,
+function EchoComposer({
+  draft,
+  onBack,
+  onClose,
+  onDraft,
+  onSubmit,
 }: {
-  box: BlindBox;
-  openingState: 'sealed' | 'opening' | 'first' | 'second' | 'echo' | 'matched';
-  onOpen: () => void;
-  onSecondLayer: () => void;
-  onEcho: () => void;
-  onMatched: () => void;
-  onLater: () => void;
-  onPass: () => void;
-  onNeedMore: () => void;
-  onMessages: () => void;
+  draft: string;
+  onBack: () => void;
+  onClose: () => void;
+  onDraft: (value: string) => void;
+  onSubmit: () => void;
 }) {
-  const opened = openingState !== 'sealed' && openingState !== 'opening';
   return (
-    <Panel className="unbox-panel">
-      <div className="unbox-stage">
-        <div
-          className={cx(
-            'sealed-envelope',
-            openingState === 'opening' && 'sealed-envelope-opening',
-            opened && 'sealed-envelope-opened',
-          )}
-        >
-          <div className="seal-line" />
-          <div className="wax-seal">
-            <Heart className="h-7 w-7" />
-          </div>
-          <div className="envelope-copy">
-            <p className="text-sm text-[var(--muted-ink)]">
-              未拆封 · {box.theme}
-            </p>
-            <h3>{box.title}</h3>
-            <p>
-              {box.cityHint} · {box.ageHint} ·{' '}
-              {box.hiddenTags.slice(0, 1).join(' / ')}
-            </p>
-            <div className="sealed-hint">
-              {box.seal} · 封条下藏着一段人格碎片
-            </div>
-          </div>
-        </div>
-        {opened && (
-          <div className="revealed-persona">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="eyebrow">First layer</p>
-                <h3 className="mt-2 text-xl font-medium">
-                  {box.firstLayer.alias}
-                </h3>
-                <p className="mt-1 text-[var(--soft-ink)]">
-                  {box.firstLayer.archetype}
-                </p>
-              </div>
-              <span className="rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm font-medium text-[var(--berry)]">
-                第一层
-              </span>
-            </div>
-            <blockquote className="mt-4 rounded-[18px] bg-white/65 p-4 text-base leading-7">
-              “{box.firstLayer.fragment}”
-            </blockquote>
-            <div className="state-strip waiting-state mt-4">
-              <LockKeyhole className="h-4 w-4" />
-              真实身份、联系方式和精确位置仍被保护。继续探索只会解锁更多人格片段。
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {box.firstLayer.interests.map((item) => (
-                <span key={item} className="chip">
-                  {item}
-                </span>
-              ))}
-            </div>
-            {(openingState === 'second' ||
-              openingState === 'echo' ||
-              openingState === 'matched') && (
-              <div className="second-layer">
-                <p>
-                  <strong>关系观：</strong>
-                  {box.secondLayer.relationshipView}
-                </p>
-                <p>
-                  <strong>边界：</strong>
-                  {box.secondLayer.boundary}
-                </p>
-                <p>
-                  <strong>人格问答：</strong>
-                  {box.secondLayer.promptAnswer}
-                </p>
-                <div className="fragment-ribbon">
-                  {box.fragments.slice(1, 4).map((fragment) => (
-                    <span key={fragment}>{fragment}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-            {(openingState === 'echo' || openingState === 'matched') && (
-              <div className="echo-result">
-                <HeartHandshake className="h-5 w-5" />
-                <span>
-                  {openingState === 'matched'
-                    ? '你们留下了彼此的回声。现在不用急着揭晓，先从一句匿名对话开始。'
-                    : '你的回声已留在盒子里。TA 不会看到你的真实身份，只会知道有人被这一段打动。'}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
+    <div className="heartbox-flow-page echo-compose-page">
+      <DetailTopbar
+        title="留下回声"
+        onBack={onBack}
+        right={<button aria-label="关闭" onClick={onClose}>×</button>}
+      />
+
+      <label className="echo-textarea-wrap">
+        <textarea
+          value={draft}
+          maxLength={200}
+          placeholder="把你想说的，留在这里……"
+          onChange={(event) => onDraft(event.target.value)}
+        />
+        <span>{draft.length} / 200</span>
+      </label>
+
+      <div className="echo-privacy-note">
+        <LockKeyhole className="h-5 w-5" />
+        <p>
+          你的回声会以匿名的方式送达。
+          <br />
+          如果 TA 也愿意回应，你们将解锁下一步。
+        </p>
       </div>
-      <div className="unbox-actions">
-        {openingState === 'sealed' && (
-          <>
-            <button className="pill-primary" onClick={onOpen}>
-              拆开信封
-            </button>
-            <button className="pill-secondary" onClick={onNeedMore}>
-              次数用完怎么办
-            </button>
-          </>
-        )}
-        {openingState === 'opening' && (
-          <button className="pill-secondary">封条正在打开...</button>
-        )}
-        {openingState === 'first' && (
-          <>
-            <button className="pill-primary" onClick={onSecondLayer}>
-              再看一层
-            </button>
-            <button className="pill-secondary" onClick={onEcho}>
-              留下回声
-            </button>
-            <button className="pill-secondary" onClick={onLater}>
-              先放回盒子
-            </button>
-          </>
-        )}
-        {openingState === 'second' && (
-          <>
-            <button className="pill-primary" onClick={onEcho}>
-              留下回声
-            </button>
-            <button className="pill-secondary" onClick={onPass}>
-              暂不继续，保护边界
-            </button>
-          </>
-        )}
-        {openingState === 'echo' && (
-          <>
-            <button className="pill-primary" onClick={onMatched}>
-              模拟 TA 也回应
-            </button>
-            <button className="pill-secondary" onClick={onLater}>
-              继续等回应
-            </button>
-          </>
-        )}
-        {openingState === 'matched' && (
-          <>
-            <button className="pill-primary" onClick={onMessages}>
-              去匿名对话
-            </button>
-            <button className="pill-secondary" onClick={onLater}>
-              再拆一个
-            </button>
-          </>
-        )}
-      </div>
-    </Panel>
+
+      <button
+        className="heartbox-primary-button echo-submit-button"
+        disabled={draft.trim().length === 0}
+        onClick={onSubmit}
+      >
+        发送回声
+      </button>
+    </div>
   );
 }
 
+function EchoSuccess({
+  onExplore,
+  onPutBack,
+}: {
+  onExplore: () => void;
+  onPutBack: () => void;
+}) {
+  return (
+    <div className="heartbox-flow-page echo-success-page">
+      <button className="heartbox-floating-back" aria-label="返回" onClick={onExplore}>
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+      <div className="echo-success-center">
+        <div className="echo-success-check">✓</div>
+        <h2>你的回声已经留下。</h2>
+        <p>
+          如果 TA 也愿意回应，
+          <br />
+          你们将解锁下一步。
+        </p>
+      </div>
+      <div className="echo-success-actions">
+        <button className="heartbox-secondary-button" onClick={onExplore}>
+          继续探索其他片刻
+        </button>
+        <button className="heartbox-link-button" onClick={onPutBack}>
+          <PackageOpen className="h-4 w-4" />
+          放回盒子
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CloserView({
+  moment,
+  momentIndex,
+  totalMoments,
+  unlockedItemIds,
+  onBack,
+  onUnlockMore,
+  onAdvance,
+}: {
+  moment: HeartboxMoment;
+  momentIndex: number;
+  totalMoments: number;
+  unlockedItemIds: string[];
+  onBack: () => void;
+  onUnlockMore: () => void;
+  onAdvance: () => void;
+}) {
+  const unlocks = getMomentUnlocks(moment);
+  const isUnlocked = (itemId: string, index: number) =>
+    index < moment.currentUnlockLevel || unlockedItemIds.includes(itemId);
+  const allUnlocked = unlocks.every((item, index) =>
+    isUnlocked(item.id, index),
+  );
+  return (
+    <div className="heartbox-flow-page closer-page">
+      <DetailTopbar
+        title="再看一点"
+        subtitle="你们的距离，又近了一点。"
+        indexText={`3 / ${totalMoments}`}
+        onBack={onBack}
+      />
+
+      <div className="closer-unlock-list">
+        {unlocks.map((item, index) => {
+          const Icon = item.icon;
+          const unlocked = isUnlocked(item.id, index);
+          return (
+            <article
+              key={item.id}
+              className={cx('closer-unlock-card', unlocked && 'closer-unlock-open')}
+            >
+              <span className="closer-unlock-icon">
+                <Icon className="h-5 w-5" />
+              </span>
+              <div>
+                <h3>{item.title}</h3>
+                <p className={cx(unlocked && 'closer-unlock-content')}>
+                  {unlocked ? item.content : item.hint}
+                </p>
+                {unlocked && <small>已解锁</small>}
+              </div>
+              {!unlocked && <LockKeyhole className="h-5 w-5" />}
+            </article>
+          );
+        })}
+      </div>
+
+      <button
+        className="heartbox-primary-button closer-main-button"
+        onClick={allUnlocked ? onAdvance : onUnlockMore}
+      >
+        {allUnlocked ? '继续靠近' : '继续靠近 · 解锁更多'}
+        <ArrowRight className="h-5 w-5" />
+      </button>
+      <p className="closer-footnote">
+        每一次靠近，都需要一点勇气。
+        <br />
+        但你可以慢一点。
+      </p>
+    </div>
+  );
+}
+
+const closerFourFragments = [
+  {
+    title: '关系方式',
+    prompt: 'TA 在关系里最在意什么',
+    answer: '希望有话可以直接说，但也需要一点自己的空间。',
+    icon: HeartHandshake,
+  },
+  {
+    title: '靠近方式',
+    prompt: 'TA 更习惯主动还是等待',
+    answer: '大多数时候会先观察，但如果真的在意，也会主动靠近。',
+    icon: Sparkles,
+  },
+  {
+    title: '被理解的方式',
+    prompt: 'TA 希望别人怎样理解自己',
+    answer: '不需要马上给答案，先听完就已经很好。',
+    icon: MessageCircle,
+  },
+];
+
+function CloserFourView({
+  onBack,
+  onAdvance,
+}: {
+  onBack: () => void;
+  onAdvance: () => void;
+}) {
+  return (
+    <div className="heartbox-flow-page closer-page closer-four-page">
+      <DetailTopbar
+        title="再靠近一点"
+        subtitle="还有一些事，只有靠近以后才会知道。"
+        indexText="4 / 5"
+        onBack={onBack}
+      />
+
+      <div className="closer-unlock-list closer-four-list">
+        {closerFourFragments.map((item) => {
+          const Icon = item.icon;
+          return (
+            <article className="closer-unlock-card closer-unlock-open" key={item.title}>
+              <span className="closer-unlock-icon">
+                <Icon className="h-5 w-5" />
+              </span>
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.prompt}</p>
+                <p className="closer-unlock-content">{item.answer}</p>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <button className="heartbox-primary-button closer-main-button" onClick={onAdvance}>
+        继续靠近
+        <ArrowRight className="h-5 w-5" />
+      </button>
+    </div>
+  );
+}
+
+function CloserFiveView({
+  onBack,
+  onWait,
+  onPutBack,
+}: {
+  onBack: () => void;
+  onWait: () => void;
+  onPutBack: () => void;
+}) {
+  return (
+    <div className="heartbox-flow-page closer-page closer-final-page">
+      <DetailTopbar
+        title="已经很近了"
+        subtitle="你已经看见了这个人更多的一点。"
+        indexText="5 / 5"
+        onBack={onBack}
+      />
+
+      <div className="closer-final-state">
+        <div className="echo-success-check">✓</div>
+        <h3>你已经看见了更多。</h3>
+        <p>真正的靠近，不会只发生在一个人的选择里。</p>
+      </div>
+
+      <div className="closer-final-actions">
+        <button className="heartbox-primary-button" onClick={onWait}>
+          等待彼此的回声
+        </button>
+        <button className="heartbox-link-button" onClick={onPutBack}>
+          <PackageOpen className="h-4 w-4" />
+          放回盒子
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function WaitingEchoView({
+  onExplore,
+  onBack,
+}: {
+  onExplore: () => void;
+  onBack: () => void;
+}) {
+  return (
+    <div className="heartbox-flow-page waiting-echo-page">
+      <div className="closer-final-state">
+        <div className="echo-success-check">✓</div>
+        <h2>已经走到这里了。</h2>
+        <p>
+          如果 TA 也愿意回应，
+          <br />
+          你们会收到下一步。
+        </p>
+      </div>
+      <div className="closer-final-actions">
+        <button className="heartbox-secondary-button" onClick={onExplore}>
+          继续看看其他片刻
+        </button>
+        <button className="heartbox-link-button" onClick={onBack}>
+          返回发现页
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function NewMomentView({
+  onOpen,
+  onBack,
+}: {
+  onOpen: () => void;
+  onBack: () => void;
+}) {
+  return (
+    <div className="heartbox-flow-page new-moment-page">
+      <div className="new-moment-copy">
+        <h2>新的片刻</h2>
+        <p>盒子里，还有很多未被打开的故事。</p>
+      </div>
+      <div className="new-box-visual" aria-hidden="true">
+        <span>SELE</span>
+      </div>
+      <div className="new-moment-question">
+        <h3>是否拆开下一个？</h3>
+        <p>每一次打开，都是一次新的遇见。</p>
+      </div>
+      <button className="heartbox-primary-button new-moment-button" onClick={onOpen}>
+        拆开一个
+      </button>
+      <button className="heartbox-link-button" onClick={onBack}>
+        返回发现页
+      </button>
+    </div>
+  );
+}
 function CircleView({
   fragments,
   likedFragments,

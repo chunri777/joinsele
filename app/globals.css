@@ -2906,6 +2906,430 @@ button {
     line-height: 1.25;
   }
 
+  #heartbox-shell .heartbox-flow-page {
+    position: relative;
+    display: grid;
+    min-height: calc(100svh - 2rem);
+    align-content: start;
+    gap: 1.15rem;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 24px;
+    background:
+      radial-gradient(circle at 70% 17%, rgb(255 255 255 / 5%), transparent 24%),
+      #050505;
+    padding: max(1.45rem, env(safe-area-inset-top)) 1.25rem
+      max(1.55rem, env(safe-area-inset-bottom));
+    color: #f4f4f2;
+  }
+
+  #heartbox-shell .heartbox-flow-top {
+    display: grid;
+    gap: 1rem;
+  }
+
+  #heartbox-shell .heartbox-flow-nav,
+  #heartbox-shell .heartbox-flow-meta,
+  #heartbox-shell .moment-detail-head,
+  #heartbox-shell .heartbox-primary-actions,
+  #heartbox-shell .heartbox-soft-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+
+  #heartbox-shell .heartbox-flow-nav h2 {
+    font-size: 1rem;
+    font-weight: 520;
+  }
+
+  #heartbox-shell .heartbox-flow-nav button,
+  #heartbox-shell .heartbox-link-button {
+    color: rgb(244 244 242 / 82%);
+  }
+
+  #heartbox-shell .heartbox-flow-meta {
+    color: rgb(176 176 181 / 72%);
+    font-size: 0.82rem;
+  }
+
+  #heartbox-shell .moment-detail-card,
+  #heartbox-shell .echo-textarea-wrap,
+  #heartbox-shell .echo-privacy-note,
+  #heartbox-shell .closer-unlock-card {
+    border: 1px solid rgb(255 255 255 / 13%);
+    border-radius: 16px;
+    background: rgb(255 255 255 / 3%);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
+  }
+
+  #heartbox-shell .moment-detail-card {
+    display: grid;
+    gap: 1rem;
+    min-height: 36rem;
+    padding: 1.35rem 1.25rem;
+  }
+
+  #heartbox-shell .moment-detail-head {
+    color: rgb(244 244 242 / 74%);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+  }
+
+  #heartbox-shell .moment-detail-source,
+  #heartbox-shell .moment-detail-note {
+    white-space: pre-line;
+    color: rgb(176 176 181 / 82%);
+    font-size: 0.88rem;
+    line-height: 1.75;
+  }
+
+  #heartbox-shell .moment-detail-card i {
+    width: 1.25rem;
+    height: 1px;
+    background: rgb(244 244 242 / 60%);
+  }
+
+  #heartbox-shell .moment-detail-body {
+    white-space: pre-line;
+    color: #f4f4f2;
+    font-size: 1.38rem;
+    font-weight: 380;
+    line-height: 1.55;
+  }
+
+  #heartbox-shell .moment-detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 0.2rem;
+  }
+
+  #heartbox-shell .moment-detail-tags span {
+    min-width: 2.45rem;
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: 999px;
+    padding: 0.42rem 0.72rem;
+    color: rgb(244 244 242 / 88%);
+    text-align: center;
+    font-size: 0.82rem;
+  }
+
+  #heartbox-shell .heartbox-primary-actions {
+    margin-top: 0.85rem;
+  }
+
+  #heartbox-shell .heartbox-primary-button,
+  #heartbox-shell .heartbox-secondary-button {
+    display: inline-flex;
+    min-height: 3.65rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border-radius: 999px;
+    padding: 0 1.25rem;
+    font-size: 0.94rem;
+    font-weight: 560;
+  }
+
+  #heartbox-shell .heartbox-primary-button {
+    flex: 1;
+    border: 1px solid rgb(255 255 255 / 20%);
+    background: #f5dedb;
+    color: #111111;
+  }
+
+  #heartbox-shell .heartbox-secondary-button {
+    flex: 0 0 44%;
+    border: 1px solid rgb(255 255 255 / 15%);
+    background: rgb(255 255 255 / 4%);
+    color: #f4f4f2;
+  }
+
+  #heartbox-shell .heartbox-primary-button:disabled {
+    color: rgb(244 244 242 / 42%);
+    background: rgb(255 255 255 / 7%);
+  }
+
+  #heartbox-shell .heartbox-soft-actions,
+  #heartbox-shell .heartbox-link-button {
+    justify-content: center;
+    color: rgb(176 176 181 / 78%);
+    font-size: 0.82rem;
+  }
+
+  #heartbox-shell .heartbox-soft-actions {
+    display: grid;
+    gap: 0.38rem;
+    padding-top: 0.7rem;
+    text-align: center;
+  }
+
+  #heartbox-shell .heartbox-soft-actions button,
+  #heartbox-shell .heartbox-link-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+
+  #heartbox-shell .echo-compose-page {
+    min-height: calc(100svh - 1px);
+    border-radius: 0;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  #heartbox-shell .echo-textarea-wrap {
+    display: grid;
+    min-height: 14.25rem;
+    margin-top: 0.6rem;
+    padding: 1.1rem;
+  }
+
+  #heartbox-shell .echo-textarea-wrap textarea {
+    min-height: 10.5rem;
+    resize: none;
+    border: 0;
+    background: transparent;
+    color: #f4f4f2;
+    font-size: 1rem;
+    line-height: 1.7;
+    outline: none;
+  }
+
+  #heartbox-shell .echo-textarea-wrap textarea::placeholder {
+    color: rgb(176 176 181 / 76%);
+  }
+
+  #heartbox-shell .echo-textarea-wrap span {
+    justify-self: end;
+    color: rgb(176 176 181 / 76%);
+    font-size: 0.78rem;
+  }
+
+  #heartbox-shell .echo-privacy-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    justify-content: flex-start;
+    padding: 0.9rem 1rem;
+    color: rgb(176 176 181 / 82%);
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  #heartbox-shell .echo-submit-button,
+  #heartbox-shell .closer-main-button,
+  #heartbox-shell .new-moment-button {
+    width: 100%;
+    margin-top: auto;
+  }
+
+  #heartbox-shell .echo-success-page,
+  #heartbox-shell .new-moment-page {
+    min-height: calc(100svh - 1px);
+    align-content: center;
+    justify-items: center;
+    border-radius: 0;
+    text-align: center;
+  }
+
+  #heartbox-shell .heartbox-floating-back {
+    position: absolute;
+    top: max(1.5rem, env(safe-area-inset-top));
+    left: 1.45rem;
+  }
+
+  #heartbox-shell .echo-success-center {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+  }
+
+  #heartbox-shell .echo-success-check {
+    display: grid;
+    width: 4rem;
+    height: 4rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 70%);
+    border-radius: 999px;
+    color: #f4f4f2;
+    font-size: 1.65rem;
+  }
+
+  #heartbox-shell .echo-success-center h2,
+  #heartbox-shell .new-moment-copy h2,
+  #heartbox-shell .new-moment-question h3 {
+    font-size: 1.18rem;
+    font-weight: 520;
+  }
+
+  #heartbox-shell .echo-success-center p,
+  #heartbox-shell .new-moment-copy p,
+  #heartbox-shell .new-moment-question p,
+  #heartbox-shell .closer-footnote {
+    color: rgb(176 176 181 / 78%);
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  #heartbox-shell .echo-success-actions {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 3rem;
+  }
+
+  #heartbox-shell .echo-success-actions .heartbox-secondary-button {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  #heartbox-shell .closer-page {
+    min-height: calc(100svh - 1px);
+    border-radius: 0;
+    padding-right: 1.35rem;
+    padding-left: 1.35rem;
+  }
+
+  #heartbox-shell .closer-unlock-list {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 1.2rem;
+  }
+
+  #heartbox-shell .closer-unlock-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    min-height: 5.2rem;
+    padding: 0.95rem;
+  }
+
+  #heartbox-shell .closer-unlock-icon {
+    display: grid;
+    width: 2.65rem;
+    height: 2.65rem;
+    place-items: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 5%);
+    color: #f4f4f2;
+  }
+
+  #heartbox-shell .closer-unlock-card h3 {
+    color: #f4f4f2;
+    font-size: 0.94rem;
+    font-weight: 520;
+  }
+
+  #heartbox-shell .closer-unlock-card p,
+  #heartbox-shell .closer-unlock-card small {
+    color: rgb(176 176 181 / 76%);
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  #heartbox-shell .closer-unlock-card .closer-unlock-content {
+    margin-top: 0.3rem;
+    white-space: pre-line;
+    color: rgb(244 244 242 / 82%);
+  }
+
+  #heartbox-shell .closer-unlock-open {
+    border-color: rgb(245 222 219 / 24%);
+    background: rgb(245 222 219 / 5%);
+  }
+
+  #heartbox-shell .closer-footnote {
+    margin-top: 0.9rem;
+    text-align: center;
+  }
+
+  #heartbox-shell .closer-four-list {
+    margin-top: 2rem;
+  }
+
+  #heartbox-shell .closer-four-list .closer-unlock-card {
+    min-height: 7.4rem;
+    align-items: start;
+  }
+
+  #heartbox-shell .closer-final-page {
+    grid-template-rows: auto 1fr auto;
+  }
+
+  #heartbox-shell .closer-final-state {
+    display: grid;
+    align-self: center;
+    justify-items: center;
+    gap: 1rem;
+    max-width: 19rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  #heartbox-shell .closer-final-state h2,
+  #heartbox-shell .closer-final-state h3 {
+    color: #f4f4f2;
+    font-size: 1.18rem;
+    font-weight: 520;
+  }
+
+  #heartbox-shell .closer-final-state p {
+    color: rgb(176 176 181 / 78%);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  #heartbox-shell .closer-final-actions {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  #heartbox-shell .closer-final-actions .heartbox-primary-button,
+  #heartbox-shell .closer-final-actions .heartbox-secondary-button {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  #heartbox-shell .waiting-echo-page {
+    min-height: calc(100svh - 1px);
+    align-content: center;
+    justify-items: center;
+    border-radius: 0;
+  }
+
+  #heartbox-shell .waiting-echo-page .closer-final-actions {
+    margin-top: 3rem;
+  }
+
+  #heartbox-shell .new-box-visual {
+    position: relative;
+    display: grid;
+    width: min(58vw, 13rem);
+    aspect-ratio: 1.35 / 1;
+    place-items: center;
+    margin: 2.6rem 0 1.2rem;
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: 6px;
+    background:
+      linear-gradient(135deg, rgb(245 222 219 / 16%), transparent 34%),
+      linear-gradient(145deg, #171717, #050505);
+    color: rgb(244 244 242 / 78%);
+    letter-spacing: 0.42em;
+    box-shadow: 0 2rem 4rem rgb(0 0 0 / 46%);
+  }
+
+  #heartbox-shell .new-moment-question {
+    display: grid;
+    gap: 0.55rem;
+    margin-bottom: 1.4rem;
+  }
+
   #heartbox-shell .discover-section {
     display: grid;
     gap: 1rem;
@@ -4211,6 +4635,21 @@ button {
     .main-stage {
       padding-right: 10px;
       padding-left: 10px;
+    }
+
+    .heartbox-detail-stage {
+      padding: 0;
+    }
+
+    .heartbox-detail-stage .view-stack {
+      width: 100%;
+    }
+
+    #heartbox-shell .heartbox-flow-page {
+      min-height: 100svh;
+      border-right: 0;
+      border-left: 0;
+      border-radius: 0;
     }
 
     .mobile-topbar {
