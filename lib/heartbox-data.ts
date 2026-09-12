@@ -48,6 +48,29 @@ export type PersonalityFragment = {
   createdAt: string;
 };
 
+export type SecretBoxItem = {
+  id: string;
+  content: string;
+  createdAt: string;
+};
+
+export type UserHomeProfile = {
+  id: string;
+  name: string;
+  avatar: string;
+  age: number;
+  city: string;
+  bio: string;
+  tags: string[];
+  isFollowing: boolean;
+  moments: string[];
+  secretBoxItems: SecretBoxItem[];
+  personalityFragments: {
+    question: string;
+    answer: string;
+  }[];
+};
+
 export type Topic = {
   id: string;
   name: string;
@@ -351,6 +374,32 @@ export const personalityFragments: PersonalityFragment[] = [
     createdAt: '今天 18:44',
   },
   {
+    id: 'fragment_001_b',
+    userId: 'user_001',
+    topicId: 'topic_night',
+    prompt: '白天没说出口的话，夜里会变成什么？',
+    answer:
+      '会变成一条没有发出去的消息。写完以后放在那里，像给自己留了一盏很小的灯。',
+    mood: '安静',
+    tags: ['#深夜才会说的话', '#慢热的人怎么开始一段关系'],
+    likes: 43,
+    comments: 7,
+    createdAt: '昨天 22:18',
+  },
+  {
+    id: 'fragment_001_c',
+    userId: 'user_001',
+    topicId: 'topic_comfort',
+    prompt: '你认为舒服的关系是什么样？',
+    answer:
+      '是不用立刻解释每一种沉默。对方知道我还在，只是需要一点时间把自己放回来。',
+    mood: '缓慢',
+    tags: ['#舒服的关系是什么', '#如果不先看照片'],
+    likes: 31,
+    comments: 5,
+    createdAt: '周五 21:10',
+  },
+  {
     id: 'fragment_002',
     userId: 'user_002',
     topicId: 'topic_alone',
@@ -413,6 +462,135 @@ export const personalityFragments: PersonalityFragment[] = [
     likes: 47,
     comments: 4,
     createdAt: '周五 17:18',
+  },
+];
+
+export const userHomeProfiles: UserHomeProfile[] = [
+  {
+    id: 'user_001',
+    name: '月与六便士',
+    avatar: '月',
+    age: 23,
+    city: '上海',
+    bio: '偶尔清醒，常常想逃。\n但还是很喜欢生活。',
+    tags: ['摄影', '夜晚散步', '胶片'],
+    isFollowing: false,
+    moments: ['fragment_001'],
+    secretBoxItems: [
+      {
+        id: 'secret_001_01',
+        content:
+          '我其实很少主动联系别人，\n但会记得很多别人早就忘了的小事。',
+        createdAt: '2026.09.06 · 01:13',
+      },
+      {
+        id: 'secret_001_02',
+        content:
+          '有时候不是不想说，\n只是觉得解释太多，\n会让一些东西变轻。',
+        createdAt: '2026.09.02 · 23:47',
+      },
+      {
+        id: 'secret_001_03',
+        content:
+          '我喜欢在快到家的时候绕一点路，\n好像这样就能把一天里没说完的话，\n慢慢放回身体里。',
+        createdAt: '2026.08.28 · 22:16',
+      },
+    ],
+    personalityFragments: [
+      {
+        question: '更喜欢被理解，还是被陪着？',
+        answer: '都喜欢，但更难得的是被理解。',
+      },
+      {
+        question: '一个人的时候最常做什么？',
+        answer: '散步，整理照片，或者什么都不做。',
+      },
+      {
+        question: '最怕别人误解自己什么？',
+        answer: '沉默不等于不在意。',
+      },
+    ],
+  },
+  {
+    id: 'user_002',
+    name: '晚风停一下',
+    avatar: '晚',
+    age: 27,
+    city: '广州',
+    bio: '喜欢把周末过得慢一点，\n也喜欢认真吃一顿饭。',
+    tags: ['做饭', '菜市场', '爵士'],
+    isFollowing: true,
+    moments: ['fragment_002', 'fragment_006'],
+    secretBoxItems: [
+      {
+        id: 'secret_002_01',
+        content:
+          '我有时候会突然很想出门，\n不是为了抵达哪里，\n只是想确认自己还在生活里。',
+        createdAt: '2026.09.05 · 18:22',
+      },
+      {
+        id: 'secret_002_02',
+        content:
+          '最放松的亲密，\n是两个人在同一个空间里各做各的事，\n但知道对方在那里。',
+        createdAt: '2026.08.31 · 09:40',
+      },
+      {
+        id: 'secret_002_03',
+        content: '我不太会说想念，\n通常会问你吃饭了吗。',
+        createdAt: '2026.08.25 · 21:08',
+      },
+    ],
+    personalityFragments: [
+      {
+        question: '理想的周末是什么样？',
+        answer: '逛菜市场，做饭，下午看一部不急的电影。',
+      },
+      {
+        question: '什么会让你觉得安全？',
+        answer: '对方不用猜，也不用消失。',
+      },
+    ],
+  },
+  {
+    id: 'user_003',
+    name: '北窗留灯',
+    avatar: '北',
+    age: 25,
+    city: '北京',
+    bio: '慢热，低频，\n但每一次靠近都是真的。',
+    tags: ['阅读', '雨天', '独处'],
+    isFollowing: false,
+    moments: ['fragment_003'],
+    secretBoxItems: [
+      {
+        id: 'secret_003_01',
+        content:
+          '我很羡慕那些能自然求助的人，\n好像他们从来不用证明自己值得被接住。',
+        createdAt: '2026.09.04 · 00:18',
+      },
+      {
+        id: 'secret_003_02',
+        content:
+          '有些话我不是忘了回，\n是回之前在心里走了很远的路。',
+        createdAt: '2026.08.30 · 23:12',
+      },
+      {
+        id: 'secret_003_03',
+        content:
+          '下雨前的风会让我安静下来，\n像世界终于愿意小声一点。',
+        createdAt: '2026.08.22 · 17:55',
+      },
+    ],
+    personalityFragments: [
+      {
+        question: '最容易被什么细节打动？',
+        answer: '记得我没说完的话，也愿意让我慢慢说。',
+      },
+      {
+        question: '关系里最看重什么？',
+        answer: '稳定的在场，和不急着定义。',
+      },
+    ],
   },
 ];
 

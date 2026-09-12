@@ -16,6 +16,7 @@ import {
   House,
   LockKeyhole,
   MessageCircle,
+  MoreHorizontal,
   PackageOpen,
   PenLine,
   Plus,
@@ -36,6 +37,7 @@ import {
   type PostComment,
   type Relationship,
   type Topic,
+  type UserHomeProfile,
   blindBoxes,
   conversations,
   currentUser,
@@ -49,6 +51,7 @@ import {
   relationships,
   stageMeta,
   topics,
+  userHomeProfiles,
   wallet as initialWallet,
 } from '@/lib/heartbox-data';
 
@@ -68,6 +71,8 @@ const stageOrder = [
   'reveal',
 ] as const;
 type OnboardingStep = 'landing' | 'age' | 'prompt' | 'done';
+type DetailView = 'home' | 'secretBox' | 'userMoments';
+type CircleMode = 'hot' | 'latest' | 'following';
 type HeartboxStep =
   | 'detail'
   | 'echo'
@@ -225,7 +230,7 @@ export default function Home() {
   const [likedFragments, setLikedFragments] = useState<string[]>([]);
   const [likedComments, setLikedComments] = useState<string[]>([]);
   const [selectedTopicId, setSelectedTopicId] = useState(topics[0].id);
-  const [topicMode, setTopicMode] = useState<'hot' | 'latest'>('hot');
+  const [topicMode, setTopicMode] = useState<CircleMode>('hot');
   const [commentFragmentId, setCommentFragmentId] = useState<string | null>(
     null,
   );
@@ -250,6 +255,13 @@ export default function Home() {
   const [inviteStep, setInviteStep] = useState<
     'create' | 'card' | 'landing' | 'signup'
   >('create');
+  const [detailView, setDetailView] = useState<DetailView | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState(userHomeProfiles[0].id);
+  const [followedUserIds, setFollowedUserIds] = useState<string[]>(
+    userHomeProfiles
+      .filter((profile) => profile.isFollowing)
+      .map((profile) => profile.id),
+  );
 
   const selectedBox =
     blindBoxes.find((box) => box.id === selectedBoxId) ?? blindBoxes[0];
@@ -277,6 +289,12 @@ export default function Home() {
     conversations.find(
       (item) => item.relationshipId === selectedRelationship.id,
     ) ?? conversations[0];
+  const selectedUser =
+    userHomeProfiles.find((profile) => profile.id === selectedUserId) ??
+    userHomeProfiles[0];
+  const selectedUserMoments = allFragments.filter(
+    (fragment) => fragment.userId === selectedUser.id,
+  );
 
   const sensitive = useMemo(
     () => /(微信|vx|wechat|手机号|电话|\d{11})/i.test(messageDraft),
@@ -322,12 +340,40 @@ export default function Home() {
   }
 
   function switchView(next: AppView) {
+    setDetailView(null);
     setView(next);
     window.requestAnimationFrame(() => {
       document
         .getElementById('heartbox-shell')
         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+  }
+
+  function openUserProfile(userId: string) {
+    setSelectedUserId(userId);
+    setDetailView('home');
+    window.requestAnimationFrame(() => {
+      document
+        .getElementById('heartbox-shell')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  function closeDetailView() {
+    setDetailView(null);
+    window.requestAnimationFrame(() => {
+      document
+        .getElementById('heartbox-shell')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  function toggleFollow(userId: string) {
+    setFollowedUserIds((current) =>
+      current.includes(userId)
+        ? current.filter((item) => item !== userId)
+        : [...current, userId],
+    );
   }
 
   function beginOpening() {
@@ -447,10 +493,10 @@ export default function Home() {
               view === 'discover' && discoverDetailOpen && 'heartbox-detail-stage',
             )}
           >
-            {view !== 'discover' && (
+            {!detailView && view !== 'discover' && (
               <MobileTopbar freeOpens={freeOpens} hearts={hearts} />
             )}
-            {!(view === 'discover' && discoverDetailOpen) && (
+            {!detailView && !(view === 'discover' && discoverDetailOpen) && (
               <TopStatus
                 view={view}
                 freeOpens={freeOpens}
@@ -459,7 +505,73 @@ export default function Home() {
               />
             )}
             <div className="view-stack">
-              {view === 'discover' &&
+              {detailView === 'home' && (
+                <UserProfileView
+                  profile={selectedUser}
+                  moments={selectedUserMoments}
+                  followed={followedUserIds.includes(selectedUser.id)}
+                  likedFragments={likedFragments}
+                  likedComments={likedComments}
+                  comments={localComments}
+                  onBack={closeDetailView}
+                  onFollow={() => toggleFollow(selectedUser.id)}
+                  onSecretBox={() => setDetailView('secretBox')}
+                  onAllMoments={() => setDetailView('userMoments')}
+                  onLike={(id) =>
+                    setLikedFragments((current) =>
+                      current.includes(id)
+                        ? current.filter((item) => item !== id)
+                        : [...current, id],
+                    )
+                  }
+                  onComment={setCommentFragmentId}
+                  onLikeComment={(id) =>
+                    setLikedComments((current) =>
+                      current.includes(id)
+                        ? current.filter((item) => item !== id)
+                        : [...current, id],
+                    )
+                  }
+                  onTopic={setSelectedTopicId}
+                  onExplore={() => switchView('discover')}
+                  onOpenProfile={openUserProfile}
+                />
+              )}
+              {detailView === 'secretBox' && (
+                <SecretBoxView
+                  profile={selectedUser}
+                  onBack={() => setDetailView('home')}
+                />
+              )}
+              {detailView === 'userMoments' && (
+                <UserMomentsView
+                  profile={selectedUser}
+                  moments={selectedUserMoments}
+                  likedFragments={likedFragments}
+                  likedComments={likedComments}
+                  comments={localComments}
+                  onBack={() => setDetailView('home')}
+                  onLike={(id) =>
+                    setLikedFragments((current) =>
+                      current.includes(id)
+                        ? current.filter((item) => item !== id)
+                        : [...current, id],
+                    )
+                  }
+                  onComment={setCommentFragmentId}
+                  onLikeComment={(id) =>
+                    setLikedComments((current) =>
+                      current.includes(id)
+                        ? current.filter((item) => item !== id)
+                        : [...current, id],
+                    )
+                  }
+                  onTopic={setSelectedTopicId}
+                  onExplore={() => switchView('discover')}
+                  onOpenProfile={openUserProfile}
+                />
+              )}
+              {!detailView && view === 'discover' &&
                 (discoverDetailOpen ? (
                   <DiscoverBoxDetail
                     moment={selectedMoment}
@@ -500,9 +612,10 @@ export default function Home() {
                     onSelectBox={previewBox}
                   />
                 ))}
-              {view === 'circle' && (
+              {!detailView && view === 'circle' && (
                 <CircleView
                   fragments={allFragments}
+                  followedUserIds={followedUserIds}
                   likedFragments={likedFragments}
                   likedComments={likedComments}
                   selectedTopic={selectedTopic}
@@ -517,6 +630,7 @@ export default function Home() {
                   onTopic={setSelectedTopicId}
                   onTopicMode={setTopicMode}
                   onComment={setCommentFragmentId}
+                  onOpenProfile={openUserProfile}
                   onLikeComment={(id) =>
                     setLikedComments((current) =>
                       current.includes(id)
@@ -529,7 +643,7 @@ export default function Home() {
                   onCreate={() => switchView('create')}
                 />
               )}
-              {view === 'create' && (
+              {!detailView && view === 'create' && (
                 <CreateView
                   fragmentDraft={fragmentDraft}
                   inviteStep={inviteStep}
@@ -539,7 +653,7 @@ export default function Home() {
                   onCircle={() => switchView('circle')}
                 />
               )}
-              {view === 'messages' && (
+              {!detailView && view === 'messages' && (
                 <MessagesView
                   relationships={relationships}
                   selectedRelationship={selectedRelationship}
@@ -563,7 +677,7 @@ export default function Home() {
                   onClose={() => setSelectedRelationshipId(null)}
                 />
               )}
-              {view === 'mine' && (
+              {!detailView && view === 'mine' && (
                 <MineView
                   profile={myProfile}
                   card={myCard}
@@ -590,7 +704,7 @@ export default function Home() {
           />
         </div>
       )}
-      {onboarded && !(view === 'discover' && discoverDetailOpen) && (
+      {onboarded && !detailView && !(view === 'discover' && discoverDetailOpen) && (
         <MobileNav view={view} onSwitch={switchView} />
       )}
       {showConversion && (
@@ -1666,6 +1780,7 @@ function NewMomentView({
 }
 function CircleView({
   fragments,
+  followedUserIds,
   likedFragments,
   likedComments,
   selectedTopic,
@@ -1675,27 +1790,31 @@ function CircleView({
   onTopic,
   onTopicMode,
   onComment,
+  onOpenProfile,
   onLikeComment,
   onExplore,
   onCreate,
 }: {
   fragments: PersonalityFragment[];
+  followedUserIds: string[];
   likedFragments: string[];
   likedComments: string[];
   selectedTopic: Topic;
-  topicMode: 'hot' | 'latest';
+  topicMode: CircleMode;
   comments: PostComment[];
   onLike: (id: string) => void;
   onTopic: (id: string) => void;
-  onTopicMode: (mode: 'hot' | 'latest') => void;
+  onTopicMode: (mode: CircleMode) => void;
   onComment: (id: string) => void;
+  onOpenProfile: (userId: string) => void;
   onLikeComment: (id: string) => void;
   onExplore: () => void;
   onCreate: () => void;
 }) {
-  const topicPosts = fragments.filter(
-    (fragment) => fragment.topicId === selectedTopic.id,
-  );
+  const showingFollowing = topicMode === 'following';
+  const topicPosts = showingFollowing
+    ? fragments.filter((fragment) => followedUserIds.includes(fragment.userId))
+    : fragments.filter((fragment) => fragment.topicId === selectedTopic.id);
   const visiblePosts =
     topicMode === 'hot'
       ? [...topicPosts].sort(
@@ -1742,11 +1861,19 @@ function CircleView({
         <Panel className="topic-detail-panel">
           <div>
             <p className="eyebrow">Topic detail</p>
-            <h2>{selectedTopic.name}</h2>
-            <p>{selectedTopic.description}</p>
+            <h2>{showingFollowing ? '关注' : selectedTopic.name}</h2>
+            <p>
+              {showingFollowing
+                ? '只看你在主页里选择关注的人。'
+                : selectedTopic.description}
+            </p>
           </div>
           <div className="topic-detail-meta">
-            <span>{selectedTopic.participants} 人参与</span>
+            <span>
+              {showingFollowing
+                ? `${topicPosts.length} 个此刻`
+                : `${selectedTopic.participants} 人参与`}
+            </span>
             <div>
               <button
                 className={cx(topicMode === 'hot' && 'topic-mode-active')}
@@ -1759,6 +1886,12 @@ function CircleView({
                 onClick={() => onTopicMode('latest')}
               >
                 最新
+              </button>
+              <button
+                className={cx(topicMode === 'following' && 'topic-mode-active')}
+                onClick={() => onTopicMode('following')}
+              >
+                关注
               </button>
             </div>
           </div>
@@ -1787,9 +1920,246 @@ function CircleView({
               onLikeComment={onLikeComment}
               onTopic={onTopic}
               onExplore={onExplore}
+              onOpenProfile={onOpenProfile}
             />
           ))
         )}
+      </section>
+    </div>
+  );
+}
+
+function getMomentSortValue(fragment: PersonalityFragment) {
+  if (fragment.createdAt === '刚刚') return 1_000_000;
+  if (fragment.createdAt.startsWith('今天')) return 900_000 + timeValue(fragment.createdAt);
+  if (fragment.createdAt.startsWith('昨天')) return 800_000 + timeValue(fragment.createdAt);
+  if (fragment.createdAt.startsWith('周五')) return 700_000 + timeValue(fragment.createdAt);
+  return 0;
+}
+
+function timeValue(value: string) {
+  const match = value.match(/(\d{1,2}):(\d{2})/);
+  if (!match) return 0;
+  return Number(match[1]) * 60 + Number(match[2]);
+}
+
+function DetailHeader({
+  title,
+  meta,
+  onBack,
+}: {
+  title: string;
+  meta?: string;
+  onBack: () => void;
+}) {
+  return (
+    <header className="detail-header">
+      <button className="detail-back" onClick={onBack} aria-label="返回">
+        <ChevronLeft className="h-4 w-4" />
+      </button>
+      <div>
+        <h1>{title}</h1>
+        {meta && <span>{meta}</span>}
+      </div>
+    </header>
+  );
+}
+
+function UserProfileView({
+  profile,
+  moments,
+  followed,
+  likedFragments,
+  likedComments,
+  comments,
+  onBack,
+  onFollow,
+  onSecretBox,
+  onAllMoments,
+  onLike,
+  onComment,
+  onLikeComment,
+  onTopic,
+  onExplore,
+  onOpenProfile,
+}: {
+  profile: UserHomeProfile;
+  moments: PersonalityFragment[];
+  followed: boolean;
+  likedFragments: string[];
+  likedComments: string[];
+  comments: PostComment[];
+  onBack: () => void;
+  onFollow: () => void;
+  onSecretBox: () => void;
+  onAllMoments: () => void;
+  onLike: (id: string) => void;
+  onComment: (id: string) => void;
+  onLikeComment: (id: string) => void;
+  onTopic: (id: string) => void;
+  onExplore: () => void;
+  onOpenProfile: (userId: string) => void;
+}) {
+  const sortedMoments = [...moments].sort(
+    (a, b) => getMomentSortValue(b) - getMomentSortValue(a),
+  );
+  const recentMoments = sortedMoments.slice(0, 3);
+
+  return (
+    <div className="profile-page">
+      <DetailHeader title={profile.name} onBack={onBack} />
+      <section className="profile-identity">
+        <div className="profile-avatar" aria-hidden="true">
+          {profile.avatar}
+        </div>
+        <div className="profile-copy">
+          <div className="profile-name-row">
+            <h2>{profile.name}</h2>
+            <button
+              className={cx('profile-follow', followed && 'profile-following')}
+              onClick={onFollow}
+            >
+              {followed ? '已关注' : '关注'}
+            </button>
+          </div>
+          <p className="profile-meta">
+            {profile.age} · {profile.city}
+          </p>
+          <p className="profile-bio">{profile.bio}</p>
+          <div className="profile-tags">
+            {profile.tags.map((tag) => (
+              <span key={tag}># {tag}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <button className="secret-entry" onClick={onSecretBox}>
+        <span>暗格</span>
+        <small>{profile.secretBoxItems.length}</small>
+        <ChevronLeft className="h-4 w-4" />
+      </button>
+
+      <section className="profile-section">
+        <div className="profile-section-title">
+          <h2>TA 的此刻</h2>
+          <button onClick={onAllMoments}>查看全部 ›</button>
+        </div>
+        <div className="profile-moment-list">
+          {recentMoments.map((fragment) => (
+            <FragmentCard
+              key={fragment.id}
+              fragment={fragment}
+              liked={likedFragments.includes(fragment.id)}
+              likedComments={likedComments}
+              comments={comments}
+              variant="profile"
+              onLike={() => onLike(fragment.id)}
+              onComment={() => onComment(fragment.id)}
+              onLikeComment={onLikeComment}
+              onTopic={onTopic}
+              onExplore={onExplore}
+              onOpenProfile={onOpenProfile}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="profile-section profile-fragments">
+        <h2>关于 TA 的一点点</h2>
+        {profile.personalityFragments.slice(0, 3).map((item) => (
+          <div className="profile-qa" key={item.question}>
+            <p>{item.question}</p>
+            <strong>“{item.answer}”</strong>
+          </div>
+        ))}
+      </section>
+    </div>
+  );
+}
+
+function SecretBoxView({
+  profile,
+  onBack,
+}: {
+  profile: UserHomeProfile;
+  onBack: () => void;
+}) {
+  return (
+    <div className="profile-page secret-page">
+      <DetailHeader
+        title="暗格"
+        meta={String(profile.secretBoxItems.length)}
+        onBack={onBack}
+      />
+      <section className="secret-list">
+        {profile.secretBoxItems.map((item) => (
+          <article className="secret-item" key={item.id}>
+            <p>“{item.content}”</p>
+            <div>
+              <span>{item.createdAt}</span>
+              <button aria-label="更多">
+                <MoreHorizontal className="h-4 w-4" />
+              </button>
+            </div>
+          </article>
+        ))}
+      </section>
+    </div>
+  );
+}
+
+function UserMomentsView({
+  profile,
+  moments,
+  likedFragments,
+  likedComments,
+  comments,
+  onBack,
+  onLike,
+  onComment,
+  onLikeComment,
+  onTopic,
+  onExplore,
+  onOpenProfile,
+}: {
+  profile: UserHomeProfile;
+  moments: PersonalityFragment[];
+  likedFragments: string[];
+  likedComments: string[];
+  comments: PostComment[];
+  onBack: () => void;
+  onLike: (id: string) => void;
+  onComment: (id: string) => void;
+  onLikeComment: (id: string) => void;
+  onTopic: (id: string) => void;
+  onExplore: () => void;
+  onOpenProfile: (userId: string) => void;
+}) {
+  const sortedMoments = [...moments].sort(
+    (a, b) => getMomentSortValue(b) - getMomentSortValue(a),
+  );
+
+  return (
+    <div className="profile-page">
+      <DetailHeader title={`${profile.name}的此刻`} onBack={onBack} />
+      <section className="profile-moment-list">
+        {sortedMoments.map((fragment) => (
+          <FragmentCard
+            key={fragment.id}
+            fragment={fragment}
+            liked={likedFragments.includes(fragment.id)}
+            likedComments={likedComments}
+            comments={comments}
+            variant="profile"
+            onLike={() => onLike(fragment.id)}
+            onComment={() => onComment(fragment.id)}
+            onLikeComment={onLikeComment}
+            onTopic={onTopic}
+            onExplore={onExplore}
+            onOpenProfile={onOpenProfile}
+          />
+        ))}
       </section>
     </div>
   );
@@ -1800,36 +2170,87 @@ function FragmentCard({
   liked,
   likedComments,
   comments,
+  variant = 'public',
   onLike,
   onComment,
   onLikeComment,
   onTopic,
   onExplore,
+  onOpenProfile,
 }: {
   fragment: PersonalityFragment;
   liked: boolean;
   likedComments: string[];
   comments: PostComment[];
+  variant?: 'public' | 'profile';
   onLike: () => void;
   onComment: () => void;
   onLikeComment: (id: string) => void;
   onTopic: (id: string) => void;
   onExplore: () => void;
+  onOpenProfile: (userId: string) => void;
 }) {
   const fragmentComments = comments.filter(
     (comment) => comment.fragmentId === fragment.id,
   );
   const author =
+    userHomeProfiles.find((profile) => profile.id === fragment.userId)?.name ??
     profiles.find((profile) => profile.userId === fragment.userId)
       ?.displayName ?? '测试用户';
   const commentCount = Math.max(fragment.comments, fragmentComments.length);
+
+  if (variant === 'profile') {
+    return (
+      <Panel className="post-card profile-post-card p-5 sm:p-6">
+        <p className="post-meta">{fragment.createdAt}</p>
+        <p className="post-body">“{fragment.answer}”</p>
+        <div className="post-topics">
+          {fragment.tags.slice(0, 3).map((tag) => (
+            <button
+              className="topic-link"
+              key={tag}
+              onClick={() => {
+                const topic = topics.find((item) => item.name === tag);
+                if (topic) onTopic(topic.id);
+              }}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+        <div className="profile-post-actions">
+          <button onClick={onComment}>
+            <MessageCircle className="h-4 w-4" />
+            {commentCount} 回声
+          </button>
+          <button
+            className={cx(liked && 'profile-resonance-active')}
+            onClick={onLike}
+          >
+            <Heart className="h-4 w-4" />
+            {liked ? fragment.likes + 1 : fragment.likes} 共鸣
+          </button>
+          <button className="profile-reply-action" onClick={onComment}>
+            回应
+          </button>
+        </div>
+      </Panel>
+    );
+  }
 
   return (
     <Panel className="post-card p-5 sm:p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="post-meta">
-            Post · {author} · {fragment.createdAt}
+            Post ·{' '}
+            <button
+              className="post-author-link"
+              onClick={() => onOpenProfile(fragment.userId)}
+            >
+              {author}
+            </button>{' '}
+            · {fragment.createdAt}
           </p>
           <p className="post-prompt">{fragment.prompt}</p>
           <p className="post-body">“{fragment.answer}”</p>
@@ -1882,7 +2303,10 @@ function FragmentCard({
           <MessageCircle className="h-4 w-4" />
           {commentCount} Comment
         </button>
-        <button className="soft-command">
+        <button
+          className="soft-command"
+          onClick={() => onOpenProfile(fragment.userId)}
+        >
           查看 TA
           <UserRound className="h-4 w-4" />
         </button>

@@ -3850,6 +3850,342 @@ button {
     line-height: 1.58;
   }
 
+  #heartbox-shell .profile-page {
+    width: min(100%, 760px);
+    margin: 0 auto;
+    padding: max(0.72rem, env(safe-area-inset-top)) 0 2rem;
+    color: #f2f2f2;
+  }
+
+  #heartbox-shell .detail-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 2.6rem;
+    margin-bottom: 1.55rem;
+  }
+
+  #heartbox-shell .detail-back {
+    display: grid;
+    width: 2.1rem;
+    height: 2.1rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 5%);
+    color: rgb(242 242 242 / 78%);
+  }
+
+  #heartbox-shell .detail-header h1 {
+    color: #f2f2f2;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  #heartbox-shell .detail-header span {
+    display: block;
+    margin-top: 0.08rem;
+    color: rgb(184 184 184 / 58%);
+    font-size: 0.72rem;
+  }
+
+  #heartbox-shell .profile-identity {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.9rem;
+    align-items: start;
+    padding: 0.3rem 0 1.7rem;
+  }
+
+  #heartbox-shell .profile-avatar {
+    display: grid;
+    width: 3.35rem;
+    height: 3.35rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 13%);
+    border-radius: 1rem;
+    background:
+      linear-gradient(145deg, rgb(255 255 255 / 11%), rgb(255 255 255 / 4%)),
+      #0a0a0a;
+    color: rgb(242 242 242 / 86%);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  #heartbox-shell .profile-copy {
+    min-width: 0;
+  }
+
+  #heartbox-shell .profile-name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  #heartbox-shell .profile-copy h2 {
+    min-width: 0;
+    color: #f2f2f2;
+    font-size: 1.08rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  #heartbox-shell .profile-meta {
+    margin-top: 0.18rem;
+    color: rgb(184 184 184 / 62%);
+    font-size: 0.78rem;
+  }
+
+  #heartbox-shell .profile-bio {
+    margin-top: 1.02rem;
+    color: rgb(242 242 242 / 82%);
+    font-size: 0.92rem;
+    line-height: 1.72;
+    white-space: pre-line;
+  }
+
+  #heartbox-shell .profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
+  }
+
+  #heartbox-shell .profile-tags span {
+    color: rgb(184 184 184 / 62%);
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+
+  #heartbox-shell .profile-follow {
+    flex: 0 0 auto;
+    width: fit-content;
+    min-height: 1.56rem;
+    border: 1px solid rgb(242 242 242 / 11%);
+    border-radius: 999px;
+    background: rgb(242 242 242 / 8%);
+    padding: 0.16rem 0.5rem;
+    color: rgb(242 242 242 / 70%);
+    font-size: 0.72rem;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  #heartbox-shell .profile-following {
+    border-color: rgb(255 255 255 / 8%);
+    background: rgb(255 255 255 / 3%);
+    color: rgb(184 184 184 / 54%);
+  }
+
+  #heartbox-shell .secret-entry {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 1.05rem 0 1.45rem;
+    border-top: 1px solid rgb(255 255 255 / 9%);
+    border-bottom: 1px solid rgb(255 255 255 / 9%);
+    padding: 0.92rem 0.1rem;
+    color: #f2f2f2;
+    text-align: left;
+  }
+
+  #heartbox-shell .secret-entry span {
+    font-size: 0.92rem;
+    font-weight: 450;
+  }
+
+  #heartbox-shell .secret-entry small {
+    color: rgb(184 184 184 / 54%);
+    font-size: 0.78rem;
+  }
+
+  #heartbox-shell .secret-entry svg {
+    color: rgb(184 184 184 / 46%);
+    transform: rotate(180deg);
+  }
+
+  #heartbox-shell .profile-section {
+    margin-top: 1.45rem;
+  }
+
+  #heartbox-shell .profile-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.72rem;
+  }
+
+  #heartbox-shell .profile-section h2,
+  #heartbox-shell .profile-section-title h2 {
+    color: #f2f2f2;
+    font-size: 0.96rem;
+    font-weight: 500;
+  }
+
+  #heartbox-shell .profile-section-title button {
+    color: rgb(184 184 184 / 62%);
+    font-size: 0.74rem;
+  }
+
+  #heartbox-shell .profile-moment-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  #heartbox-shell .profile-post-card {
+    border-color: rgb(255 255 255 / 10%);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 3%)),
+      #070707;
+  }
+
+  #heartbox-shell .profile-post-card::before {
+    background: rgb(255 255 255 / 12%);
+  }
+
+  #heartbox-shell .profile-post-card .post-meta {
+    color: rgb(184 184 184 / 52%);
+    font-size: 0.72rem;
+  }
+
+  #heartbox-shell .profile-post-card .post-body {
+    margin-top: 0.72rem;
+    color: rgb(242 242 242 / 88%);
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  #heartbox-shell .profile-post-card .post-topics {
+    margin-top: 0.85rem;
+  }
+
+  #heartbox-shell .profile-post-card .topic-link {
+    min-height: 1.85rem;
+    border-color: rgb(255 255 255 / 10%);
+    background: rgb(255 255 255 / 4%);
+    color: rgb(184 184 184 / 66%);
+    font-size: 0.72rem;
+    font-weight: 400;
+  }
+
+  #heartbox-shell .profile-post-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 0.92rem;
+    color: rgb(184 184 184 / 62%);
+  }
+
+  #heartbox-shell .profile-post-actions button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    min-height: 1.6rem;
+    color: inherit;
+    font-size: 0.74rem;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  #heartbox-shell .profile-post-actions svg {
+    width: 0.92rem;
+    height: 0.92rem;
+    stroke-width: 1.45;
+  }
+
+  #heartbox-shell .profile-post-actions .profile-resonance-active {
+    color: rgb(255 238 240 / 82%);
+  }
+
+  #heartbox-shell .profile-post-actions .profile-reply-action {
+    margin-left: auto;
+    color: rgb(242 242 242 / 74%);
+  }
+
+  #heartbox-shell .profile-fragments {
+    border-top: 1px solid rgb(255 255 255 / 9%);
+    padding-top: 1.1rem;
+  }
+
+  #heartbox-shell .profile-qa {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgb(255 255 255 / 8%);
+  }
+
+  #heartbox-shell .profile-qa p {
+    color: rgb(184 184 184 / 62%);
+    font-size: 0.78rem;
+  }
+
+  #heartbox-shell .profile-qa strong {
+    display: block;
+    margin-top: 0.38rem;
+    color: rgb(242 242 242 / 82%);
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.62;
+  }
+
+  #heartbox-shell .secret-page {
+    width: min(100%, 680px);
+  }
+
+  #heartbox-shell .secret-list {
+    display: grid;
+  }
+
+  #heartbox-shell .secret-item {
+    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    padding: 2.25rem 0 2.4rem;
+  }
+
+  #heartbox-shell .secret-item:first-child {
+    padding-top: 0.65rem;
+  }
+
+  #heartbox-shell .secret-item p {
+    color: rgb(242 242 242 / 86%);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.86;
+    white-space: pre-line;
+  }
+
+  #heartbox-shell .secret-item div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.05rem;
+  }
+
+  #heartbox-shell .secret-item span {
+    color: rgb(184 184 184 / 48%);
+    font-size: 0.72rem;
+  }
+
+  #heartbox-shell .secret-item button {
+    display: grid;
+    width: 1.9rem;
+    height: 1.9rem;
+    place-items: center;
+    color: rgb(184 184 184 / 48%);
+  }
+
+  #heartbox-shell .post-author-link {
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
   #heartbox-shell .chat-line-me .chat-bubble,
   #heartbox-shell .chat-composer button,
   #heartbox-shell .comment-composer button {
