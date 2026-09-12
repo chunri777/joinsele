@@ -721,8 +721,9 @@ export default function Home() {
               setHearts((value) => value - 8);
               setShowConversion(false);
               setDiscoverDetailOpen(true);
-              setOpeningState('opening');
-              window.setTimeout(() => setOpeningState('first'), 720);
+              setHeartboxStep('detail');
+              setEchoDraft('');
+              setUnlockedItemIds([]);
             }
           }}
           onPlus={() => {
