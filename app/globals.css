@@ -5664,3 +5664,838 @@ button {
     }
   }
 }
+
+  /* SELE messages: quiet direct conversations, system notes, and private voice. */
+  #heartbox-shell .messages-app-frame {
+    background: #000000;
+    color: #f4f4f2;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+
+  #heartbox-shell .messages-app-frame.message-chat-open {
+    padding-bottom: 0;
+  }
+
+  #heartbox-shell:has(.messages-app-frame) .mobile-nav-active {
+    background: transparent;
+    color: rgb(231 218 221 / 82%) !important;
+  }
+
+  #heartbox-shell:has(.messages-app-frame) .mobile-nav-active svg {
+    color: rgb(235 224 226 / 88%);
+  }
+
+  #heartbox-shell:has(.messages-app-frame) .mobile-nav-active span {
+    color: rgb(231 218 221 / 76%);
+  }
+
+  #heartbox-shell .messages-stage {
+    padding: 0;
+  }
+
+  #heartbox-shell .messages-stage .view-stack {
+    width: 100%;
+    max-width: none;
+  }
+
+  #heartbox-shell .sele-messages-home,
+  #heartbox-shell .sele-chat-page {
+    width: 100%;
+    margin: 0 auto;
+    background: #000000;
+    color: #f4f4f2;
+  }
+
+  #heartbox-shell .sele-messages-home {
+    min-height: calc(100svh - 72px - env(safe-area-inset-bottom));
+    padding: max(28px, env(safe-area-inset-top)) 22px 24px;
+  }
+
+  #heartbox-shell .sele-messages-header,
+  #heartbox-shell .sele-chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #heartbox-shell .sele-messages-header {
+    min-height: 38px;
+  }
+
+  #heartbox-shell .sele-messages-header h1 {
+    color: #f4f4f2;
+    font-size: 22px;
+    font-weight: 520;
+    letter-spacing: 0;
+    line-height: 1.2;
+  }
+
+  #heartbox-shell .sele-icon-button {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: rgb(244 244 242 / 76%);
+  }
+
+  #heartbox-shell .sele-icon-button.is-active {
+    background: rgb(255 255 255 / 8%);
+    color: #f4f4f2;
+  }
+
+  #heartbox-shell .sele-icon-button svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.55;
+  }
+
+  #heartbox-shell .sele-message-search {
+    display: flex;
+    height: 38px;
+    align-items: center;
+    gap: 9px;
+    margin-top: 14px;
+    border: 1px solid rgb(255 255 255 / 11%);
+    border-radius: 8px;
+    background: rgb(255 255 255 / 5%);
+    padding: 0 12px;
+  }
+
+  #heartbox-shell .sele-message-search svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    color: rgb(244 244 242 / 38%);
+    stroke-width: 1.5;
+  }
+
+  #heartbox-shell .sele-message-search input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: #f4f4f2;
+    font-size: 13px;
+    letter-spacing: 0;
+    outline: 0;
+  }
+
+  #heartbox-shell .sele-message-search input::placeholder {
+    color: rgb(244 244 242 / 30%);
+  }
+
+  #heartbox-shell .sele-message-tabs {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    height: 52px;
+    margin-top: 8px;
+    border-bottom: 1px solid rgb(255 255 255 / 8%);
+  }
+
+  #heartbox-shell .sele-message-tabs button {
+    position: relative;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: rgb(244 244 242 / 38%);
+    font-size: 13px;
+    font-weight: 420;
+    letter-spacing: 0;
+  }
+
+  #heartbox-shell .sele-message-tabs button.is-active {
+    color: #f4f4f2;
+  }
+
+  #heartbox-shell .sele-message-tabs button.is-active::after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 1px;
+    background: #e7d1d5;
+    content: '';
+  }
+
+  #heartbox-shell .sele-conversation-list,
+  #heartbox-shell .sele-system-list {
+    display: grid;
+  }
+
+  #heartbox-shell .sele-conversation-row {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: 48px minmax(0, 1fr) 42px;
+    align-items: center;
+    gap: 12px;
+    min-height: 68px;
+    border: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 6%);
+    background: transparent;
+    padding: 9px 0;
+    color: #f4f4f2;
+    text-align: left;
+  }
+
+  #heartbox-shell .sele-thread-avatar,
+  #heartbox-shell .sele-chat-avatar {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid rgb(231 209 213 / 24%);
+    border-radius: 50%;
+    background: #202020;
+    color: rgb(244 244 242 / 88%);
+    font-size: 14px;
+    font-weight: 450;
+  }
+
+  #heartbox-shell .sele-thread-avatar {
+    width: 46px;
+    height: 46px;
+  }
+
+  #heartbox-shell .sele-official-avatar {
+    background: #171717;
+    color: #e7d1d5;
+  }
+
+  #heartbox-shell .sele-official-avatar svg {
+    width: 17px;
+    height: 17px;
+    stroke-width: 1.45;
+  }
+
+  #heartbox-shell .sele-thread-main,
+  #heartbox-shell .sele-thread-aside,
+  #heartbox-shell .sele-system-copy {
+    display: grid;
+    min-width: 0;
+  }
+
+  #heartbox-shell .sele-thread-main {
+    gap: 5px;
+  }
+
+  #heartbox-shell .sele-thread-name {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    color: #ededeb;
+    font-size: 14px;
+    font-weight: 490;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .sele-thread-name svg {
+    width: 11px;
+    height: 11px;
+    flex: 0 0 auto;
+    color: rgb(231 209 213 / 56%);
+    stroke-width: 1.7;
+  }
+
+  #heartbox-shell .sele-thread-preview {
+    overflow: hidden;
+    color: rgb(244 244 242 / 38%);
+    font-size: 12px;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .sele-thread-aside {
+    height: 43px;
+    align-content: space-between;
+    justify-items: end;
+  }
+
+  #heartbox-shell .sele-thread-aside time,
+  #heartbox-shell .sele-system-row time {
+    color: rgb(244 244 242 / 28%);
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  #heartbox-shell .sele-unread-badge {
+    display: grid;
+    min-width: 13px;
+    height: 13px;
+    place-items: center;
+    border-radius: 999px;
+    background: rgb(190 168 173 / 68%);
+    padding: 0 3px;
+    color: rgb(25 21 22 / 78%);
+    font-size: 8px;
+    font-weight: 540;
+    line-height: 1;
+  }
+
+  #heartbox-shell .sele-unread-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgb(190 168 173 / 66%);
+  }
+
+  #heartbox-shell .sele-muted-icon {
+    width: 13px;
+    height: 13px;
+    color: rgb(244 244 242 / 25%);
+    stroke-width: 1.5;
+  }
+
+  #heartbox-shell .sele-system-row {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 38px;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+    border-bottom: 1px solid rgb(255 255 255 / 6%);
+    padding: 10px 0;
+  }
+
+  #heartbox-shell .sele-system-icon {
+    position: relative;
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 4%);
+    color: rgb(231 209 213 / 75%);
+  }
+
+  #heartbox-shell .sele-system-row.is-unread .sele-system-icon::after {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgb(190 168 173 / 66%);
+    content: '';
+  }
+
+  #heartbox-shell .sele-system-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.45;
+  }
+
+  #heartbox-shell .sele-system-copy {
+    gap: 5px;
+  }
+
+  #heartbox-shell .sele-system-copy strong {
+    overflow: hidden;
+    color: #eeeeec;
+    font-size: 13px;
+    font-weight: 490;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .sele-system-copy > span {
+    overflow: hidden;
+    color: rgb(244 244 242 / 38%);
+    font-size: 11px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .sele-system-row time {
+    justify-self: end;
+  }
+
+  #heartbox-shell .sele-message-empty {
+    display: grid;
+    min-height: 510px;
+    place-items: center;
+    align-content: center;
+    gap: 9px;
+    color: rgb(244 244 242 / 34%);
+    text-align: center;
+  }
+
+  #heartbox-shell .sele-empty-echo {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+    border: 1px solid rgb(231 218 221 / 14%);
+    border-radius: 50%;
+  }
+
+  #heartbox-shell .sele-empty-echo::before,
+  #heartbox-shell .sele-empty-echo::after {
+    position: absolute;
+    border: 1px solid rgb(231 218 221 / 11%);
+    border-radius: 50%;
+    content: '';
+  }
+
+  #heartbox-shell .sele-empty-echo::before {
+    inset: 8px;
+  }
+
+  #heartbox-shell .sele-empty-echo::after {
+    inset: 17px;
+    border-color: rgb(231 218 221 / 9%);
+  }
+
+  #heartbox-shell .sele-message-empty h2 {
+    color: rgb(244 244 242 / 80%);
+    font-size: 16px;
+    font-weight: 470;
+    letter-spacing: 0;
+  }
+
+  #heartbox-shell .sele-message-empty p {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  #heartbox-shell .sele-chat-page {
+    position: relative;
+    display: grid;
+    height: 100svh;
+    min-height: 640px;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+
+  #heartbox-shell .sele-chat-header {
+    position: relative;
+    z-index: 12;
+    min-height: calc(62px + env(safe-area-inset-top));
+    border-bottom: 1px solid rgb(255 255 255 / 7%);
+    background: rgb(0 0 0 / 92%);
+    padding: max(12px, env(safe-area-inset-top)) 14px 10px;
+  }
+
+  #heartbox-shell .sele-chat-person {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: transparent;
+    padding: 0 8px;
+    color: #f4f4f2;
+    text-align: left;
+  }
+
+  #heartbox-shell .sele-chat-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 12px;
+  }
+
+  #heartbox-shell .sele-chat-person > span:last-child {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+  }
+
+  #heartbox-shell .sele-chat-person strong {
+    overflow: hidden;
+    color: #f2f2f0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .sele-chat-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 26px 16px 18px;
+    scrollbar-width: none;
+  }
+
+  #heartbox-shell .sele-chat-body::-webkit-scrollbar {
+    display: none;
+  }
+
+  #heartbox-shell .sele-message-group {
+    display: grid;
+  }
+
+  #heartbox-shell .sele-chat-time {
+    justify-self: center;
+    margin: 8px 0 14px;
+    color: rgb(244 244 242 / 22%);
+    font-size: 9px;
+    line-height: 1;
+  }
+
+  #heartbox-shell .sele-chat-line {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+  }
+
+  #heartbox-shell .sele-chat-line.is-me {
+    justify-content: flex-end;
+  }
+
+  #heartbox-shell .sele-text-bubble,
+  #heartbox-shell .sele-voice-bubble {
+    max-width: 78%;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 12px;
+    background: #222222;
+    color: rgb(244 244 242 / 88%);
+  }
+
+  #heartbox-shell .sele-text-bubble {
+    padding: 10px 13px;
+    font-size: 13px;
+    line-height: 1.58;
+    white-space: pre-wrap;
+  }
+
+  #heartbox-shell .sele-chat-line.is-me .sele-text-bubble,
+  #heartbox-shell .sele-chat-line.is-me .sele-voice-bubble {
+    border-color: rgb(211 207 216 / 13%);
+    background: #343136;
+    color: #f6f2f2;
+  }
+
+  #heartbox-shell .sele-voice-bubble {
+    display: flex;
+    width: 176px;
+    min-height: 44px;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 11px;
+  }
+
+  #heartbox-shell .sele-voice-play {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    background: rgb(244 244 242 / 88%);
+    color: #171717;
+  }
+
+  #heartbox-shell .sele-voice-play svg {
+    width: 11px;
+    height: 11px;
+    fill: currentColor;
+    stroke-width: 1;
+    transform: translateX(1px);
+  }
+
+  #heartbox-shell .sele-waveform {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    gap: 2px;
+    height: 20px;
+  }
+
+  #heartbox-shell .sele-waveform i {
+    width: 2px;
+    border-radius: 1px;
+    background: rgb(244 244 242 / 45%);
+  }
+
+  #heartbox-shell .sele-voice-bubble.is-playing .sele-waveform i:nth-child(3n) {
+    background: #e7d1d5;
+  }
+
+  #heartbox-shell .sele-voice-duration {
+    color: rgb(244 244 242 / 36%);
+    font-size: 10px;
+  }
+
+  #heartbox-shell .sele-chat-empty {
+    display: grid;
+    min-height: 50vh;
+    place-items: center;
+    color: rgb(244 244 242 / 26%);
+    font-size: 12px;
+  }
+
+  #heartbox-shell .sele-blocked-note {
+    width: fit-content;
+    max-width: 82%;
+    margin: 22px auto 4px;
+    color: rgb(244 244 242 / 36%);
+    font-size: 11px;
+    text-align: center;
+  }
+
+  #heartbox-shell .sele-chat-composer-area {
+    position: relative;
+    z-index: 11;
+    border-top: 1px solid rgb(255 255 255 / 5%);
+    background: #030303;
+    padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+  }
+
+  #heartbox-shell .sele-chat-composer {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #heartbox-shell .sele-composer-mode,
+  #heartbox-shell .sele-send-button {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 4%);
+    color: rgb(244 244 242 / 68%);
+  }
+
+  #heartbox-shell .sele-composer-mode svg,
+  #heartbox-shell .sele-send-button svg {
+    width: 17px;
+    height: 17px;
+    stroke-width: 1.55;
+  }
+
+  #heartbox-shell .sele-chat-composer input {
+    width: 100%;
+    min-width: 0;
+    height: 38px;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 19px;
+    background: #151515;
+    padding: 0 14px;
+    color: #f4f4f2;
+    font-size: 13px;
+    letter-spacing: 0;
+    outline: 0;
+  }
+
+  #heartbox-shell .sele-chat-composer input::placeholder {
+    color: rgb(244 244 242 / 28%);
+  }
+
+  #heartbox-shell .sele-send-button {
+    border-color: rgb(211 207 216 / 14%);
+    background: #343136;
+    color: #f3e8ea;
+  }
+
+  #heartbox-shell .sele-send-button:disabled {
+    border-color: rgb(255 255 255 / 6%);
+    background: rgb(255 255 255 / 3%);
+    color: rgb(244 244 242 / 20%);
+    cursor: default;
+  }
+
+  #heartbox-shell .sele-hold-to-talk {
+    display: flex;
+    height: 38px;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 19px;
+    background: #151515;
+    color: rgb(244 244 242 / 72%);
+    font-size: 12px;
+    user-select: none;
+    touch-action: none;
+  }
+
+  #heartbox-shell .sele-hold-to-talk svg {
+    width: 15px;
+    height: 15px;
+    stroke-width: 1.5;
+  }
+
+  #heartbox-shell .sele-hold-to-talk.is-recording {
+    border-color: rgb(231 209 213 / 28%);
+    background: #32292c;
+    color: #f0dfe2;
+  }
+
+  #heartbox-shell .sele-composer-spacer {
+    width: 36px;
+    height: 36px;
+  }
+
+  #heartbox-shell .sele-disabled-composer {
+    display: grid;
+    height: 38px;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 19px;
+    background: #111111;
+    color: rgb(244 244 242 / 28%);
+    font-size: 11px;
+  }
+
+  #heartbox-shell .sele-chat-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    border: 0;
+    background: rgb(0 0 0 / 18%);
+  }
+
+  #heartbox-shell .sele-chat-menu {
+    position: absolute;
+    top: calc(58px + env(safe-area-inset-top));
+    right: 14px;
+    z-index: 31;
+    display: grid;
+    width: 204px;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 8px;
+    background: #181818;
+    box-shadow: 0 12px 34px rgb(0 0 0 / 34%);
+  }
+
+  #heartbox-shell .sele-chat-menu > button {
+    display: grid;
+    min-height: 39px;
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 4%);
+    background: transparent;
+    padding: 0 11px;
+    color: rgb(244 244 242 / 72%);
+    text-align: left;
+    font-size: 11.5px;
+  }
+
+  #heartbox-shell .sele-chat-menu > button:last-child {
+    border-bottom: 0;
+  }
+
+  #heartbox-shell .sele-chat-menu > button svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 1.25;
+  }
+
+  #heartbox-shell .sele-chat-menu > button.is-danger,
+  #heartbox-shell .sele-confirm-dialog button.is-danger {
+    color: #a9797d;
+  }
+
+  #heartbox-shell .sele-chat-menu > button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  #heartbox-shell .sele-quiet-switch {
+    position: relative;
+    width: 30px;
+    height: 17px;
+    border-radius: 999px;
+    background: #343434;
+  }
+
+  #heartbox-shell .sele-quiet-switch i {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #8b8b8b;
+    transition: transform 160ms ease;
+  }
+
+  #heartbox-shell .sele-quiet-switch.is-on {
+    background: #584649;
+  }
+
+  #heartbox-shell .sele-quiet-switch.is-on i {
+    background: #e4ced3;
+    transform: translateX(13px);
+  }
+
+  #heartbox-shell .sele-confirm-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    background: rgb(0 0 0 / 66%);
+    padding: 22px;
+  }
+
+  #heartbox-shell .sele-confirm-dialog {
+    display: grid;
+    width: min(100%, 310px);
+    gap: 12px;
+    border: 1px solid rgb(255 255 255 / 11%);
+    border-radius: 8px;
+    background: #1a1a1a;
+    padding: 18px;
+    box-shadow: 0 22px 64px rgb(0 0 0 / 55%);
+  }
+
+  #heartbox-shell .sele-confirm-dialog h2 {
+    color: #f2f2f0;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  #heartbox-shell .sele-confirm-dialog p {
+    color: rgb(244 244 242 / 42%);
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  #heartbox-shell .sele-confirm-dialog > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  #heartbox-shell .sele-confirm-dialog button {
+    min-height: 36px;
+    border: 1px solid rgb(255 255 255 / 9%);
+    border-radius: 6px;
+    background: rgb(255 255 255 / 4%);
+    color: rgb(244 244 242 / 62%);
+    font-size: 11px;
+  }
+
+  @media (min-width: 760px) {
+    #heartbox-shell .sele-messages-home,
+    #heartbox-shell .sele-chat-page {
+      max-width: 680px;
+      border-right: 1px solid rgb(255 255 255 / 6%);
+      border-left: 1px solid rgb(255 255 255 / 6%);
+    }
+  }

@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Ban,
   Bell,
+  BellOff,
   ChevronLeft,
   Copy,
   Feather,
@@ -14,11 +15,15 @@ import {
   Heart,
   HeartHandshake,
   House,
+  Keyboard,
   LockKeyhole,
   MessageCircle,
+  Mic,
   MoreHorizontal,
   PackageOpen,
   PenLine,
+  Pin,
+  Play,
   Plus,
   RefreshCw,
   Search,
@@ -26,20 +31,20 @@ import {
   ShieldAlert,
   ShieldCheck,
   Sparkles,
+  Trash2,
   UserRound,
   UsersRound,
+  X,
 } from 'lucide-react';
 import {
   type AppView,
   type BlindBox,
-  type Conversation,
   type PersonalityFragment,
   type PostComment,
   type Relationship,
   type Topic,
   type UserHomeProfile,
   blindBoxes,
-  conversations,
   currentUser,
   dailyPrompt,
   invite,
@@ -54,6 +59,15 @@ import {
   userHomeProfiles,
   wallet as initialWallet,
 } from '@/lib/heartbox-data';
+import {
+  type DirectConversation,
+  type DirectMessage,
+  type MessageTab,
+  type SystemNotification,
+  initialConversations,
+  initialSystemNotifications,
+  messageUserProfiles,
+} from '@/lib/message-data';
 
 const navItems: { id: AppView; label: string; icon: ElementType }[] = [
   { id: 'discover', label: '发现', icon: House },
@@ -63,16 +77,11 @@ const navItems: { id: AppView; label: string; icon: ElementType }[] = [
   { id: 'mine', label: '我的', icon: UserRound },
 ];
 
-const stageOrder = [
-  'stranger',
-  'echo',
-  'resonance',
-  'closer',
-  'reveal',
-] as const;
 type OnboardingStep = 'landing' | 'age' | 'prompt' | 'done';
 type DetailView = 'home' | 'secretBox' | 'userMoments';
 type CircleMode = 'hot' | 'latest' | 'following';
+type MessageScreen = 'list' | 'chat';
+type MessageConfirmAction = 'block' | 'delete' | null;
 type HeartboxStep =
   | 'detail'
   | 'echo'
@@ -108,6 +117,8 @@ type HeartboxUnlock = {
   content: string;
   icon: ElementType;
 };
+
+const appUserProfiles = [...userHomeProfiles, ...messageUserProfiles];
 
 const heartboxMoments: HeartboxMoment[] = [
   {
@@ -212,6 +223,43 @@ function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ');
 }
 
+function formatDuration(duration = 0) {
+  const minutes = Math.floor(duration / 60);
+  const seconds = String(duration % 60).padStart(2, '0');
+  return `${minutes}:${seconds}`;
+}
+
+function formatListTime(createdAt: string) {
+  const date = new Date(createdAt);
+  const today = new Date();
+  if (date.toDateString() === today.toDateString()) {
+    return date.toLocaleTimeString('zh-CN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  }
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) return '昨天';
+  return `${date.getMonth() + 1}.${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function formatChatTime(createdAt: string) {
+  return new Date(createdAt).toLocaleTimeString('zh-CN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+}
+
+function shouldShowMessageTime(messages: DirectMessage[], index: number) {
+  if (index === 0) return true;
+  const currentTime = new Date(messages[index].createdAt).getTime();
+  const previousTime = new Date(messages[index - 1].createdAt).getTime();
+  return currentTime - previousTime > 30 * 60 * 1000;
+}
+
 export default function Home() {
   const [view, setView] = useState<AppView>('discover');
   const [onboardingStep, setOnboardingStep] =
@@ -244,21 +292,32 @@ export default function Home() {
   const [publishedFragments, setPublishedFragments] = useState<
     PersonalityFragment[]
   >([]);
-  const [selectedRelationshipId, setSelectedRelationshipId] = useState<
+  const [conversationState, setConversationState] =
+    useState<DirectConversation[]>(initialConversations);
+  const [systemNotifications, setSystemNotifications] = useState<
+    SystemNotification[]
+  >(initialSystemNotifications);
+  const [messageTab, setMessageTab] = useState<MessageTab>('all');
+  const [messageScreen, setMessageScreen] = useState<MessageScreen>('list');
+  const [activeConversationId, setActiveConversationId] = useState<
     string | null
   >(null);
-  const [messages, setMessages] = useState(conversations[0].messages);
+  const [messageQuery, setMessageQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
   const [messageDraft, setMessageDraft] = useState('');
-  const [revealRequested, setRevealRequested] = useState(false);
-  const [blocked, setBlocked] = useState(false);
-  const [reported, setReported] = useState(false);
+  const [composerMode, setComposerMode] = useState<'text' | 'voice'>('text');
+  const [isRecording, setIsRecording] = useState(false);
+  const [playingMessageId, setPlayingMessageId] = useState<string | null>(null);
+  const [chatMenuOpen, setChatMenuOpen] = useState(false);
+  const [messageConfirmAction, setMessageConfirmAction] =
+    useState<MessageConfirmAction>(null);
   const [inviteStep, setInviteStep] = useState<
     'create' | 'card' | 'landing' | 'signup'
   >('create');
   const [detailView, setDetailView] = useState<DetailView | null>(null);
   const [selectedUserId, setSelectedUserId] = useState(userHomeProfiles[0].id);
   const [followedUserIds, setFollowedUserIds] = useState<string[]>(
-    userHomeProfiles
+    appUserProfiles
       .filter((profile) => profile.isFollowing)
       .map((profile) => profile.id),
   );
@@ -267,9 +326,7 @@ export default function Home() {
     blindBoxes.find((box) => box.id === selectedBoxId) ?? blindBoxes[0];
   const selectedMoment =
     heartboxMoments[selectedMomentIndex % heartboxMoments.length];
-  const selectedRelationship =
-    relationships.find((item) => item.id === selectedRelationshipId) ??
-    relationships[0];
+  const selectedRelationship = relationships[0];
   const allFragments = [...publishedFragments, ...personalityFragments];
   const selectedTopic =
     topics.find((topic) => topic.id === selectedTopicId) ?? topics[0];
@@ -285,20 +342,25 @@ export default function Home() {
   const myProfile =
     profiles.find((profile) => profile.userId === currentUser.id) ??
     profiles[0];
-  const conversation: Conversation =
-    conversations.find(
-      (item) => item.relationshipId === selectedRelationship.id,
-    ) ?? conversations[0];
   const selectedUser =
-    userHomeProfiles.find((profile) => profile.id === selectedUserId) ??
-    userHomeProfiles[0];
+    appUserProfiles.find((profile) => profile.id === selectedUserId) ??
+    appUserProfiles[0];
   const selectedUserMoments = allFragments.filter(
     (fragment) => fragment.userId === selectedUser.id,
   );
-
-  const sensitive = useMemo(
-    () => /(微信|vx|wechat|手机号|电话|\d{11})/i.test(messageDraft),
-    [messageDraft],
+  const activeConversation = conversationState.find(
+    (item) => item.id === activeConversationId,
+  );
+  const orderedConversations = useMemo(
+    () =>
+      [...conversationState].sort((left, right) => {
+        if (left.isPinned !== right.isPinned) return left.isPinned ? -1 : 1;
+        return (
+          new Date(right.lastMessageAt).getTime() -
+          new Date(left.lastMessageAt).getTime()
+        );
+      }),
+    [conversationState],
   );
 
   const onboarded = onboardingStep === 'done';
@@ -325,12 +387,19 @@ export default function Home() {
     setReplyingToCommentId(null);
     setFragmentDraft('');
     setPublishedFragments([]);
-    setSelectedRelationshipId(null);
-    setMessages(conversations[0].messages);
+    setConversationState(initialConversations);
+    setSystemNotifications(initialSystemNotifications);
+    setMessageTab('all');
+    setMessageScreen('list');
+    setActiveConversationId(null);
+    setMessageQuery('');
+    setSearchOpen(false);
     setMessageDraft('');
-    setRevealRequested(false);
-    setBlocked(false);
-    setReported(false);
+    setComposerMode('text');
+    setIsRecording(false);
+    setPlayingMessageId(null);
+    setChatMenuOpen(false);
+    setMessageConfirmAction(null);
     setInviteStep('create');
     window.requestAnimationFrame(() => {
       document
@@ -341,6 +410,11 @@ export default function Home() {
 
   function switchView(next: AppView) {
     setDetailView(null);
+    if (next === 'messages') {
+      setMessageScreen('list');
+      setActiveConversationId(null);
+      setChatMenuOpen(false);
+    }
     setView(next);
     window.requestAnimationFrame(() => {
       document
@@ -444,18 +518,142 @@ export default function Home() {
     setView('circle');
   }
 
-  function sendChatMessage() {
-    if (!messageDraft.trim()) return;
-    setMessages((current) => [
-      ...current,
-      {
-        id: `msg_new_${Date.now()}`,
-        sender: 'me',
-        body: messageDraft.trim(),
-        createdAt: '现在',
-      },
-    ]);
+  function openConversation(id: string) {
+    setConversationState((current) =>
+      current.map((item) =>
+        item.id === id ? { ...item, unreadCount: 0 } : item,
+      ),
+    );
+    setActiveConversationId(id);
+    setMessageScreen('chat');
     setMessageDraft('');
+    setComposerMode('text');
+    setChatMenuOpen(false);
+    setMessageConfirmAction(null);
+  }
+
+  function closeConversation() {
+    setMessageScreen('list');
+    setActiveConversationId(null);
+    setMessageDraft('');
+    setIsRecording(false);
+    setPlayingMessageId(null);
+    setChatMenuOpen(false);
+    setMessageConfirmAction(null);
+  }
+
+  function updateConversation(
+    id: string,
+    update: (conversation: DirectConversation) => DirectConversation,
+  ) {
+    setConversationState((current) =>
+      current.map((item) => (item.id === id ? update(item) : item)),
+    );
+  }
+
+  function sendDirectMessage() {
+    const content = messageDraft.trim();
+    if (!content || !activeConversation || activeConversation.isBlocked) return;
+    const latestConversationTime = Math.max(
+      Date.now(),
+      ...conversationState.map((item) => new Date(item.lastMessageAt).getTime()),
+    );
+    const createdAt = new Date(latestConversationTime + 60_000).toISOString();
+    const message: DirectMessage = {
+      id: `direct_${Date.now()}`,
+      sender: 'me',
+      type: 'text',
+      content,
+      createdAt,
+    };
+    updateConversation(activeConversation.id, (current) => ({
+      ...current,
+      messages: [...current.messages, message],
+      lastMessage: content,
+      lastMessageAt: createdAt,
+      unreadCount: 0,
+    }));
+    setMessageDraft('');
+  }
+
+  function sendMockVoiceMessage() {
+    if (!activeConversation || activeConversation.isBlocked) return;
+    const latestConversationTime = Math.max(
+      Date.now(),
+      ...conversationState.map((item) => new Date(item.lastMessageAt).getTime()),
+    );
+    const createdAt = new Date(latestConversationTime + 60_000).toISOString();
+    const duration = 24;
+    const message: DirectMessage = {
+      id: `voice_${Date.now()}`,
+      sender: 'me',
+      type: 'voice',
+      content: '语音消息',
+      duration,
+      createdAt,
+    };
+    updateConversation(activeConversation.id, (current) => ({
+      ...current,
+      messages: [...current.messages, message],
+      lastMessage: `[语音] ${formatDuration(duration)}`,
+      lastMessageAt: createdAt,
+      unreadCount: 0,
+    }));
+  }
+
+  function selectMessageTab(tab: MessageTab) {
+    setMessageTab(tab);
+    if (tab === 'system') {
+      setSystemNotifications((current) =>
+        current.map((item) => ({ ...item, isRead: true })),
+      );
+    }
+  }
+
+  function toggleConversationPin() {
+    if (!activeConversation) return;
+    updateConversation(activeConversation.id, (current) => ({
+      ...current,
+      isPinned: !current.isPinned,
+    }));
+  }
+
+  function toggleConversationMute() {
+    if (!activeConversation) return;
+    updateConversation(activeConversation.id, (current) => ({
+      ...current,
+      isMuted: !current.isMuted,
+    }));
+  }
+
+  function clearConversation() {
+    if (!activeConversation) return;
+    updateConversation(activeConversation.id, (current) => ({
+      ...current,
+      messages: [],
+      lastMessage: '',
+      unreadCount: 0,
+    }));
+    setPlayingMessageId(null);
+    setChatMenuOpen(false);
+  }
+
+  function confirmMessageAction() {
+    if (!activeConversation || !messageConfirmAction) return;
+    if (messageConfirmAction === 'block') {
+      updateConversation(activeConversation.id, (current) => ({
+        ...current,
+        isBlocked: true,
+        unreadCount: 0,
+      }));
+      setMessageConfirmAction(null);
+      setChatMenuOpen(false);
+      return;
+    }
+    setConversationState((current) =>
+      current.filter((item) => item.id !== activeConversation.id),
+    );
+    closeConversation();
   }
 
   return (
@@ -467,6 +665,7 @@ export default function Home() {
       {!onboarded ? (
         <OnboardingFlow
           step={onboardingStep}
+
           fragmentDraft={fragmentDraft}
           onDraft={setFragmentDraft}
           onStep={setOnboardingStep}
@@ -480,7 +679,15 @@ export default function Home() {
           }}
         />
       ) : (
-        <div className="app-frame">
+        <div
+          className={cx(
+            'app-frame',
+            view === 'messages' && 'messages-app-frame',
+            view === 'messages' &&
+              messageScreen === 'chat' &&
+              'message-chat-open',
+          )}
+        >
           <DesktopSidebar
             view={view}
             onSwitch={switchView}
@@ -490,20 +697,25 @@ export default function Home() {
             className={cx(
               'main-stage',
               view === 'discover' && 'discover-stage',
-              view === 'discover' && discoverDetailOpen && 'heartbox-detail-stage',
+              view === 'discover' &&
+                discoverDetailOpen &&
+                'heartbox-detail-stage',
+              view === 'messages' && 'messages-stage',
             )}
           >
-            {!detailView && view !== 'discover' && (
+            {!detailView && view !== 'discover' && view !== 'messages' && (
               <MobileTopbar freeOpens={freeOpens} hearts={hearts} />
             )}
-            {!detailView && !(view === 'discover' && discoverDetailOpen) && (
-              <TopStatus
-                view={view}
-                freeOpens={freeOpens}
-                hearts={hearts}
-                onOpenWallet={() => switchView('mine')}
-              />
-            )}
+            {!detailView &&
+              view !== 'messages' &&
+              !(view === 'discover' && discoverDetailOpen) && (
+                <TopStatus
+                  view={view}
+                  freeOpens={freeOpens}
+                  hearts={hearts}
+                  onOpenWallet={() => switchView('mine')}
+                />
+              )}
             <div className="view-stack">
               {detailView === 'home' && (
                 <UserProfileView
@@ -655,26 +867,57 @@ export default function Home() {
               )}
               {!detailView && view === 'messages' && (
                 <MessagesView
-                  relationships={relationships}
-                  selectedRelationship={selectedRelationship}
-                  detailOpen={selectedRelationshipId !== null}
-                  messages={
-                    selectedRelationship.id === conversations[0].relationshipId
-                      ? messages
-                      : conversation.messages
-                  }
+                  conversations={orderedConversations}
+                  systemNotifications={systemNotifications}
+                  activeConversation={activeConversation}
+                  screen={messageScreen}
+                  tab={messageTab}
+                  query={messageQuery}
+                  searchOpen={searchOpen}
                   messageDraft={messageDraft}
-                  sensitive={sensitive}
-                  revealRequested={revealRequested}
-                  blocked={blocked}
-                  reported={reported}
-                  onSelect={(id) => setSelectedRelationshipId(id)}
+                  composerMode={composerMode}
+                  isRecording={isRecording}
+                  playingMessageId={playingMessageId}
+                  menuOpen={chatMenuOpen}
+                  confirmAction={messageConfirmAction}
+                  onTab={selectMessageTab}
+                  onQuery={setMessageQuery}
+                  onToggleSearch={() => {
+                    setSearchOpen((current) => !current);
+                    setMessageQuery('');
+                  }}
+                  onSelect={openConversation}
                   onDraft={setMessageDraft}
-                  onSend={sendChatMessage}
-                  onReveal={() => setRevealRequested(true)}
-                  onBlock={() => setBlocked(true)}
-                  onReport={() => setReported(true)}
-                  onClose={() => setSelectedRelationshipId(null)}
+                  onSend={sendDirectMessage}
+                  onComposerMode={setComposerMode}
+                  onVoiceStart={() => {
+                    if (!activeConversation?.isBlocked) setIsRecording(true);
+                  }}
+                  onVoiceEnd={() => {
+                    if (!isRecording) return;
+                    setIsRecording(false);
+                    sendMockVoiceMessage();
+                  }}
+                  onVoiceCancel={() => setIsRecording(false)}
+                  onPlay={(id) =>
+                    setPlayingMessageId((current) =>
+                      current === id ? null : id,
+                    )
+                  }
+                  onToggleMenu={() => setChatMenuOpen((current) => !current)}
+                  onCloseMenu={() => setChatMenuOpen(false)}
+                  onViewProfile={() => {
+                    if (!activeConversation) return;
+                    setChatMenuOpen(false);
+                    openUserProfile(activeConversation.userId);
+                  }}
+                  onTogglePin={toggleConversationPin}
+                  onClear={clearConversation}
+                  onToggleMute={toggleConversationMute}
+                  onAskConfirm={setMessageConfirmAction}
+                  onCancelConfirm={() => setMessageConfirmAction(null)}
+                  onConfirm={confirmMessageAction}
+                  onClose={closeConversation}
                 />
               )}
               {!detailView && view === 'mine' && (
@@ -704,9 +947,12 @@ export default function Home() {
           />
         </div>
       )}
-      {onboarded && !detailView && !(view === 'discover' && discoverDetailOpen) && (
-        <MobileNav view={view} onSwitch={switchView} />
-      )}
+      {onboarded &&
+        !detailView &&
+        !(view === 'discover' && discoverDetailOpen) &&
+        !(view === 'messages' && messageScreen === 'chat') && (
+          <MobileNav view={view} onSwitch={switchView} />
+        )}
       {showConversion && (
         <ConversionModal
           hearts={hearts}
@@ -2480,314 +2726,554 @@ function InviteFlow({
 }
 
 function MessagesView({
-  relationships,
-  selectedRelationship,
-  detailOpen,
-  messages,
+  conversations,
+  systemNotifications,
+  activeConversation,
+  screen,
+  tab,
+  query,
+  searchOpen,
   messageDraft,
-  sensitive,
-  revealRequested,
-  blocked,
-  reported,
+  composerMode,
+  isRecording,
+  playingMessageId,
+  menuOpen,
+  confirmAction,
+  onTab,
+  onQuery,
+  onToggleSearch,
   onSelect,
   onDraft,
   onSend,
-  onReveal,
-  onBlock,
-  onReport,
+  onComposerMode,
+  onVoiceStart,
+  onVoiceEnd,
+  onVoiceCancel,
+  onPlay,
+  onToggleMenu,
+  onCloseMenu,
+  onViewProfile,
+  onTogglePin,
+  onClear,
+  onToggleMute,
+  onAskConfirm,
+  onCancelConfirm,
+  onConfirm,
   onClose,
 }: {
-  relationships: Relationship[];
-  selectedRelationship: Relationship;
-  detailOpen: boolean;
-  messages: Conversation['messages'];
+  conversations: DirectConversation[];
+  systemNotifications: SystemNotification[];
+  activeConversation?: DirectConversation;
+  screen: MessageScreen;
+  tab: MessageTab;
+  query: string;
+  searchOpen: boolean;
   messageDraft: string;
-  sensitive: boolean;
-  revealRequested: boolean;
-  blocked: boolean;
-  reported: boolean;
+  composerMode: 'text' | 'voice';
+  isRecording: boolean;
+  playingMessageId: string | null;
+  menuOpen: boolean;
+  confirmAction: MessageConfirmAction;
+  onTab: (tab: MessageTab) => void;
+  onQuery: (value: string) => void;
+  onToggleSearch: () => void;
   onSelect: (id: string) => void;
   onDraft: (value: string) => void;
   onSend: () => void;
-  onReveal: () => void;
-  onBlock: () => void;
-  onReport: () => void;
+  onComposerMode: (mode: 'text' | 'voice') => void;
+  onVoiceStart: () => void;
+  onVoiceEnd: () => void;
+  onVoiceCancel: () => void;
+  onPlay: (id: string) => void;
+  onToggleMenu: () => void;
+  onCloseMenu: () => void;
+  onViewProfile: () => void;
+  onTogglePin: () => void;
+  onClear: () => void;
+  onToggleMute: () => void;
+  onAskConfirm: (action: MessageConfirmAction) => void;
+  onCancelConfirm: () => void;
+  onConfirm: () => void;
   onClose: () => void;
 }) {
-  const messageEntrances = [
-    { label: '匹配', value: relationships.length, icon: HeartHandshake },
-    { label: '喜欢', value: 6, icon: Heart },
-    { label: '评论', value: postComments.length, icon: MessageCircle },
-    { label: '通知', value: 2, icon: ShieldCheck },
-  ];
+  const normalizedQuery = query.trim().toLocaleLowerCase('zh-CN');
+  const filteredConversations = conversations.filter((conversation) => {
+    if (tab === 'unread' && conversation.unreadCount < 1) return false;
+    if (!normalizedQuery) return true;
+    return [conversation.userName, conversation.lastMessage].some((value) =>
+      value.toLocaleLowerCase('zh-CN').includes(normalizedQuery),
+    );
+  });
+  const latestSystemNotification = [...systemNotifications].sort(
+    (left, right) =>
+      new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
+  )[0];
+  const showOfficialRow =
+    tab === 'all' &&
+    !!latestSystemNotification &&
+    (!normalizedQuery ||
+      [
+        'sele 官方',
+        latestSystemNotification.title,
+        latestSystemNotification.content,
+      ]
+        .join(' ')
+        .toLocaleLowerCase('zh-CN')
+        .includes(normalizedQuery));
+  const listRows: Array<
+    | {
+        kind: 'conversation';
+        at: string;
+        pinned: boolean;
+        conversation: DirectConversation;
+      }
+    | {
+        kind: 'system';
+        at: string;
+        pinned: false;
+        notification: SystemNotification;
+      }
+  > = filteredConversations.map((conversation) => ({
+    kind: 'conversation',
+    at: conversation.lastMessageAt,
+    pinned: conversation.isPinned,
+    conversation,
+  }));
 
-  if (!detailOpen) {
+  if (showOfficialRow) {
+    listRows.push({
+      kind: 'system',
+      at: latestSystemNotification.createdAt,
+      pinned: false,
+      notification: latestSystemNotification,
+    });
+  }
+  listRows.sort((left, right) => {
+    if (left.pinned !== right.pinned) return left.pinned ? -1 : 1;
+    return new Date(right.at).getTime() - new Date(left.at).getTime();
+  });
+
+  if (screen === 'list' || !activeConversation) {
+    const isConversationEmpty = conversations.length === 0;
+    const isUnreadEmpty =
+      tab === 'unread' && filteredConversations.length === 0;
+    const isSearchEmpty = !!normalizedQuery && listRows.length === 0;
     return (
-      <div className="message-home">
-        <div className="message-entry-grid">
-          {messageEntrances.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button key={item.label} className="message-entry-card">
-                <span>
-                  <Icon className="h-5 w-5" />
-                </span>
-                <strong>{item.label}</strong>
-                <small>{item.value}</small>
-              </button>
-            );
-          })}
-        </div>
-        <Panel className="message-home-list p-3">
-          {relationships.length === 0 ? (
-            <EmptyState
-              title="还没有会话"
-              body="当你们留下彼此的回声，这里会出现一段新的匿名关系。"
-              action="去发现盲盒"
-              onAction={() => onSelect(selectedRelationship.id)}
+      <section className="sele-messages-home" aria-label="消息">
+        <header className="sele-messages-header">
+          <h1>消息</h1>
+          <button
+            type="button"
+            className={cx('sele-icon-button', searchOpen && 'is-active')}
+            aria-label={searchOpen ? '关闭搜索' : '搜索消息'}
+            onClick={onToggleSearch}
+          >
+            {searchOpen ? <X /> : <Search />}
+          </button>
+        </header>
+
+        {searchOpen && (
+          <label className="sele-message-search">
+            <Search aria-hidden="true" />
+            <input
+              autoFocus
+              value={query}
+              onChange={(event) => onQuery(event.target.value)}
+              placeholder="搜索会话"
+              aria-label="搜索会话"
             />
-          ) : (
-            relationships.map((relationship, index) => {
-              const convo = conversations.find(
-                (item) => item.relationshipId === relationship.id,
-              );
-              const lastMessage = convo?.messages.at(-1);
+          </label>
+        )}
+
+        <div className="sele-message-tabs" role="tablist" aria-label="消息分类">
+          {(
+            [
+              ['all', '全部'],
+              ['unread', '未读'],
+              ['system', '系统'],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              role="tab"
+              aria-selected={tab === value}
+              className={tab === value ? 'is-active' : undefined}
+              onClick={() => onTab(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {tab === 'system' ? (
+          <div className="sele-system-list">
+            {systemNotifications.map((notification) => (
+              <article
+                className={cx(
+                  'sele-system-row',
+                  !notification.isRead && 'is-unread',
+                )}
+                key={notification.id}
+              >
+                <span className="sele-system-icon" aria-hidden="true">
+                  {notification.type === 'interaction' && <MessageCircle />}
+                  {notification.type === 'follow' && <UserRound />}
+                  {notification.type === 'heartbox' && <Heart />}
+                  {notification.type === 'system' && <Bell />}
+                </span>
+                <span className="sele-system-copy">
+                  <strong>{notification.title}</strong>
+                  <span>{notification.content}</span>
+                </span>
+                <time>{formatListTime(notification.createdAt)}</time>
+              </article>
+            ))}
+          </div>
+        ) : isConversationEmpty || isUnreadEmpty || isSearchEmpty ? (
+          <div className="sele-message-empty">
+            <div className="sele-empty-echo" aria-hidden="true" />
+            <h2>
+              {isSearchEmpty
+                ? '没有找到会话'
+                : isUnreadEmpty && !isConversationEmpty
+                  ? '没有未读消息'
+                  : '还没有消息'}
+            </h2>
+            <p>
+              {isConversationEmpty ? (
+                <>
+                  当有人向你靠近，
+                  <br />
+                  这里会亮起。
+                </>
+              ) : isSearchEmpty ? (
+                '试试另一个名字或关键词。'
+              ) : (
+                '这里暂时很安静。'
+              )}
+            </p>
+          </div>
+        ) : (
+          <div className="sele-conversation-list">
+            {listRows.map((row) => {
+              if (row.kind === 'system') {
+                return (
+                  <button
+                    type="button"
+                    className="sele-conversation-row sele-official-row"
+                    key="sele-official"
+                    onClick={() => onTab('system')}
+                  >
+                    <span className="sele-thread-avatar sele-official-avatar">
+                      <Bell />
+                    </span>
+                    <span className="sele-thread-main">
+                      <span className="sele-thread-name">SELE 官方</span>
+                      <span className="sele-thread-preview">
+                        {row.notification.title}
+                      </span>
+                    </span>
+                    <span className="sele-thread-aside">
+                      <time>{formatListTime(row.notification.createdAt)}</time>
+                      {!row.notification.isRead && (
+                        <span className="sele-unread-dot" aria-label="未读" />
+                      )}
+                    </span>
+                  </button>
+                );
+              }
+              const conversation = row.conversation;
               return (
                 <button
-                  key={relationship.id}
-                  className="message-thread-row"
-                  onClick={() => onSelect(relationship.id)}
+                  type="button"
+                  className="sele-conversation-row"
+                  key={conversation.id}
+                  onClick={() => onSelect(conversation.id)}
                 >
-                  <span className="thread-avatar">
-                    <HeartHandshake className="h-4 w-4" />
+                  <span className="sele-thread-avatar" aria-hidden="true">
+                    {conversation.avatar}
                   </span>
-                  <span className="min-w-0 flex-1 text-left">
-                    <span className="thread-title">
-                      <strong>{relationship.alias}</strong>
-                      <small>{stageMeta[relationship.stage].label}</small>
+                  <span className="sele-thread-main">
+                    <span className="sele-thread-name">
+                      {conversation.userName}
+                      {conversation.isPinned && <Pin aria-label="已置顶" />}
                     </span>
-                    <span className="thread-preview">
-                      {lastMessage?.body ?? relationship.nextUnlock}
+                    <span className="sele-thread-preview">
+                      {conversation.lastMessage || '还没有消息'}
                     </span>
                   </span>
-                  <span className="thread-meta">
-                    <small>{lastMessage?.createdAt ?? (index ? '昨天' : '刚刚')}</small>
-                    {!!convo?.unread && <em>{convo.unread}</em>}
+                  <span className="sele-thread-aside">
+                    <time>{formatListTime(conversation.lastMessageAt)}</time>
+                    {conversation.isMuted ? (
+                      <BellOff
+                        className="sele-muted-icon"
+                        aria-label="已关闭提醒"
+                      />
+                    ) : conversation.unreadCount > 0 ? (
+                      <span
+                        className="sele-unread-badge"
+                        aria-label={`${conversation.unreadCount} 条未读`}
+                      >
+                        {conversation.unreadCount > 9
+                          ? '9+'
+                          : conversation.unreadCount}
+                      </span>
+                    ) : null}
                   </span>
                 </button>
               );
-            })
-          )}
-        </Panel>
-      </div>
+            })}
+          </div>
+        )}
+      </section>
     );
   }
 
   return (
-    <div className="messages-grid">
-      <Panel className="relationship-list p-3">
-        {relationships.length === 0 ? (
-          <EmptyState
-            title="还没有匿名关系"
-            body="拆开盲盒并收到双向回声后，这里会出现第一段关系 Journey。"
-            action="去发现盲盒"
-            onAction={() => onSelect(selectedRelationship.id)}
-          />
-        ) : (
-          relationships.map((relationship) => (
-            <button
-              key={relationship.id}
-              className={cx(
-                'relationship-row',
-                relationship.id === selectedRelationship.id &&
-                  'relationship-row-active',
-              )}
-              onClick={() => onSelect(relationship.id)}
-            >
-              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--wine)] text-white">
-                <HeartHandshake className="h-4 w-4" />
-              </span>
-              <span className="min-w-0 text-left">
-                <span className="block truncate font-medium">
-                  {relationship.alias}
-                </span>
-                <span className="block truncate text-sm text-[var(--muted-ink)]">
-                  {stageMeta[relationship.stage].label} · 有新的片段
-                </span>
-              </span>
-            </button>
-          ))
-        )}
-      </Panel>
-      <Panel className="chat-panel">
-        <div className="chat-header">
-          <button className="mobile-back" onClick={onClose}>
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <div>
-            <p className="eyebrow">Anonymous relationship</p>
-            <h2 className="text-lg font-medium">
-              {selectedRelationship.alias}
-            </h2>
-          </div>
-          <span className="rounded-full bg-[var(--mist)]/45 px-3 py-1 text-sm text-[var(--berry)]">
-            {stageMeta[selectedRelationship.stage].label}
+    <section
+      className="sele-chat-page"
+      aria-label={`与${activeConversation.userName}的私信`}
+    >
+      <header className="sele-chat-header">
+        <button
+          className="sele-icon-button"
+          type="button"
+          aria-label="返回消息"
+          onClick={onClose}
+        >
+          <ChevronLeft />
+        </button>
+        <button
+          className="sele-chat-person"
+          type="button"
+          onClick={onViewProfile}
+          aria-label={`查看${activeConversation.userName}的主页`}
+        >
+          <span className="sele-chat-avatar">{activeConversation.avatar}</span>
+          <span>
+            <strong>{activeConversation.userName}</strong>
           </span>
-        </div>
-        <div className="chat-body">
-          {messages.length === 0 ? (
-            <div className="no-message-state">
-              <MessageCircle className="h-7 w-7" />
-              <h3>还没有消息</h3>
-              <p>
-                先发一句轻一点的话。真实身份会继续被保护，直到双方都想靠近。
-              </p>
-            </div>
-          ) : (
-            messages.map((message) => (
+        </button>
+        <button
+          className={cx('sele-icon-button', menuOpen && 'is-active')}
+          type="button"
+          aria-label="更多操作"
+          aria-expanded={menuOpen}
+          onClick={onToggleMenu}
+        >
+          <MoreHorizontal />
+        </button>
+      </header>
+
+      <div className="sele-chat-body">
+        {activeConversation.messages.length === 0 ? (
+          <div className="sele-chat-empty">聊天记录已经清空。</div>
+        ) : (
+          activeConversation.messages.map((message, index) => (
+            <div className="sele-message-group" key={message.id}>
+              {shouldShowMessageTime(activeConversation.messages, index) && (
+                <time className="sele-chat-time">
+                  {formatChatTime(message.createdAt)}
+                </time>
+              )}
               <div
-                key={message.id}
                 className={cx(
-                  'chat-line',
-                  message.sender === 'me' && 'chat-line-me',
-                  message.sender === 'system' && 'chat-line-system',
+                  'sele-chat-line',
+                  message.sender === 'me' && 'is-me',
                 )}
               >
-                <div className="chat-bubble">{message.body}</div>
+                {message.type === 'voice' ? (
+                  <button
+                    type="button"
+                    className={cx(
+                      'sele-voice-bubble',
+                      playingMessageId === message.id && 'is-playing',
+                    )}
+                    aria-label={
+                      playingMessageId === message.id
+                        ? '暂停语音消息'
+                        : '播放语音消息'
+                    }
+                    onClick={() => onPlay(message.id)}
+                  >
+                    <span className="sele-voice-play">
+                      <Play />
+                    </span>
+                    <span className="sele-waveform" aria-hidden="true">
+                      {[5, 10, 7, 14, 9, 16, 6, 12, 8, 15, 6, 11].map(
+                        (height, waveIndex) => (
+                          <i
+                            key={`${message.id}_${waveIndex}`}
+                            style={{ height }}
+                          />
+                        ),
+                      )}
+                    </span>
+                    <span className="sele-voice-duration">
+                      {formatDuration(message.duration)}
+                    </span>
+                  </button>
+                ) : (
+                  <div className="sele-text-bubble">{message.content}</div>
+                )}
               </div>
-            ))
-          )}
-          {revealRequested && (
-            <div className="journey-notice">
-              你已发送“我想认识真实的你”。只有对方也同意，才会进入揭晓。
             </div>
-          )}
-          {blocked && (
-            <div className="journey-notice">
-              关系已拉黑，后续不会再互相推荐。
-            </div>
-          )}
-          {reported && (
-            <div className="journey-notice">
-              举报已提交，相关对话会进入安全复核。
-            </div>
-          )}
-        </div>
-        <div className="chat-input-area">
-          {sensitive && (
-            <div className="safety-warning">
-              <ShieldAlert className="h-4 w-4" />
-              检测到可能的联系方式。揭晓前建议不要交换微信、手机号或精确地址。
-            </div>
-          )}
-          <div className="chat-composer">
-            <input
-              value={messageDraft}
-              onChange={(event) => onDraft(event.target.value)}
-              onKeyDown={(event) => event.key === 'Enter' && onSend()}
-              placeholder="继续匿名聊天..."
-            />
-            <button onClick={onSend} aria-label="发送消息">
-              <Send className="h-5 w-5" />
+          ))
+        )}
+        {activeConversation.isBlocked && (
+          <div className="sele-blocked-note">你已经不再接收 TA 的消息。</div>
+        )}
+      </div>
+
+      <footer className="sele-chat-composer-area">
+        {activeConversation.isBlocked ? (
+          <div className="sele-disabled-composer">已停止接收消息</div>
+        ) : (
+          <div className="sele-chat-composer">
+            <button
+              type="button"
+              className="sele-composer-mode"
+              aria-label={composerMode === 'text' ? '切换到语音' : '切换到文字'}
+              onClick={() =>
+                onComposerMode(composerMode === 'text' ? 'voice' : 'text')
+              }
+            >
+              {composerMode === 'text' ? <Mic /> : <Keyboard />}
+            </button>
+            {composerMode === 'text' ? (
+              <>
+                <input
+                  value={messageDraft}
+                  onChange={(event) => onDraft(event.target.value)}
+                  onKeyDown={(event) =>
+                    event.key === 'Enter' &&
+                    !event.nativeEvent.isComposing &&
+                    onSend()
+                  }
+                  placeholder="输入一条消息……"
+                  aria-label="输入一条消息"
+                />
+                <button
+                  className="sele-send-button"
+                  type="button"
+                  onClick={onSend}
+                  disabled={!messageDraft.trim()}
+                  aria-label="发送消息"
+                >
+                  <Send />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className={cx(
+                    'sele-hold-to-talk',
+                    isRecording && 'is-recording',
+                  )}
+                  onPointerDown={onVoiceStart}
+                  onPointerUp={onVoiceEnd}
+                  onPointerCancel={onVoiceCancel}
+                  onPointerLeave={isRecording ? onVoiceCancel : undefined}
+                >
+                  <Mic />
+                  {isRecording ? '松开发送' : '按住说话'}
+                </button>
+                <span className="sele-composer-spacer" aria-hidden="true" />
+              </>
+            )}
+          </div>
+        )}
+      </footer>
+
+      {menuOpen && (
+        <>
+          <button
+            type="button"
+            className="sele-chat-menu-backdrop"
+            aria-label="关闭更多操作"
+            onClick={onCloseMenu}
+          />
+          <div className="sele-chat-menu" role="dialog" aria-label="聊天操作">
+            <button type="button" onClick={onViewProfile}>
+              <UserRound />
+              <span>查看主页</span>
+            </button>
+            <button type="button" onClick={onTogglePin}>
+              <Pin />
+              <span>
+                {activeConversation.isPinned ? '取消置顶聊天' : '置顶聊天'}
+              </span>
+            </button>
+            <button type="button" onClick={onClear}>
+              <Trash2 />
+              <span>清空聊天记录</span>
+            </button>
+            <button type="button" onClick={onToggleMute}>
+              <BellOff />
+              <span>关闭消息提醒</span>
+              <span
+                className={cx(
+                  'sele-quiet-switch',
+                  activeConversation.isMuted && 'is-on',
+                )}
+                role="switch"
+                aria-checked={activeConversation.isMuted}
+              >
+                <i />
+              </span>
+            </button>
+            <button
+              type="button"
+              className="is-danger"
+              disabled={activeConversation.isBlocked}
+              onClick={() => onAskConfirm('block')}
+            >
+              <Ban />
+              <span>{activeConversation.isBlocked ? '已拉黑' : '拉黑'}</span>
+            </button>
+            <button
+              type="button"
+              className="is-danger"
+              onClick={() => onAskConfirm('delete')}
+            >
+              <Trash2 />
+              <span>删除对话</span>
             </button>
           </div>
-        </div>
-      </Panel>
-      <JourneyPanel
-        relationship={selectedRelationship}
-        revealRequested={revealRequested}
-        onReveal={onReveal}
-        onReport={onReport}
-        onBlock={onBlock}
-      />
-    </div>
-  );
-}
+        </>
+      )}
 
-function JourneyPanel({
-  relationship,
-  revealRequested,
-  onReveal,
-  onReport,
-  onBlock,
-}: {
-  relationship: Relationship;
-  revealRequested: boolean;
-  onReveal: () => void;
-  onReport: () => void;
-  onBlock: () => void;
-}) {
-  return (
-    <Panel className="journey-panel p-5">
-      <p className="eyebrow">Relationship journey</p>
-      <div className="current-stage-card">
-        <span>现在是</span>
-        <strong>{stageMeta[relationship.stage].label}</strong>
-        <p>{stageMeta[relationship.stage].tone}</p>
-      </div>
-      <div className="mt-4 space-y-3">
-        {stageOrder.map((stage) => (
+      {confirmAction && (
+        <div className="sele-confirm-backdrop" role="presentation">
           <div
-            key={stage}
-            className={cx(
-              'journey-step',
-              relationship.stage === stage && 'journey-step-active',
-            )}
+            className="sele-confirm-dialog"
+            role="alertdialog"
+            aria-modal="true"
           >
-            <span className="journey-dot" />
-            <span>
-              <span className="block font-medium">
-                {stageMeta[stage].label}
-              </span>
-              <span className="text-sm text-[var(--muted-ink)]">
-                {stageMeta[stage].unlock}
-              </span>
-            </span>
+            <h2>
+              {confirmAction === 'block'
+                ? '不再接收 TA 的消息？'
+                : '删除这段对话？'}
+            </h2>
+            <p>
+              {confirmAction === 'block'
+                ? '确认后将无法继续发送消息。'
+                : '聊天记录会从消息列表移除，不影响关注关系与其他内容。'}
+            </p>
+            <div>
+              <button type="button" onClick={onCancelConfirm}>
+                取消
+              </button>
+              <button type="button" className="is-danger" onClick={onConfirm}>
+                {confirmAction === 'block' ? '确认拉黑' : '删除对话'}
+              </button>
+            </div>
           </div>
-        ))}
-      </div>
-      <div className="mt-5 rounded-[22px] bg-white/55 p-4">
-        <div className="flex items-center justify-between text-sm">
-          <span className="font-medium text-[var(--wine)]">
-            接下来可能发生
-          </span>
-          <span>慢慢来</span>
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
-          <div
-            className="h-full rounded-full bg-[var(--berry)]"
-            style={{ width: `${relationship.progress}%` }}
-          />
-        </div>
-        <p className="mt-3 text-sm leading-6 text-[var(--soft-ink)]">
-          {relationship.nextUnlock}
-        </p>
-      </div>
-      <div className="protected-list">
-        <p>
-          <LockKeyhole className="h-4 w-4" />{' '}
-          仍受保护：真实姓名、联系方式、精确位置
-        </p>
-        <p>
-          <Sparkles className="h-4 w-4" /> 已解锁：
-          {relationship.unlockedFragments.join('、')}
-        </p>
-      </div>
-      <div className="mt-4 space-y-2">
-        <button className="action-row" onClick={onReveal}>
-          <LockKeyhole className="h-5 w-5" />
-          {revealRequested ? '已请求揭晓' : '我想认识真实的你'}
-        </button>
-        <button className="action-row" onClick={onReport}>
-          <Flag className="h-5 w-5" />
-          举报
-        </button>
-        <button className="action-row" onClick={onBlock}>
-          <Ban className="h-5 w-5" />
-          拉黑 / 结束关系
-        </button>
-      </div>
-    </Panel>
+      )}
+    </section>
   );
 }
 
@@ -2819,7 +3305,9 @@ function MineView({
               <p className="mt-2 text-[var(--soft-ink)]">
                 {profile.ageRange} · {profile.city} · {card.archetype}
               </p>
-              <p className="mt-4 max-w-2xl text-base leading-7">“{card.quote}”</p>
+              <p className="mt-4 max-w-2xl text-base leading-7">
+                “{card.quote}”
+              </p>
             </div>
             <div className="rounded-[24px] bg-white/55 p-4 text-center">
               <p className="text-lg font-medium text-[var(--wine)]">
