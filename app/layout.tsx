@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
+const assetBasePath = process.env.GITHUB_PAGES_BASE_PATH ?? '';
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
   title: 'SELE | Heartbox 心动盲盒',
   description: '面向年轻成年用户的匿名人格探索、恋爱盲盒与关系成长产品。',
   icons: {
-    icon: '/favicon.svg',
+    icon: `${assetBasePath}/favicon.svg`,
   },
   openGraph: {
     title: 'SELE | Heartbox 心动盲盒',
