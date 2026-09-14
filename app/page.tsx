@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, ElementType, ReactNode } from 'react';
 import Link from 'next/link';
 import {
@@ -4424,6 +4424,8 @@ function EditProfilePicker({
   onCity: (city: string) => void;
   onTag: (tag: string) => void;
 }) {
+  const ageWheelRef = useRef<HTMLDivElement | null>(null);
+  const ageScrollTimerRef = useRef<ReturnType<typeof window.setTimeout> | null>(null);
   const tagLimitReached = draft.tags.length >= 3;
   const [cityQuery, setCityQuery] = useState('');
   const [showAllCities, setShowAllCities] = useState(false);
@@ -4435,16 +4437,81 @@ function EditProfilePicker({
       : commonProfileCities;
   const visibleTags = showAllTags ? officialProfileTags : recommendedProfileTags;
 
+  const pickCenteredAge = () => {
+    const wheel = ageWheelRef.current;
+    if (!wheel) {
+      return draft.age;
+    }
+
+    const ageButtons = Array.from(wheel.querySelectorAll<HTMLButtonElement>('button'));
+    const wheelCenter = wheel.scrollTop + wheel.clientHeight / 2;
+    const centeredButton = ageButtons.reduce<HTMLButtonElement | null>((closest, button) => {
+      if (!closest) {
+        return button;
+      }
+
+      const buttonCenter = button.offsetTop + button.offsetHeight / 2;
+      const closestCenter = closest.offsetTop + closest.offsetHeight / 2;
+      return Math.abs(buttonCenter - wheelCenter) < Math.abs(closestCenter - wheelCenter)
+        ? button
+        : closest;
+    }, null);
+
+    return centeredButton?.dataset.age ?? draft.age;
+  };
+
+  const syncCenteredAge = (shouldSnap = false) => {
+    const nextAge = pickCenteredAge();
+    if (nextAge !== draft.age) {
+      onAge(nextAge);
+    }
+
+    if (shouldSnap) {
+      const selectedButton = ageWheelRef.current?.querySelector<HTMLButtonElement>(
+        `button[data-age="${nextAge}"]`,
+      );
+      selectedButton?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+
+    return nextAge;
+  };
+
   useEffect(() => {
     if (picker !== 'age') {
       return;
     }
     window.requestAnimationFrame(() => {
-      document
-        .querySelector('#heartbox-shell .edit-age-wheel .is-selected')
+      ageWheelRef.current
+        ?.querySelector<HTMLButtonElement>('.is-selected')
         ?.scrollIntoView({ block: 'center' });
     });
-  }, [picker]);
+  }, [picker, draft.age]);
+
+  useEffect(
+    () => () => {
+      if (ageScrollTimerRef.current) {
+        window.clearTimeout(ageScrollTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  const handlePickerDone = () => {
+    if (picker === 'age') {
+      syncCenteredAge();
+    }
+    onClose();
+  };
+
+  const handleAgeScroll = () => {
+    if (ageScrollTimerRef.current) {
+      window.clearTimeout(ageScrollTimerRef.current);
+    }
+
+    ageScrollTimerRef.current = window.setTimeout(() => {
+      syncCenteredAge(true);
+    }, 90);
+  };
 
   return (
     <div className="mine-confirm-backdrop" role="presentation">
@@ -4464,20 +4531,28 @@ function EditProfilePicker({
             {picker === 'city' && '选择城市'}
             {picker === 'tags' && '选择标签'}
           </span>
-          <button type="button" onClick={onClose}>
+          <button type="button" onClick={handlePickerDone}>
             完成
           </button>
         </div>
         {picker === 'age' && (
-          <div className="edit-age-wheel" aria-label="选择年龄">
+          <div
+            className="edit-age-wheel"
+            aria-label="选择年龄"
+            onScroll={handleAgeScroll}
+            ref={ageWheelRef}
+          >
             {profileAgeOptions.map((age) => (
               <button
                 type="button"
                 className={cx(draft.age === age && 'is-selected')}
+                data-age={age}
                 key={age}
                 onClick={() => {
                   onAge(age);
-                  onClose();
+                  ageWheelRef.current
+                    ?.querySelector<HTMLButtonElement>(`button[data-age="${age}"]`)
+                    ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
                 }}
               >
                 {age}
