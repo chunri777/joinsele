@@ -4391,6 +4391,17 @@ button {
     color: rgb(242 242 242 / 88%);
     font-size: 1.45rem;
     font-weight: 440;
+    overflow: hidden;
+  }
+
+  #heartbox-shell .edit-avatar img,
+  #heartbox-shell .profile-avatar img,
+  #heartbox-shell .settings-account-avatar img,
+  #heartbox-shell .mine-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
   }
 
   #heartbox-shell .edit-avatar i {
@@ -4414,11 +4425,21 @@ button {
   }
 
   #heartbox-shell .edit-avatar-change {
+    position: relative;
+    overflow: hidden;
     border: 0;
     background: transparent;
     color: rgb(242 242 242 / 42%);
     font-size: 0.7rem;
     font-weight: 380;
+    cursor: pointer;
+  }
+
+  #heartbox-shell .edit-avatar-change input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
   }
 
   #heartbox-shell .edit-profile-fields {
@@ -4500,10 +4521,36 @@ button {
     resize: none;
   }
 
+  #heartbox-shell .edit-select-button {
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  #heartbox-shell .edit-select-button > span {
+    min-width: 0;
+    color: rgb(242 242 242 / 78%);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  #heartbox-shell .edit-select-button svg {
+    width: 0.86rem;
+    height: 0.86rem;
+    flex: 0 0 auto;
+    color: rgb(242 242 242 / 30%);
+    stroke-width: 1.4;
+  }
+
   #heartbox-shell .edit-tag-box {
     flex-wrap: wrap;
     min-height: 3.15rem;
     padding: 0.52rem 0.58rem;
+  }
+
+  #heartbox-shell .edit-tag-select {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
   }
 
   #heartbox-shell .edit-tag,
@@ -4561,6 +4608,237 @@ button {
     color: rgb(255 232 226 / 66%);
     font-size: 0.7rem;
     line-height: 1.5;
+  }
+
+  #heartbox-shell .edit-picker-sheet {
+    width: min(100%, 360px);
+    max-height: min(68svh, 31rem);
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 6%);
+    border-radius: 18px;
+    background: rgb(9 9 9 / 97%);
+    padding: 0.82rem;
+    color: #f2f2f2;
+  }
+
+  #heartbox-shell .edit-picker-tags-sheet {
+    max-height: min(72svh, 34rem);
+  }
+
+  #heartbox-shell .edit-picker-age-sheet {
+    max-height: 21rem;
+  }
+
+  #heartbox-shell .edit-picker-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.08rem 0.08rem 0.68rem;
+  }
+
+  #heartbox-shell .edit-picker-head span {
+    color: rgb(242 242 242 / 82%);
+    font-size: 0.86rem;
+    font-weight: 460;
+  }
+
+  #heartbox-shell .edit-picker-head button {
+    border: 0;
+    background: transparent;
+    color: rgb(255 232 226 / 64%);
+    font-size: 0.7rem;
+    font-weight: 390;
+  }
+
+  #heartbox-shell .edit-picker-note {
+    margin: -0.28rem 0 0.6rem;
+    color: rgb(242 242 242 / 32%);
+    font-size: 0.66rem;
+    line-height: 1.4;
+  }
+
+  #heartbox-shell .edit-picker-warning {
+    margin: -0.28rem 0 0.62rem;
+    color: rgb(255 232 226 / 60%);
+    font-size: 0.66rem;
+    line-height: 1.45;
+  }
+
+  #heartbox-shell .edit-picker-section {
+    margin: 0.18rem 0 0.5rem;
+    color: rgb(242 242 242 / 34%);
+    font-size: 0.66rem;
+    line-height: 1.35;
+  }
+
+  #heartbox-shell .edit-city-search {
+    display: flex;
+    align-items: center;
+    gap: 0.46rem;
+    border: 1px solid rgb(255 255 255 / 5.5%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 1.7%);
+    margin-bottom: 0.78rem;
+    padding: 0.48rem 0.66rem;
+  }
+
+  #heartbox-shell .edit-city-search svg {
+    width: 0.78rem;
+    height: 0.78rem;
+    flex: 0 0 auto;
+    color: rgb(242 242 242 / 28%);
+    stroke-width: 1.4;
+  }
+
+  #heartbox-shell .edit-city-search input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: rgb(242 242 242 / 74%);
+    font-size: 0.72rem;
+    outline: none;
+  }
+
+  #heartbox-shell .edit-city-search input::placeholder {
+    color: rgb(242 242 242 / 28%);
+  }
+
+  #heartbox-shell .edit-age-wheel {
+    position: relative;
+    display: grid;
+    max-height: 15.7rem;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    padding: 4.2rem 0;
+    mask-image: linear-gradient(180deg, transparent, #000 23%, #000 77%, transparent);
+  }
+
+  #heartbox-shell .edit-age-wheel::before,
+  #heartbox-shell .edit-age-wheel::after {
+    position: sticky;
+    z-index: 1;
+    display: block;
+    height: 1px;
+    margin: 0 5.8rem;
+    background: rgb(255 232 226 / 12%);
+    content: "";
+    pointer-events: none;
+  }
+
+  #heartbox-shell .edit-age-wheel::before {
+    top: 6.2rem;
+  }
+
+  #heartbox-shell .edit-age-wheel::after {
+    bottom: 6.2rem;
+  }
+
+  #heartbox-shell .edit-age-wheel button {
+    scroll-snap-align: center;
+    border: 0;
+    background: transparent;
+    padding: 0.46rem 0;
+    color: rgb(242 242 242 / 34%);
+    font-size: 0.88rem;
+    font-weight: 360;
+    line-height: 1.35;
+  }
+
+  #heartbox-shell .edit-age-wheel button.is-selected {
+    color: rgb(255 232 226 / 88%);
+    font-size: 1.08rem;
+    font-weight: 460;
+  }
+
+  #heartbox-shell .edit-selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.42rem;
+    margin-bottom: 0.8rem;
+  }
+
+  #heartbox-shell .edit-selected-tags button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    border: 1px solid rgb(255 232 226 / 14%);
+    border-radius: 999px;
+    background: rgb(255 232 226 / 4%);
+    padding: 0.28rem 0.5rem;
+    color: rgb(255 232 226 / 76%);
+    font-size: 0.68rem;
+    line-height: 1.2;
+  }
+
+  #heartbox-shell .edit-selected-tags svg {
+    width: 0.62rem;
+    height: 0.62rem;
+    stroke-width: 1.4;
+  }
+
+  #heartbox-shell .edit-picker-more {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.32rem;
+    border: 0;
+    background: transparent;
+    margin-top: 0.68rem;
+    padding: 0.18rem 0;
+    color: rgb(255 232 226 / 58%);
+    font-size: 0.68rem;
+  }
+
+  #heartbox-shell .edit-picker-more svg {
+    width: 0.74rem;
+    height: 0.74rem;
+    stroke-width: 1.4;
+  }
+
+  #heartbox-shell .edit-picker-grid {
+    display: grid;
+    max-height: calc(min(68svh, 31rem) - 7.4rem);
+    gap: 0.46rem;
+    overflow-y: auto;
+    padding: 0.04rem 0.04rem 0.12rem;
+  }
+
+  #heartbox-shell .edit-age-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    display: none;
+  }
+
+  #heartbox-shell .edit-city-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #heartbox-shell .edit-tag-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-height: calc(min(72svh, 34rem) - 11.2rem);
+  }
+
+  #heartbox-shell .edit-picker-grid button {
+    min-height: 2rem;
+    border: 1px solid rgb(255 255 255 / 5.5%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 1.7%);
+    padding: 0.38rem 0.42rem;
+    color: rgb(242 242 242 / 54%);
+    font-size: 0.68rem;
+    font-weight: 380;
+    line-height: 1.2;
+  }
+
+  #heartbox-shell .edit-picker-grid button.is-selected {
+    border-color: rgb(255 232 226 / 20%);
+    background: rgb(255 232 226 / 6%);
+    color: rgb(255 232 226 / 82%);
+  }
+
+  #heartbox-shell .edit-picker-grid button.is-muted {
+    color: rgb(242 242 242 / 24%);
   }
 
   #heartbox-shell .settings-page {

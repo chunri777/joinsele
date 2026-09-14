@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import type { ElementType, ReactNode } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { ChangeEvent, ElementType, ReactNode } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -114,6 +114,15 @@ type MessageConfirmAction = 'block' | 'delete' | null;
 type EditProfileReturnView = 'mine' | 'account';
 type MomentPrivacy = 'all' | 'related';
 type HeartStatus = 'inactive' | 'heart' | 'heart_plus';
+type EditPicker = 'age' | 'city' | 'tags' | null;
+type ProfileDraft = {
+  avatar: string;
+  name: string;
+  bio: string;
+  age: string;
+  city: string;
+  tags: string[];
+};
 type NotificationPrefs = {
   messages: boolean;
   echoes: boolean;
@@ -157,6 +166,153 @@ type HeartboxUnlock = {
 };
 
 const appUserProfiles = [...userHomeProfiles, ...messageUserProfiles];
+const profileAgeOptions = Array.from({ length: 63 }, (_, index) =>
+  String(index + 18),
+);
+const profileCityOptions = [
+  '上海',
+  '北京',
+  '杭州',
+  '广州',
+  '深圳',
+  '成都',
+  '重庆',
+  '南京',
+  '苏州',
+  '武汉',
+  '西安',
+  '长沙',
+  '厦门',
+  '青岛',
+  '天津',
+  '宁波',
+  '郑州',
+  '昆明',
+  '大连',
+  '福州',
+  '其他城市',
+  '海外',
+];
+const commonProfileCities = [
+  '上海',
+  '北京',
+  '杭州',
+  '广州',
+  '深圳',
+  '成都',
+  '重庆',
+  '南京',
+];
+const officialProfileTags = [
+  '摄影',
+  '电影',
+  '阅读',
+  '咖啡',
+  '夜行',
+  '慢热',
+  '旅行',
+  '徒步',
+  '跑步',
+  '健身',
+  '做饭',
+  '展览',
+  '现场音乐',
+  '独立音乐',
+  '爵士',
+  '电子乐',
+  '设计',
+  '写作',
+  '宠物',
+  '城市漫步',
+  '露营',
+  '骑行',
+  '游戏',
+  '动漫',
+  '桌游',
+  '潜水',
+  '滑雪',
+  '舞蹈',
+  '戏剧',
+  '建筑',
+  '胶片',
+];
+const recommendedProfileTags = [
+  '电影',
+  '阅读',
+  '咖啡',
+  '旅行',
+  '徒步',
+  '展览',
+  '现场音乐',
+  '城市漫步',
+  '写作',
+  '宠物',
+];
+const allowedAvatarTypes = ['image/jpeg', 'image/png', 'image/webp'];
+const maxAvatarFileSize = 2 * 1024 * 1024;
+
+function hasContactOrTrafficContent(value: string) {
+  const patterns = [
+    /1[3-9]\d{9}/,
+    /\b\d{3,4}[-\s]?\d{7,8}\b/,
+    /(?:微信|微\s*信|wechat|we\s*chat|\bwx\b|vx)/i,
+    /(?:qq|扣扣)\s*[:：]?\s*\d{5,}/i,
+    /https?:\/\/|www\.|\.com|\.cn|\.net|\.org/i,
+    /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i,
+    /(?:小红书|xhs|抖音|douyin|快手)/i,
+    /(?:加我|私信我|联系我|找我|导流|推广|代购|兼职|返利)/i,
+    /(?:裸聊|约炮|援交|外围|包养|上门|同城服务)/i,
+    /(?:刷单|博彩|贷款|投资群|稳赚|高回报)/i,
+  ];
+  return patterns.some((pattern) => pattern.test(value));
+}
+
+function hasTooManySpecialCharacters(value: string) {
+  return /[^\p{Script=Han}\p{L}\p{N}\s_-]{4,}/u.test(value);
+}
+
+function validateProfileContent(draft: ProfileDraft) {
+  const name = draft.name.trim();
+  const bio = draft.bio.trim();
+  const age = Number(draft.age);
+  const city = draft.city.trim();
+  const tags = draft.tags.filter((tag) => officialProfileTags.includes(tag));
+
+  if (!name) {
+    return '给自己留一个名字。';
+  }
+  if (name.length < 2) {
+    return '名字再完整一点点。';
+  }
+  if (name.length > 12) {
+    return '名字短一点，会更像你。';
+  }
+  if (hasContactOrTrafficContent(name) || hasTooManySpecialCharacters(name)) {
+    return '联系方式暂时不要放进主页。';
+  }
+  if (bio.length > 60) {
+    return '这一句短一点，会更适合这里。';
+  }
+  if (hasContactOrTrafficContent(bio)) {
+    return '这里先留一点关于你的信息就好，联系方式暂时不要放进主页。';
+  }
+  if (!Number.isInteger(age) || age < 18 || age > 80) {
+    return 'SELE 只向 18+ 用户开放。';
+  }
+  if (!profileCityOptions.includes(city)) {
+    return '先选择一个城市。';
+  }
+  if (tags.length === 0) {
+    return '最多留 3 个，也可以先选 1 个。';
+  }
+  if (draft.tags.length > 3) {
+    return '最多留 3 个就够了。';
+  }
+  if (tags.length !== draft.tags.length) {
+    return '标签先从这里提供的选项里选。';
+  }
+  return null;
+}
 
 const myPublicHomeProfile: UserHomeProfile = {
   id: currentUser.id,
@@ -2670,7 +2826,7 @@ function UserProfileView({
       <DetailHeader title={profile.name} onBack={onBack} />
       <section className="profile-identity">
         <div className="profile-avatar" aria-hidden="true">
-          {profile.avatar}
+          <AvatarMark value={profile.avatar} />
         </div>
         <div className="profile-copy">
           <div className="profile-name-row">
@@ -3987,6 +4143,13 @@ function MineConfirm({
   );
 }
 
+function AvatarMark({ value }: { value: string }) {
+  if (value.startsWith('data:image/')) {
+    return <img src={value} alt="" />;
+  }
+  return <span>{value}</span>;
+}
+
 function EditProfileView({
   profile,
   onBack,
@@ -4004,8 +4167,8 @@ function EditProfileView({
     city: profile.city,
     tags: profile.tags.slice(0, 3),
   });
-  const [tagDraft, setTagDraft] = useState('');
-  const [addingTag, setAddingTag] = useState(false);
+  const [picker, setPicker] = useState<EditPicker>(null);
+  const [pickerNotice, setPickerNotice] = useState<string | null>(null);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const avatarOptions = ['林', '月', 'S', 'L'];
@@ -4038,22 +4201,44 @@ function EditProfileView({
     });
   }
 
-  function addTag() {
-    const nextTag = tagDraft.trim().replace(/^#/, '').slice(0, 6);
-    if (!nextTag || draft.tags.includes(nextTag) || draft.tags.length >= 3) {
-      setTagDraft('');
-      setAddingTag(false);
+  function handleAvatarFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) {
       return;
     }
-    setDraft((current) => ({ ...current, tags: [...current.tags, nextTag] }));
-    setTagDraft('');
-    setAddingTag(false);
+    if (!allowedAvatarTypes.includes(file.type)) {
+      setError('头像先使用 JPG、PNG 或 WebP 格式。');
+      return;
+    }
+    if (file.size > maxAvatarFileSize) {
+      setError('头像文件小一点会更稳定。');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setError(null);
+        setDraft((current) => ({ ...current, avatar: reader.result as string }));
+      }
+    };
+    reader.readAsDataURL(file);
   }
 
-  function removeTag(tag: string) {
+  function toggleTag(tag: string) {
+    setError(null);
+    setPickerNotice(null);
+    if (!draft.tags.includes(tag) && draft.tags.length >= 3) {
+      const message = '最多留 3 个就够了。';
+      setError(message);
+      setPickerNotice(message);
+      return;
+    }
     setDraft((current) => ({
       ...current,
-      tags: current.tags.filter((item) => item !== tag),
+      tags: current.tags.includes(tag)
+        ? current.tags.filter((item) => item !== tag)
+        : [...current.tags, tag],
     }));
   }
 
@@ -4066,26 +4251,25 @@ function EditProfileView({
   }
 
   function saveProfile() {
-    if (!normalizedName) {
-      setError('名字需要留下一点痕迹。');
-      return;
-    }
-    if (!normalizedCity) {
-      setError('城市不能为空。');
-      return;
-    }
-    if (!Number.isInteger(normalizedAge) || normalizedAge < 18 || normalizedAge > 99) {
-      setError('年龄需要是 18 到 99 之间的整数。');
+    const validationError = validateProfileContent({
+      ...draft,
+      name: normalizedName,
+      bio: normalizedBio,
+      city: normalizedCity,
+      tags: normalizedTags,
+    });
+    if (validationError) {
+      setError(validationError);
       return;
     }
     onSave({
       ...profile,
       id: currentUser.id,
       avatar: draft.avatar,
-      name: normalizedName.slice(0, 12),
-      bio: normalizedBio.slice(0, 60),
+      name: normalizedName,
+      bio: normalizedBio,
       age: normalizedAge,
-      city: normalizedCity.slice(0, 12),
+      city: normalizedCity,
       tags: normalizedTags,
     });
   }
@@ -4101,14 +4285,19 @@ function EditProfileView({
 
       <div className="edit-avatar-block">
         <button type="button" className="edit-avatar" onClick={changeAvatar}>
-          <span>{draft.avatar}</span>
+          <AvatarMark value={draft.avatar} />
           <i aria-hidden="true">
             <Camera />
           </i>
         </button>
-        <button type="button" className="edit-avatar-change" onClick={changeAvatar}>
+        <label className="edit-avatar-change">
           更换头像
-        </button>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleAvatarFile}
+          />
+        </label>
       </div>
 
       <div className="edit-profile-fields">
@@ -4138,74 +4327,55 @@ function EditProfileView({
 
         <label className="edit-field">
           <span>年龄</span>
-          <div className="edit-input-wrap">
-            <input
-              value={draft.age}
-              inputMode="numeric"
-              maxLength={2}
-              onChange={(event) =>
-                updateDraft('age', event.target.value.replace(/\D/g, ''))
-              }
-            />
-          </div>
+          <button
+            type="button"
+            className="edit-input-wrap edit-select-button"
+            onClick={() => {
+              setPickerNotice(null);
+              setPicker('age');
+            }}
+          >
+            <span>{draft.age}</span>
+            <ArrowRight aria-hidden="true" />
+          </button>
         </label>
 
         <label className="edit-field">
           <span>城市</span>
-          <div className="edit-input-wrap">
-            <input
-              value={draft.city}
-              maxLength={12}
-              onChange={(event) => updateDraft('city', event.target.value)}
-            />
-          </div>
+          <button
+            type="button"
+            className="edit-input-wrap edit-select-button"
+            onClick={() => {
+              setPickerNotice(null);
+              setPicker('city');
+            }}
+          >
+            <span>{draft.city}</span>
+            <ArrowRight aria-hidden="true" />
+          </button>
         </label>
 
         <div className="edit-field edit-tags-field">
           <span>
             标签 <small>最多选择 3 个</small>
           </span>
-          <div className="edit-tag-box">
+          <button
+            type="button"
+            className="edit-tag-box edit-tag-select"
+            onClick={() => {
+              setPickerNotice(null);
+              setPicker('tags');
+            }}
+          >
             {draft.tags.map((tag) => (
-              <button
-                type="button"
-                className="edit-tag"
-                key={tag}
-                onClick={() => removeTag(tag)}
-              >
+              <span className="edit-tag" key={tag}>
                 {tag}
-                <X />
-              </button>
-            ))}
-            {addingTag ? (
-              <span className="edit-tag-input">
-                <input
-                  value={tagDraft}
-                  maxLength={6}
-                  autoFocus
-                  onChange={(event) => setTagDraft(event.target.value)}
-                  onBlur={addTag}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') addTag();
-                    if (event.key === 'Escape') {
-                      setTagDraft('');
-                      setAddingTag(false);
-                    }
-                  }}
-                />
               </span>
-            ) : (
-              draft.tags.length < 3 && (
-                <button
-                  type="button"
-                  className="edit-tag-add"
-                  onClick={() => setAddingTag(true)}
-                >
-                  <Plus />
-                </button>
-              )
-            )}
-          </div>
+            ))}
+            <span className="edit-tag-add">
+              <Plus />
+            </span>
+          </button>
         </div>
       </div>
 
@@ -4221,7 +4391,192 @@ function EditProfileView({
           onConfirm={onBack}
         />
       )}
+
+      {picker && (
+        <EditProfilePicker
+          picker={picker}
+          draft={draft}
+          notice={pickerNotice}
+          onClose={() => setPicker(null)}
+          onAge={(age) => updateDraft('age', age)}
+          onCity={(city) => updateDraft('city', city)}
+          onTag={toggleTag}
+        />
+      )}
     </section>
+  );
+}
+
+function EditProfilePicker({
+  picker,
+  draft,
+  notice,
+  onClose,
+  onAge,
+  onCity,
+  onTag,
+}: {
+  picker: EditPicker;
+  draft: ProfileDraft;
+  notice: string | null;
+  onClose: () => void;
+  onAge: (age: string) => void;
+  onCity: (city: string) => void;
+  onTag: (tag: string) => void;
+}) {
+  const tagLimitReached = draft.tags.length >= 3;
+  const [cityQuery, setCityQuery] = useState('');
+  const [showAllCities, setShowAllCities] = useState(false);
+  const [showAllTags, setShowAllTags] = useState(false);
+  const filteredCities = cityQuery.trim()
+    ? profileCityOptions.filter((city) => city.includes(cityQuery.trim()))
+    : showAllCities
+      ? profileCityOptions
+      : commonProfileCities;
+  const visibleTags = showAllTags ? officialProfileTags : recommendedProfileTags;
+
+  useEffect(() => {
+    if (picker !== 'age') {
+      return;
+    }
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector('#heartbox-shell .edit-age-wheel .is-selected')
+        ?.scrollIntoView({ block: 'center' });
+    });
+  }, [picker]);
+
+  return (
+    <div className="mine-confirm-backdrop" role="presentation">
+      <div
+        className={cx(
+          'edit-picker-sheet',
+          picker === 'age' && 'edit-picker-age-sheet',
+          picker === 'city' && 'edit-picker-city-sheet',
+          picker === 'tags' && 'edit-picker-tags-sheet',
+        )}
+        role="dialog"
+        aria-modal="true"
+      >
+        <div className="edit-picker-head">
+          <span>
+            {picker === 'age' && '选择年龄'}
+            {picker === 'city' && '选择城市'}
+            {picker === 'tags' && '选择标签'}
+          </span>
+          <button type="button" onClick={onClose}>
+            完成
+          </button>
+        </div>
+        {picker === 'age' && (
+          <div className="edit-age-wheel" aria-label="选择年龄">
+            {profileAgeOptions.map((age) => (
+              <button
+                type="button"
+                className={cx(draft.age === age && 'is-selected')}
+                key={age}
+                onClick={() => {
+                  onAge(age);
+                  onClose();
+                }}
+              >
+                {age}
+              </button>
+            ))}
+          </div>
+        )}
+        {picker === 'city' && (
+          <>
+            <label className="edit-city-search">
+              <Search aria-hidden="true" />
+              <input
+                value={cityQuery}
+                placeholder="搜索城市"
+                onChange={(event) => setCityQuery(event.target.value)}
+              />
+            </label>
+            <p className="edit-picker-section">
+              {cityQuery ? '搜索结果' : showAllCities ? '更多城市' : '常用城市'}
+            </p>
+            <div className="edit-picker-grid edit-city-grid">
+              {filteredCities.map((city) => (
+                <button
+                  type="button"
+                  className={cx(draft.city === city && 'is-selected')}
+                  key={city}
+                  onClick={() => {
+                    onCity(city);
+                    onClose();
+                  }}
+                >
+                  {city}
+                </button>
+              ))}
+            </div>
+            {!cityQuery && !showAllCities && (
+              <button
+                type="button"
+                className="edit-picker-more"
+                onClick={() => setShowAllCities(true)}
+              >
+                更多城市
+                <ArrowRight aria-hidden="true" />
+              </button>
+            )}
+          </>
+        )}
+        {picker === 'tags' && (
+          <>
+            <p className="edit-picker-note">最多选择 3 个</p>
+            {notice && <p className="edit-picker-warning">{notice}</p>}
+            {draft.tags.length > 0 && (
+              <>
+                <p className="edit-picker-section">当前已选</p>
+                <div className="edit-selected-tags">
+                  {draft.tags.map((tag) => (
+                    <button type="button" key={tag} onClick={() => onTag(tag)}>
+                      {tag}
+                      <X aria-hidden="true" />
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+            <p className="edit-picker-section">
+              {showAllTags ? '更多标签' : '推荐标签'}
+            </p>
+            <div className="edit-picker-grid edit-tag-grid">
+              {visibleTags.map((tag) => {
+                const selected = draft.tags.includes(tag);
+                return (
+                  <button
+                    type="button"
+                    className={cx(
+                      selected && 'is-selected',
+                      !selected && tagLimitReached && 'is-muted',
+                    )}
+                    key={tag}
+                    onClick={() => onTag(tag)}
+                  >
+                    {tag}
+                  </button>
+                );
+              })}
+            </div>
+            {!showAllTags && (
+              <button
+                type="button"
+                className="edit-picker-more"
+                onClick={() => setShowAllTags(true)}
+              >
+                更多标签
+                <ArrowRight aria-hidden="true" />
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -4308,7 +4663,7 @@ function SettingsAccountView({
       <MineDetailHeader title="账号" onBack={onBack} />
       <div className="settings-account-identity">
         <div className="settings-account-avatar" aria-hidden="true">
-          {profile.avatar}
+          <AvatarMark value={profile.avatar} />
         </div>
         <div>
           <h2>{profile.name}</h2>
@@ -4993,7 +5348,7 @@ function MineView({
       <div className="mine-identity">
         <div className="mine-identity-main">
           <div className="mine-avatar" aria-hidden="true">
-            {profile.avatar}
+            <AvatarMark value={profile.avatar} />
           </div>
           <div className="mine-profile-copy">
             <div className="mine-name-row">
