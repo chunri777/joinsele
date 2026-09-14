@@ -2640,6 +2640,11 @@ button {
     font-weight: 400;
   }
 
+  html:has(#heartbox-shell),
+  body:has(#heartbox-shell) {
+    background: #000;
+  }
+
   #heartbox-shell .grain {
     opacity: 0.08;
     mix-blend-mode: screen;
@@ -3745,6 +3750,1531 @@ button {
     transform: none;
   }
 
+  #heartbox-shell .mine-home {
+    display: grid;
+    width: min(100%, 520px);
+    gap: 0.64rem;
+    margin: 0 auto;
+    padding: 0 0 12rem;
+  }
+
+  #heartbox-shell .mine-stage .top-status {
+    margin-bottom: -0.28rem;
+  }
+
+  #heartbox-shell .mine-stage .top-status h1 {
+    margin-top: 0;
+    font-size: 1.24rem;
+    line-height: 1.2;
+  }
+
+  #heartbox-shell .mine-stage .top-status .eyebrow {
+    display: none;
+  }
+
+  #heartbox-shell .mine-recent-panel {
+    border-color: rgb(255 255 255 / 7%);
+    background: rgb(255 255 255 / 2.4%);
+    padding: 0.94rem 0.95rem 0.82rem !important;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  #heartbox-shell .mine-identity {
+    padding: 0.3rem 0.34rem 0.72rem;
+  }
+
+  #heartbox-shell .mine-identity-main {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    gap: 0.88rem;
+  }
+
+  #heartbox-shell .mine-avatar {
+    display: grid;
+    width: 2.95rem;
+    height: 2.95rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 4.5%);
+    color: #f2f2f2;
+    font-size: 1rem;
+    font-weight: 430;
+  }
+
+  #heartbox-shell .mine-profile-copy {
+    min-width: 0;
+    flex: 1;
+  }
+
+  #heartbox-shell .mine-name-row {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  #heartbox-shell .mine-name-row h2 {
+    overflow: hidden;
+    color: #f2f2f2;
+    font-size: 0.98rem;
+    font-weight: 500;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .mine-text-button {
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    margin-right: 0.44rem;
+    padding: 0.22rem 0;
+    color: rgb(242 242 242 / 42%);
+    font-size: 0.7rem;
+    font-weight: 390;
+  }
+
+  #heartbox-shell .mine-text-button:hover {
+    color: rgb(242 242 242 / 70%);
+  }
+
+  #heartbox-shell .mine-bio {
+    margin-top: 0.34rem;
+    color: rgb(242 242 242 / 64%);
+    font-size: 0.84rem;
+    line-height: 1.58;
+  }
+
+  #heartbox-shell .mine-meta {
+    margin-top: 0.24rem;
+    color: rgb(242 242 242 / 35%);
+    font-size: 0.76rem;
+    line-height: 1.5;
+  }
+
+  #heartbox-shell .mine-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.42rem;
+    margin-top: 0.6rem;
+  }
+
+  #heartbox-shell .mine-tags span {
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 999px;
+    background: transparent;
+    padding: 0.26rem 0.56rem;
+    color: rgb(242 242 242 / 46%);
+    font-size: 0.7rem;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  #heartbox-shell .mine-row {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 16px;
+    background: rgb(255 255 255 / 2.6%);
+    padding: 0.68rem 0.86rem;
+    text-align: left;
+    transition:
+      border-color 160ms ease,
+      background 160ms ease;
+  }
+
+  #heartbox-shell .mine-row:hover {
+    border-color: rgb(255 255 255 / 11%);
+    background: rgb(255 255 255 / 4.2%);
+  }
+
+  #heartbox-shell .mine-row span {
+    display: grid;
+    min-width: 0;
+    gap: 0.22rem;
+  }
+
+  #heartbox-shell .mine-row strong {
+    overflow: hidden;
+    color: rgb(242 242 242 / 82%);
+    font-size: 0.86rem;
+    font-weight: 440;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .mine-row small {
+    color: rgb(242 242 242 / 36%);
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  #heartbox-shell .mine-row svg {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+    color: rgb(242 242 242 / 34%);
+    stroke-width: 1.5;
+  }
+
+  #heartbox-shell .mine-section-title {
+    color: rgb(242 242 242 / 54%);
+    font-size: 0.78rem;
+    font-weight: 420;
+    line-height: 1.4;
+  }
+
+  #heartbox-shell .mine-recent-text {
+    margin-top: 1.06rem;
+    color: rgb(242 242 242 / 86%);
+    font-size: 0.94rem;
+    font-weight: 380;
+    line-height: 1.9;
+    white-space: pre-line;
+  }
+
+  #heartbox-shell .mine-recent-meta {
+    margin-top: 0.76rem;
+    color: rgb(242 242 242 / 34%);
+    font-size: 0.74rem;
+    line-height: 1.4;
+  }
+
+  #heartbox-shell .mine-content-row {
+    margin-top: 0.88rem;
+    border-color: rgb(255 255 255 / 6%);
+    background: transparent;
+    padding: 0.78rem 0 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 0;
+  }
+
+  #heartbox-shell .mine-content-row:hover {
+    background: transparent;
+  }
+
+  #heartbox-shell .mine-content-row strong {
+    color: rgb(242 242 242 / 62%);
+    font-size: 0.8rem;
+    font-weight: 380;
+  }
+
+  #heartbox-shell .mine-public-row {
+    border-color: rgb(255 255 255 / 5%);
+    background: rgb(255 255 255 / 1.8%);
+    padding: 0.56rem 0.82rem;
+  }
+
+  #heartbox-shell .mine-public-row:hover {
+    border-color: rgb(255 255 255 / 8%);
+    background: rgb(255 255 255 / 3%);
+  }
+
+  #heartbox-shell .mine-heart-row {
+    margin-bottom: -0.22rem;
+  }
+
+  #heartbox-shell .mine-secondary-list {
+    display: grid;
+    gap: 0;
+    padding: 0.1rem 0.2rem 0;
+  }
+
+  #heartbox-shell .mine-secondary-entry {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 6%);
+    border-radius: 0;
+    background: transparent;
+    padding: 0.72rem 0.14rem;
+    text-align: left;
+  }
+
+  #heartbox-shell .mine-secondary-entry::after {
+    content: "→";
+    flex: 0 0 auto;
+    color: rgb(242 242 242 / 26%);
+    font-size: 1rem;
+    font-weight: 300;
+  }
+
+  #heartbox-shell .mine-secondary-entry:last-child {
+    border-bottom: 0;
+  }
+
+  #heartbox-shell .mine-secondary-copy {
+    display: grid;
+    min-width: 0;
+    gap: 0.2rem;
+  }
+
+  #heartbox-shell .mine-secondary-entry .mine-secondary-copy > span {
+    display: block;
+    color: rgb(242 242 242 / 72%);
+    font-size: 0.82rem;
+    font-weight: 420;
+  }
+
+  #heartbox-shell .mine-secondary-entry .mine-secondary-copy > small {
+    display: block;
+    color: rgb(242 242 242 / 32%);
+    font-size: 0.7rem;
+    line-height: 1.45;
+  }
+
+  #heartbox-shell .mine-secondary-entry:hover {
+    background: transparent;
+  }
+
+  #heartbox-shell .mine-feedback {
+    border: 1px solid rgb(255 255 255 / 9%);
+    border-radius: 14px;
+    background: rgb(255 255 255 / 3.5%);
+    padding: 0.7rem 0.82rem;
+    color: rgb(242 242 242 / 48%);
+    font-size: 0.74rem;
+    line-height: 1.5;
+  }
+
+  #heartbox-shell .mine-detail-page {
+    position: relative;
+    display: grid;
+    width: min(100%, 520px);
+    gap: 0.9rem;
+    margin: 0 auto;
+    padding: max(0.9rem, env(safe-area-inset-top)) 0 4.6rem;
+  }
+
+  #heartbox-shell .mine-detail-header {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.72rem;
+    margin-bottom: 0.25rem;
+  }
+
+  #heartbox-shell .mine-detail-header h1 {
+    color: #f2f2f2;
+    font-size: 1rem;
+    font-weight: 520;
+    line-height: 1.2;
+  }
+
+  #heartbox-shell .mine-detail-back {
+    display: grid;
+    width: 2.3rem;
+    height: 2.3rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 3%);
+    color: rgb(242 242 242 / 78%);
+  }
+
+  #heartbox-shell .mine-detail-back svg {
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 1.6;
+  }
+
+  #heartbox-shell .mine-detail-action {
+    min-height: 2.15rem;
+    border: 1px solid rgb(255 232 226 / 20%);
+    border-radius: 999px;
+    background: rgb(255 232 226 / 8%);
+    padding: 0.42rem 0.72rem;
+    color: rgb(255 232 226 / 86%);
+    font-size: 0.76rem;
+    font-weight: 430;
+  }
+
+  #heartbox-shell .mine-moment-list,
+  #heartbox-shell .mine-secret-list {
+    display: grid;
+    gap: 0.78rem;
+  }
+
+  #heartbox-shell .mine-manage-card,
+  #heartbox-shell .mine-secret-card {
+    position: relative;
+    min-width: 0;
+    border: 1px solid rgb(255 255 255 / 4.8%);
+    border-radius: 15px;
+    background: rgb(255 255 255 / 1.75%);
+    padding: 0.86rem 0.88rem;
+  }
+
+  #heartbox-shell .mine-manage-card time,
+  #heartbox-shell .mine-secret-card time {
+    display: block;
+    color: rgb(242 242 242 / 29%);
+    font-size: 0.68rem;
+    line-height: 1.4;
+  }
+
+  #heartbox-shell .mine-manage-card > p {
+    margin-top: 0.54rem;
+    padding-right: 1.7rem;
+    color: rgb(242 242 242 / 80%);
+    font-size: 0.91rem;
+    font-weight: 380;
+    line-height: 1.68;
+  }
+
+  #heartbox-shell .mine-card-more {
+    position: absolute;
+    top: 0.62rem;
+    right: 0.62rem;
+    display: grid;
+    width: 1.55rem;
+    height: 1.55rem;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: rgb(242 242 242 / 36%);
+  }
+
+  #heartbox-shell .mine-card-more svg {
+    width: 0.92rem;
+    height: 0.92rem;
+    stroke-width: 1.35;
+  }
+
+  #heartbox-shell .mine-card-menu {
+    position: absolute;
+    top: 2.15rem;
+    right: 0.72rem;
+    z-index: 5;
+    min-width: 5rem;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 12px;
+    background: rgb(12 12 12 / 96%);
+  }
+
+  #heartbox-shell .mine-card-menu button {
+    width: 100%;
+    padding: 0.56rem 0.72rem;
+    color: rgb(242 242 242 / 66%);
+    text-align: left;
+    font-size: 0.7rem;
+  }
+
+  #heartbox-shell .mine-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.36rem;
+    margin-top: 0.76rem;
+  }
+
+  #heartbox-shell .mine-card-tags span {
+    border: 1px solid rgb(255 255 255 / 5%);
+    border-radius: 999px;
+    padding: 0.2rem 0.48rem;
+    color: rgb(242 242 242 / 32%);
+    font-size: 0.64rem;
+    line-height: 1.18;
+  }
+
+  #heartbox-shell .mine-card-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.82rem;
+    color: rgb(242 242 242 / 32%);
+    font-size: 0.68rem;
+  }
+
+  #heartbox-shell .mine-card-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+  }
+
+  #heartbox-shell .mine-card-meta svg {
+    width: 0.82rem;
+    height: 0.82rem;
+    stroke-width: 1.28;
+  }
+
+  #heartbox-shell .mine-secret-page {
+    gap: 1.08rem;
+  }
+
+  #heartbox-shell .mine-secret-card {
+    min-height: 6.25rem;
+    border-color: rgb(255 255 255 / 4%);
+    background: rgb(255 255 255 / 1.35%);
+    padding: 1.06rem 2.2rem 1.02rem 0.95rem;
+  }
+
+  #heartbox-shell .mine-secret-card > svg {
+    position: absolute;
+    top: 1.02rem;
+    right: 1rem;
+    width: 0.68rem;
+    height: 0.68rem;
+    color: rgb(242 242 242 / 18%);
+    stroke-width: 1.15;
+  }
+
+  #heartbox-shell .mine-secret-card .mine-card-more {
+    top: auto;
+    right: 0.82rem;
+    bottom: 0.68rem;
+  }
+
+  #heartbox-shell .mine-secret-card p {
+    color: rgb(242 242 242 / 80%);
+    font-size: 0.92rem;
+    font-weight: 380;
+    line-height: 1.82;
+    white-space: pre-line;
+  }
+
+  #heartbox-shell .mine-secret-card time {
+    margin-top: 0.9rem;
+  }
+
+  #heartbox-shell .mine-compose-panel {
+    border-color: rgb(255 255 255 / 4.5%);
+    background: rgb(255 255 255 / 1.45%);
+    padding: 0.78rem 0.82rem !important;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  #heartbox-shell .mine-compose-panel textarea {
+    min-height: 8rem;
+    width: 100%;
+    resize: none;
+    border: 0;
+    background: transparent;
+    color: rgb(242 242 242 / 80%);
+    font-size: 0.88rem;
+    line-height: 1.76;
+    outline: none;
+  }
+
+  #heartbox-shell .mine-compose-panel textarea::placeholder {
+    color: rgb(242 242 242 / 24%);
+  }
+
+  #heartbox-shell .mine-secret-compose textarea {
+    min-height: 10.5rem;
+  }
+
+  #heartbox-shell .mine-compose-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.58rem;
+    border-top: 1px solid rgb(255 255 255 / 4.5%);
+    padding-top: 0.62rem;
+  }
+
+  #heartbox-shell .mine-compose-actions span {
+    margin-right: auto;
+    color: rgb(242 242 242 / 22%);
+    font-size: 0.64rem;
+  }
+
+  #heartbox-shell .mine-compose-actions button {
+    border: 1px solid rgb(255 255 255 / 6%);
+    border-radius: 999px;
+    background: transparent;
+    padding: 0.3rem 0.58rem;
+    color: rgb(242 242 242 / 50%);
+    font-size: 0.68rem;
+  }
+
+  #heartbox-shell .mine-compose-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.36;
+  }
+
+  #heartbox-shell .mine-compose-actions button:last-child {
+    border-color: rgb(255 232 226 / 12%);
+    color: rgb(255 232 226 / 70%);
+  }
+
+  #heartbox-shell .mine-confirm-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: grid;
+    place-items: end center;
+    background: rgb(0 0 0 / 52%);
+    padding: 1rem;
+  }
+
+  #heartbox-shell .mine-confirm-dialog {
+    width: min(100%, 340px);
+    border: 1px solid rgb(255 255 255 / 6%);
+    border-radius: 16px;
+    background: rgb(12 12 12 / 96%);
+    padding: 0.82rem 0.88rem;
+    color: #f2f2f2;
+  }
+
+  #heartbox-shell .mine-confirm-dialog h2 {
+    font-size: 0.88rem;
+    font-weight: 460;
+  }
+
+  #heartbox-shell .mine-confirm-dialog p {
+    margin-top: 0.34rem;
+    color: rgb(242 242 242 / 36%);
+    font-size: 0.7rem;
+    line-height: 1.5;
+  }
+
+  #heartbox-shell .mine-confirm-dialog div {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.52rem;
+    margin-top: 0.76rem;
+  }
+
+  #heartbox-shell .mine-confirm-dialog button {
+    border: 1px solid rgb(255 255 255 / 6%);
+    border-radius: 999px;
+    background: transparent;
+    padding: 0.34rem 0.68rem;
+    color: rgb(242 242 242 / 50%);
+    font-size: 0.68rem;
+  }
+
+  #heartbox-shell .mine-confirm-dialog button:last-child {
+    border-color: rgb(255 232 226 / 12%);
+    color: rgb(255 232 226 / 72%);
+  }
+
+  #heartbox-shell .edit-profile-page {
+    gap: 1rem;
+  }
+
+  #heartbox-shell .edit-avatar-block {
+    display: grid;
+    justify-items: center;
+    gap: 0.48rem;
+    padding: 0.55rem 0 0.7rem;
+  }
+
+  #heartbox-shell .edit-avatar {
+    position: relative;
+    display: grid;
+    width: 5.5rem;
+    height: 5.5rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 9%);
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 44% 36%, rgb(255 255 255 / 8%), transparent 34%),
+      rgb(255 255 255 / 3.2%);
+    color: rgb(242 242 242 / 88%);
+    font-size: 1.45rem;
+    font-weight: 440;
+  }
+
+  #heartbox-shell .edit-avatar i {
+    position: absolute;
+    right: 0.24rem;
+    bottom: 0.28rem;
+    display: grid;
+    width: 1.45rem;
+    height: 1.45rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 999px;
+    background: rgb(8 8 8 / 94%);
+    color: rgb(242 242 242 / 68%);
+  }
+
+  #heartbox-shell .edit-avatar i svg {
+    width: 0.72rem;
+    height: 0.72rem;
+    stroke-width: 1.45;
+  }
+
+  #heartbox-shell .edit-avatar-change {
+    border: 0;
+    background: transparent;
+    color: rgb(242 242 242 / 42%);
+    font-size: 0.7rem;
+    font-weight: 380;
+  }
+
+  #heartbox-shell .edit-profile-fields {
+    display: grid;
+    gap: 0.88rem;
+  }
+
+  #heartbox-shell .edit-field {
+    display: grid;
+    gap: 0.42rem;
+    min-width: 0;
+  }
+
+  #heartbox-shell .edit-field > span {
+    color: rgb(242 242 242 / 76%);
+    font-size: 0.72rem;
+    font-weight: 430;
+    line-height: 1.4;
+  }
+
+  #heartbox-shell .edit-field > span small {
+    margin-left: 0.48rem;
+    color: rgb(242 242 242 / 30%);
+    font-size: 0.66rem;
+    font-weight: 360;
+  }
+
+  #heartbox-shell .edit-input-wrap,
+  #heartbox-shell .edit-tag-box {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.48rem;
+    border: 1px solid rgb(255 255 255 / 5.5%);
+    border-radius: 14px;
+    background: rgb(255 255 255 / 1.8%);
+    padding: 0.62rem 0.7rem;
+  }
+
+  #heartbox-shell .edit-input-wrap:focus-within,
+  #heartbox-shell .edit-tag-box:focus-within {
+    border-color: rgb(255 232 226 / 14%);
+    background: rgb(255 255 255 / 2.4%);
+  }
+
+  #heartbox-shell .edit-input-wrap input,
+  #heartbox-shell .edit-input-wrap textarea,
+  #heartbox-shell .edit-tag-input input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: rgb(242 242 242 / 84%);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    outline: none;
+  }
+
+  #heartbox-shell .edit-input-wrap input::placeholder,
+  #heartbox-shell .edit-input-wrap textarea::placeholder,
+  #heartbox-shell .edit-tag-input input::placeholder {
+    color: rgb(242 242 242 / 24%);
+  }
+
+  #heartbox-shell .edit-input-wrap small {
+    flex: 0 0 auto;
+    color: rgb(242 242 242 / 26%);
+    font-size: 0.64rem;
+    line-height: 1;
+  }
+
+  #heartbox-shell .edit-textarea-wrap {
+    align-items: flex-end;
+    min-height: 5.7rem;
+  }
+
+  #heartbox-shell .edit-textarea-wrap textarea {
+    min-height: 4.5rem;
+    resize: none;
+  }
+
+  #heartbox-shell .edit-tag-box {
+    flex-wrap: wrap;
+    min-height: 3.15rem;
+    padding: 0.52rem 0.58rem;
+  }
+
+  #heartbox-shell .edit-tag,
+  #heartbox-shell .edit-tag-add,
+  #heartbox-shell .edit-tag-input {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(255 255 255 / 6%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 2%);
+    color: rgb(242 242 242 / 54%);
+    font-size: 0.68rem;
+    line-height: 1.2;
+  }
+
+  #heartbox-shell .edit-tag {
+    gap: 0.28rem;
+    padding: 0.26rem 0.5rem;
+  }
+
+  #heartbox-shell .edit-tag svg {
+    width: 0.62rem;
+    height: 0.62rem;
+    color: rgb(242 242 242 / 34%);
+    stroke-width: 1.4;
+  }
+
+  #heartbox-shell .edit-tag-add {
+    width: 1.55rem;
+    height: 1.55rem;
+    color: rgb(242 242 242 / 36%);
+  }
+
+  #heartbox-shell .edit-tag-add svg {
+    width: 0.76rem;
+    height: 0.76rem;
+    stroke-width: 1.4;
+  }
+
+  #heartbox-shell .edit-tag-input {
+    width: 4.1rem;
+    padding: 0.24rem 0.46rem;
+  }
+
+  #heartbox-shell .edit-tag-input input {
+    font-size: 0.68rem;
+  }
+
+  #heartbox-shell .edit-profile-error {
+    border: 1px solid rgb(255 232 226 / 10%);
+    border-radius: 14px;
+    background: rgb(255 232 226 / 3%);
+    padding: 0.62rem 0.72rem;
+    color: rgb(255 232 226 / 66%);
+    font-size: 0.7rem;
+    line-height: 1.5;
+  }
+
+  #heartbox-shell .settings-page {
+    gap: 1.05rem;
+  }
+
+  #heartbox-shell .settings-intro {
+    margin: 0.58rem 0 0.9rem;
+    color: rgb(242 242 242 / 66%);
+    font-size: 0.84rem;
+    font-weight: 380;
+    line-height: 1.72;
+  }
+
+  #heartbox-shell .settings-list {
+    display: grid;
+    border-top: 1px solid rgb(255 255 255 / 5.5%);
+  }
+
+  #heartbox-shell .settings-entry,
+  #heartbox-shell .settings-value-row,
+  #heartbox-shell .settings-text-entry,
+  #heartbox-shell .settings-link-row,
+  #heartbox-shell .settings-toggle-row {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    border: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 5.5%);
+    background: transparent;
+    color: #f2f2f2;
+    text-align: left;
+  }
+
+  #heartbox-shell .settings-entry {
+    grid-template-columns: 1.55rem minmax(0, 1fr) auto;
+    gap: 0.92rem;
+    padding: 0.92rem 0.12rem;
+  }
+
+  #heartbox-shell .settings-text-entry {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.88rem;
+    padding: 0.9rem 0.08rem;
+  }
+
+  #heartbox-shell .settings-link-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.88rem;
+    padding: 0.88rem 0.08rem;
+  }
+
+  #heartbox-shell .settings-entry > svg:first-child {
+    width: 1.08rem;
+    height: 1.08rem;
+    color: rgb(255 232 226 / 76%);
+    stroke-width: 1.45;
+  }
+
+  #heartbox-shell .settings-entry > svg:last-child,
+  #heartbox-shell .settings-value-row > svg,
+  #heartbox-shell .settings-text-entry > svg,
+  #heartbox-shell .settings-link-row > svg {
+    width: 0.88rem;
+    height: 0.88rem;
+    color: rgb(242 242 242 / 30%);
+    stroke-width: 1.4;
+  }
+
+  #heartbox-shell .settings-entry span,
+  #heartbox-shell .settings-text-entry span,
+  #heartbox-shell .settings-toggle-row span {
+    display: grid;
+    min-width: 0;
+    gap: 0.18rem;
+  }
+
+  #heartbox-shell .settings-entry strong,
+  #heartbox-shell .settings-text-entry strong,
+  #heartbox-shell .settings-toggle-row strong {
+    overflow: hidden;
+    color: rgb(242 242 242 / 82%);
+    font-size: 0.82rem;
+    font-weight: 430;
+    line-height: 1.34;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .settings-entry small,
+  #heartbox-shell .settings-text-entry small,
+  #heartbox-shell .settings-toggle-row small {
+    color: rgb(242 242 242 / 36%);
+    font-size: 0.7rem;
+    font-weight: 360;
+    line-height: 1.45;
+  }
+
+  #heartbox-shell .settings-account-identity {
+    display: grid;
+    grid-template-columns: 4.1rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.9rem;
+    margin: 0.35rem 0 0.55rem;
+    padding: 0.25rem 0;
+  }
+
+  #heartbox-shell .settings-account-avatar {
+    display: grid;
+    width: 4.1rem;
+    height: 4.1rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at 42% 34%, rgb(255 255 255 / 8%), transparent 35%),
+      rgb(255 255 255 / 3%);
+    color: rgb(242 242 242 / 84%);
+    font-size: 1.25rem;
+    font-weight: 430;
+  }
+
+  #heartbox-shell .settings-account-identity h2 {
+    color: rgb(242 242 242 / 88%);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  #heartbox-shell .settings-account-identity p {
+    margin-top: 0.22rem;
+    color: rgb(242 242 242 / 42%);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  #heartbox-shell .settings-account-identity span {
+    display: block;
+    overflow: hidden;
+    margin-top: 0.45rem;
+    color: rgb(242 242 242 / 36%);
+    font-size: 0.68rem;
+    line-height: 1.45;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .settings-plain-list {
+    margin-top: 0.18rem;
+  }
+
+  #heartbox-shell .settings-value-row {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.7rem;
+    padding: 0.88rem 0.08rem;
+  }
+
+  #heartbox-shell .settings-value-row-static {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  #heartbox-shell .settings-value-row span {
+    overflow: hidden;
+    color: rgb(242 242 242 / 78%);
+    font-size: 0.78rem;
+    font-weight: 410;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .settings-link-row span {
+    overflow: hidden;
+    color: rgb(242 242 242 / 78%);
+    font-size: 0.78rem;
+    font-weight: 410;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .settings-value-row small {
+    max-width: 11.5rem;
+    overflow: hidden;
+    color: rgb(242 242 242 / 43%);
+    font-size: 0.72rem;
+    font-weight: 360;
+    line-height: 1.42;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .settings-soft-block {
+    margin-top: 0.7rem;
+    border: 1px solid rgb(255 255 255 / 5.5%);
+    border-radius: 14px;
+    background: rgb(255 255 255 / 1.4%);
+  }
+
+  #heartbox-shell .settings-soft-block .settings-entry {
+    border-bottom: 0;
+    padding: 0.78rem 0.78rem;
+  }
+
+  #heartbox-shell .settings-toggle-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.88rem;
+    padding: 0.86rem 0.08rem;
+  }
+
+  #heartbox-shell .settings-toggle-row i {
+    position: relative;
+    width: 2rem;
+    height: 1.12rem;
+    border: 1px solid rgb(255 255 255 / 7%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 3%);
+  }
+
+  #heartbox-shell .settings-toggle-row i::after {
+    content: "";
+    position: absolute;
+    top: 0.18rem;
+    left: 0.2rem;
+    width: 0.68rem;
+    height: 0.68rem;
+    border-radius: 999px;
+    background: rgb(242 242 242 / 42%);
+    transition: transform 160ms ease, background 160ms ease;
+  }
+
+  #heartbox-shell .settings-toggle-row i.is-on {
+    border-color: rgb(255 232 226 / 15%);
+    background: rgb(255 232 226 / 8%);
+  }
+
+  #heartbox-shell .settings-toggle-row i.is-on::after {
+    background: rgb(255 232 226 / 82%);
+    transform: translateX(0.82rem);
+  }
+
+  #heartbox-shell .settings-empty-state {
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    padding: 4.8rem 1rem 0;
+    text-align: center;
+  }
+
+  #heartbox-shell .settings-empty-state svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: rgb(255 232 226 / 54%);
+    stroke-width: 1.4;
+  }
+
+  #heartbox-shell .settings-empty-state h2 {
+    margin-top: 0.2rem;
+    color: rgb(242 242 242 / 82%);
+    font-size: 0.9rem;
+    font-weight: 430;
+    line-height: 1.45;
+  }
+
+  #heartbox-shell .settings-empty-state p {
+    max-width: 16rem;
+    color: rgb(242 242 242 / 38%);
+    font-size: 0.72rem;
+    line-height: 1.65;
+  }
+
+  #heartbox-shell .settings-about {
+    display: grid;
+    gap: 0.52rem;
+    padding: 1.4rem 0 1.05rem;
+  }
+
+  #heartbox-shell .settings-about h2 {
+    color: rgb(242 242 242 / 88%);
+    font-size: 1.05rem;
+    font-weight: 520;
+    letter-spacing: 0.08em;
+  }
+
+  #heartbox-shell .settings-about p {
+    color: rgb(242 242 242 / 34%);
+    font-size: 0.7rem;
+  }
+
+  #heartbox-shell .settings-about strong {
+    margin-top: 0.6rem;
+    color: rgb(242 242 242 / 78%);
+    font-size: 0.92rem;
+    font-weight: 390;
+    line-height: 1.82;
+  }
+
+  #heartbox-shell .settings-text-panel {
+    margin-top: 1.55rem;
+    border-top: 1px solid rgb(255 255 255 / 5.5%);
+    padding-top: 1.35rem;
+  }
+
+  #heartbox-shell .settings-text-panel p {
+    color: rgb(242 242 242 / 66%);
+    font-size: 0.86rem;
+    font-weight: 380;
+    line-height: 1.85;
+    white-space: pre-line;
+  }
+
+  #heartbox-shell .heart-page {
+    gap: 0.95rem;
+  }
+
+  #heartbox-shell .heart-intro-page {
+    min-height: min(44rem, 86svh);
+  }
+
+  #heartbox-shell .heart-hero-copy {
+    display: grid;
+    gap: 0.88rem;
+    padding: 1.25rem 0 0.7rem;
+  }
+
+  #heartbox-shell .heart-hero-copy h2 {
+    color: rgb(255 232 226 / 90%);
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1.38;
+    letter-spacing: 0;
+  }
+
+  #heartbox-shell .heart-hero-copy p {
+    max-width: 18rem;
+    color: rgb(242 242 242 / 52%);
+    font-size: 0.78rem;
+    font-weight: 360;
+    line-height: 1.78;
+  }
+
+  #heartbox-shell .heart-benefit-list {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: auto;
+    padding-top: 5.8rem;
+  }
+
+  #heartbox-shell .heart-benefit-row {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.72rem;
+  }
+
+  #heartbox-shell .heart-benefit-row > svg {
+    width: 2.05rem;
+    height: 2.05rem;
+    border: 1px solid rgb(255 255 255 / 5.5%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 2.2%);
+    padding: 0.55rem;
+    color: rgb(255 232 226 / 70%);
+    stroke-width: 1.4;
+  }
+
+  #heartbox-shell .heart-benefit-row span {
+    display: grid;
+    gap: 0.16rem;
+  }
+
+  #heartbox-shell .heart-benefit-row strong {
+    color: rgb(242 242 242 / 82%);
+    font-size: 0.8rem;
+    font-weight: 430;
+    line-height: 1.35;
+  }
+
+  #heartbox-shell .heart-benefit-row small {
+    color: rgb(242 242 242 / 38%);
+    font-size: 0.68rem;
+    line-height: 1.45;
+  }
+
+  #heartbox-shell .heart-primary-link {
+    display: inline-flex;
+    min-height: 2.35rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border: 1px solid rgb(255 232 226 / 22%);
+    border-radius: 999px;
+    background: rgb(255 232 226 / 12%);
+    padding: 0.58rem 0.9rem;
+    color: rgb(255 232 226 / 88%);
+    font-size: 0.76rem;
+    font-weight: 440;
+  }
+
+  #heartbox-shell .heart-intro-page > .heart-primary-link {
+    width: fit-content;
+    margin-top: 1.1rem;
+  }
+
+  #heartbox-shell .heart-primary-link svg {
+    width: 0.86rem;
+    height: 0.86rem;
+    stroke-width: 1.5;
+  }
+
+  #heartbox-shell .heart-light-tabs {
+    display: flex;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    border: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 5%);
+    border-radius: 0;
+    background: transparent;
+    padding: 0.1rem 0 0;
+  }
+
+  #heartbox-shell .heart-light-tabs button {
+    position: relative;
+    min-width: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0.28rem 0 0.58rem;
+    color: rgb(242 242 242 / 38%);
+    font-size: 0.68rem;
+    font-weight: 390;
+    white-space: nowrap;
+  }
+
+  #heartbox-shell .heart-light-tabs button.is-active {
+    background: transparent;
+    color: rgb(242 242 242 / 86%);
+  }
+
+  #heartbox-shell .heart-light-tabs button.is-active::after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 1px;
+    border-radius: 999px;
+    background: rgb(255 232 226 / 48%);
+    content: "";
+  }
+
+  #heartbox-shell .heart-status-panel,
+  #heartbox-shell .heart-credit-status,
+  #heartbox-shell .heart-current-card {
+    display: grid;
+    gap: 0.38rem;
+    border: 1px solid rgb(255 255 255 / 5%);
+    border-radius: 16px;
+    background: rgb(255 255 255 / 1.7%);
+    padding: 0.86rem;
+  }
+
+  #heartbox-shell .heart-status-panel span,
+  #heartbox-shell .heart-credit-status span,
+  #heartbox-shell .heart-current-card span {
+    color: rgb(242 242 242 / 36%);
+    font-size: 0.66rem;
+    line-height: 1.3;
+  }
+
+  #heartbox-shell .heart-status-panel h2,
+  #heartbox-shell .heart-current-card h2,
+  #heartbox-shell .heart-credit-status strong {
+    color: rgb(242 242 242 / 88%);
+    font-size: 1.08rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  #heartbox-shell .heart-status-panel p,
+  #heartbox-shell .heart-credit-status p,
+  #heartbox-shell .heart-current-card p {
+    color: rgb(242 242 242 / 42%);
+    font-size: 0.72rem;
+    line-height: 1.58;
+  }
+
+  #heartbox-shell .heart-status-panel button {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.3rem;
+    border: 0;
+    background: transparent;
+    padding: 0.2rem 0 0;
+    color: rgb(255 232 226 / 64%);
+    font-size: 0.68rem;
+  }
+
+  #heartbox-shell .heart-status-panel button svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  #heartbox-shell .heart-route-list {
+    display: grid;
+    border-top: 1px solid rgb(255 255 255 / 5.5%);
+  }
+
+  #heartbox-shell .heart-route-list button {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.78rem;
+    align-items: center;
+    border: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 5.5%);
+    background: transparent;
+    padding: 0.82rem 0.08rem;
+    text-align: left;
+  }
+
+  #heartbox-shell .heart-route-list span {
+    display: grid;
+    min-width: 0;
+    gap: 0.18rem;
+  }
+
+  #heartbox-shell .heart-route-list strong {
+    color: rgb(242 242 242 / 80%);
+    font-size: 0.8rem;
+    font-weight: 420;
+    line-height: 1.35;
+  }
+
+  #heartbox-shell .heart-route-list small {
+    color: rgb(242 242 242 / 36%);
+    font-size: 0.68rem;
+    line-height: 1.45;
+  }
+
+  #heartbox-shell .heart-route-list svg {
+    width: 0.86rem;
+    height: 0.86rem;
+    color: rgb(242 242 242 / 30%);
+    stroke-width: 1.4;
+  }
+
+  #heartbox-shell .heart-plus-copy,
+  #heartbox-shell .heart-credits-copy {
+    padding-top: 0.85rem;
+  }
+
+  #heartbox-shell .heart-check-list {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #heartbox-shell .heart-check-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgb(242 242 242 / 68%);
+    font-size: 0.74rem;
+    line-height: 1.45;
+  }
+
+  #heartbox-shell .heart-check-list svg {
+    width: 0.82rem;
+    height: 0.82rem;
+    flex: 0 0 auto;
+    color: rgb(255 232 226 / 70%);
+    stroke-width: 1.5;
+  }
+
+  #heartbox-shell .heart-section-label {
+    margin-top: 0.15rem;
+    color: rgb(242 242 242 / 42%);
+    font-size: 0.68rem;
+    font-weight: 390;
+    line-height: 1.4;
+  }
+
+  #heartbox-shell .heart-text-link {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.32rem;
+    border: 0;
+    background: transparent;
+    padding: 0.28rem 0;
+    color: rgb(255 232 226 / 62%);
+    font-size: 0.7rem;
+    font-weight: 390;
+  }
+
+  #heartbox-shell .heart-text-link svg {
+    width: 0.78rem;
+    height: 0.78rem;
+    stroke-width: 1.45;
+  }
+
+  #heartbox-shell .heart-plan-block {
+    display: grid;
+    gap: 0.72rem;
+    margin-top: 0.4rem;
+  }
+
+  #heartbox-shell .heart-plan-title {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  #heartbox-shell .heart-plan-title h3 {
+    color: rgb(242 242 242 / 82%);
+    font-size: 0.82rem;
+    font-weight: 440;
+  }
+
+  #heartbox-shell .heart-plan-title p {
+    color: rgb(242 242 242 / 34%);
+    font-size: 0.68rem;
+    line-height: 1.45;
+  }
+
+  #heartbox-shell .heart-plan-list,
+  #heartbox-shell .heart-credit-list {
+    display: grid;
+    gap: 0.48rem;
+  }
+
+  #heartbox-shell .heart-plan-list button,
+  #heartbox-shell .heart-credit-list button {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.56rem;
+    align-items: center;
+    border: 1px solid rgb(255 255 255 / 5.5%);
+    border-radius: 13px;
+    background: rgb(255 255 255 / 1.5%);
+    padding: 0.6rem 0.68rem;
+    color: rgb(242 242 242 / 72%);
+    text-align: left;
+  }
+
+  #heartbox-shell .heart-plan-list button.is-selected,
+  #heartbox-shell .heart-credit-list button.is-selected {
+    border-color: rgb(255 232 226 / 20%);
+    background: rgb(255 232 226 / 4%);
+  }
+
+  #heartbox-shell .heart-plan-list span,
+  #heartbox-shell .heart-credit-list span {
+    font-size: 0.76rem;
+    font-weight: 410;
+  }
+
+  #heartbox-shell .heart-plan-list strong,
+  #heartbox-shell .heart-credit-list strong {
+    color: rgb(242 242 242 / 82%);
+    font-size: 0.78rem;
+    font-weight: 430;
+  }
+
+  #heartbox-shell .heart-plan-list small,
+  #heartbox-shell .heart-credit-list small {
+    min-width: 2.1rem;
+    color: rgb(255 232 226 / 62%);
+    font-size: 0.62rem;
+    text-align: right;
+  }
+
+  #heartbox-shell .heart-plan-confirm {
+    margin-top: 0.08rem;
+    width: fit-content;
+    min-height: 2rem;
+    background: rgb(255 255 255 / 1.7%);
+    color: rgb(255 232 226 / 72%);
+  }
+
+  #heartbox-shell .heart-beta-note {
+    border: 1px solid rgb(255 255 255 / 5%);
+    border-radius: 13px;
+    background: rgb(255 255 255 / 1.4%);
+    padding: 0.56rem 0.66rem;
+    color: rgb(242 242 242 / 42%);
+    font-size: 0.68rem;
+    line-height: 1.5;
+  }
+
+  #heartbox-shell .heart-current-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 7rem;
+    padding-left: 4rem;
+  }
+
+  #heartbox-shell .heart-current-card > svg {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 2.1rem;
+    height: 2.1rem;
+    border: 1px solid rgb(255 255 255 / 5.5%);
+    border-radius: 13px;
+    background: rgb(255 255 255 / 2.4%);
+    padding: 0.55rem;
+    color: rgb(255 232 226 / 72%);
+    stroke-width: 1.35;
+  }
+
   #heartbox-shell .mini-stat {
     padding: 0.58rem;
   }
@@ -4742,6 +6272,10 @@ button {
 
     .top-status h1 {
       font-size: 1.28rem;
+    }
+
+    #heartbox-shell .mine-stage .top-status h1 {
+      font-size: 1.18rem;
     }
 
     .top-status .eyebrow {

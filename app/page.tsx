@@ -8,14 +8,18 @@ import {
   Ban,
   Bell,
   BellOff,
+  Camera,
   ChevronLeft,
+  CheckCircle2,
+  CircleHelp,
   Copy,
   Feather,
-  Flag,
   Heart,
   HeartHandshake,
   House,
+  Info,
   Keyboard,
+  KeyRound,
   LockKeyhole,
   MessageCircle,
   Mic,
@@ -29,10 +33,10 @@ import {
   Search,
   Send,
   ShieldAlert,
-  ShieldCheck,
   Sparkles,
   Trash2,
   UserRound,
+  UserX,
   UsersRound,
   X,
 } from 'lucide-react';
@@ -42,17 +46,16 @@ import {
   type PersonalityFragment,
   type PostComment,
   type Relationship,
+  type SecretBoxItem,
   type Topic,
   type UserHomeProfile,
   blindBoxes,
   currentUser,
   dailyPrompt,
   invite,
-  personalityCards,
   personalityFragments,
   postComments,
   profiles,
-  referralRewards,
   relationships,
   stageMeta,
   topics,
@@ -78,10 +81,45 @@ const navItems: { id: AppView; label: string; icon: ElementType }[] = [
 ];
 
 type OnboardingStep = 'landing' | 'age' | 'prompt' | 'done';
-type DetailView = 'home' | 'secretBox' | 'userMoments';
+type DetailView =
+  | 'home'
+  | 'secretBox'
+  | 'userMoments'
+  | 'myMoments'
+  | 'mySecrets'
+  | 'editProfile'
+  | 'settings'
+  | 'settingsAccount'
+  | 'settingsPrivacy'
+  | 'settingsNotifications'
+  | 'settingsHelp'
+  | 'settingsAbout'
+  | 'settingsBlacklist'
+  | 'passwordPlaceholder'
+  | 'helpFaq'
+  | 'helpFeedback'
+  | 'helpContact'
+  | 'aboutTerms'
+  | 'aboutPrivacy'
+  | 'heartIntro'
+  | 'heartBenefits'
+  | 'heartPlus'
+  | 'heartCredits'
+  | 'heartStatus'
+  | 'heartPlan'
+  | 'heartPlusPlan';
 type CircleMode = 'hot' | 'latest' | 'following';
 type MessageScreen = 'list' | 'chat';
 type MessageConfirmAction = 'block' | 'delete' | null;
+type EditProfileReturnView = 'mine' | 'account';
+type MomentPrivacy = 'all' | 'related';
+type HeartStatus = 'inactive' | 'heart' | 'heart_plus';
+type NotificationPrefs = {
+  messages: boolean;
+  echoes: boolean;
+  resonance: boolean;
+  system: boolean;
+};
 type HeartboxStep =
   | 'detail'
   | 'echo'
@@ -119,6 +157,41 @@ type HeartboxUnlock = {
 };
 
 const appUserProfiles = [...userHomeProfiles, ...messageUserProfiles];
+
+const myPublicHomeProfile: UserHomeProfile = {
+  id: currentUser.id,
+  name: '林',
+  avatar: '林',
+  age: 24,
+  city: '上海',
+  bio: '慢一点认识，也很好。',
+  tags: ['夜行', '摄影', '慢热'],
+  isFollowing: false,
+  moments: [],
+  secretBoxItems: [
+    {
+      id: 'secret_me_01',
+      content: '有些话适合慢一点说，\n也适合只留给真正靠近的人。',
+      createdAt: '2026.09.13 · 00:42',
+    },
+    {
+      id: 'secret_me_02',
+      content: '我其实一直都知道，\n只是偶尔还会假装不知道。',
+      createdAt: '2026.09.12 · 23:11',
+    },
+    {
+      id: 'secret_me_03',
+      content: '希望有一天，\n可以更自在地喜欢生活。',
+      createdAt: '2026.09.10 · 21:34',
+    },
+  ],
+  personalityFragments: [
+    {
+      question: '最近想留下什么？',
+      answer: '有时候不是想认识谁，只是不想那么快离开。',
+    },
+  ],
+};
 
 const heartboxMoments: HeartboxMoment[] = [
   {
@@ -292,6 +365,12 @@ export default function Home() {
   const [publishedFragments, setPublishedFragments] = useState<
     PersonalityFragment[]
   >([]);
+  const [myProfile, setMyProfile] =
+    useState<UserHomeProfile>(myPublicHomeProfile);
+  const [deletedFragmentIds, setDeletedFragmentIds] = useState<string[]>([]);
+  const [mySecretItems, setMySecretItems] = useState<SecretBoxItem[]>(
+    myPublicHomeProfile.secretBoxItems,
+  );
   const [conversationState, setConversationState] =
     useState<DirectConversation[]>(initialConversations);
   const [systemNotifications, setSystemNotifications] = useState<
@@ -311,10 +390,32 @@ export default function Home() {
   const [chatMenuOpen, setChatMenuOpen] = useState(false);
   const [messageConfirmAction, setMessageConfirmAction] =
     useState<MessageConfirmAction>(null);
+  const [mineNotice, setMineNotice] = useState<string | null>(null);
   const [inviteStep, setInviteStep] = useState<
     'create' | 'card' | 'landing' | 'signup'
   >('create');
   const [detailView, setDetailView] = useState<DetailView | null>(null);
+  const [editProfileReturnView, setEditProfileReturnView] =
+    useState<EditProfileReturnView>('mine');
+  const [momentPrivacy, setMomentPrivacy] = useState<MomentPrivacy>('all');
+  const [heartStatus, setHeartStatus] = useState<HeartStatus>(() => {
+    if (typeof window === 'undefined') {
+      return 'heart';
+    }
+    return new URLSearchParams(window.location.search).get('heart') ===
+      'inactive'
+      ? 'inactive'
+      : 'heart';
+  });
+  const [boxCredits, setBoxCredits] = useState(3);
+  const [heartReturnView, setHeartReturnView] =
+    useState<DetailView>('heartStatus');
+  const [notificationPrefs, setNotificationPrefs] = useState<NotificationPrefs>({
+    messages: true,
+    echoes: true,
+    resonance: false,
+    system: true,
+  });
   const [selectedUserId, setSelectedUserId] = useState(userHomeProfiles[0].id);
   const [followedUserIds, setFollowedUserIds] = useState<string[]>(
     appUserProfiles
@@ -327,7 +428,9 @@ export default function Home() {
   const selectedMoment =
     heartboxMoments[selectedMomentIndex % heartboxMoments.length];
   const selectedRelationship = relationships[0];
-  const allFragments = [...publishedFragments, ...personalityFragments];
+  const allFragments = [...publishedFragments, ...personalityFragments].filter(
+    (fragment) => !deletedFragmentIds.includes(fragment.id),
+  );
   const selectedTopic =
     topics.find((topic) => topic.id === selectedTopicId) ?? topics[0];
   const activeComments = useMemo(() => {
@@ -336,15 +439,19 @@ export default function Home() {
       (comment) => comment.fragmentId === commentFragmentId,
     );
   }, [commentFragmentId, localComments]);
-  const myCard =
-    personalityCards.find((card) => card.userId === currentUser.id) ??
-    personalityCards[0];
-  const myProfile =
-    profiles.find((profile) => profile.userId === currentUser.id) ??
-    profiles[0];
+  const mySelfProfile = {
+    ...myProfile,
+    secretBoxItems: mySecretItems,
+  };
   const selectedUser =
-    appUserProfiles.find((profile) => profile.id === selectedUserId) ??
+    [mySelfProfile, ...appUserProfiles].find(
+      (profile) => profile.id === selectedUserId,
+    ) ??
     appUserProfiles[0];
+  const myMoments = allFragments
+    .filter((fragment) => fragment.userId === currentUser.id)
+    .sort((a, b) => getMomentSortValue(b) - getMomentSortValue(a));
+  const latestMyMoment = myMoments[0];
   const selectedUserMoments = allFragments.filter(
     (fragment) => fragment.userId === selectedUser.id,
   );
@@ -387,6 +494,9 @@ export default function Home() {
     setReplyingToCommentId(null);
     setFragmentDraft('');
     setPublishedFragments([]);
+    setMyProfile(myPublicHomeProfile);
+    setDeletedFragmentIds([]);
+    setMySecretItems(myPublicHomeProfile.secretBoxItems);
     setConversationState(initialConversations);
     setSystemNotifications(initialSystemNotifications);
     setMessageTab('all');
@@ -401,6 +511,16 @@ export default function Home() {
     setChatMenuOpen(false);
     setMessageConfirmAction(null);
     setInviteStep('create');
+    setEditProfileReturnView('mine');
+    setMomentPrivacy('all');
+    setHeartStatus('heart');
+    setBoxCredits(3);
+    setNotificationPrefs({
+      messages: true,
+      echoes: true,
+      resonance: false,
+      system: true,
+    });
     window.requestAnimationFrame(() => {
       document
         .getElementById('heartbox-shell')
@@ -410,6 +530,7 @@ export default function Home() {
 
   function switchView(next: AppView) {
     setDetailView(null);
+    setMineNotice(null);
     if (next === 'messages') {
       setMessageScreen('list');
       setActiveConversationId(null);
@@ -516,6 +637,61 @@ export default function Home() {
     ]);
     setFragmentDraft('');
     setView('circle');
+  }
+
+  function publishMyMoment(content: string) {
+    if (!content.trim()) return;
+    setPublishedFragments((current) => [
+      {
+        id: `fragment_mine_${Date.now()}`,
+        userId: currentUser.id,
+        prompt: dailyPrompt.title,
+        answer: content.trim(),
+        mood: '刚刚发生',
+        tags: ['#最近一次心动', '#深夜才会说的话'],
+        likes: 0,
+        comments: 0,
+        createdAt: '刚刚',
+        topicId: selectedTopicId,
+      },
+      ...current,
+    ]);
+    setDetailView('myMoments');
+  }
+
+  function deleteMyMoment(id: string) {
+    setDeletedFragmentIds((current) =>
+      current.includes(id) ? current : [...current, id],
+    );
+    setLikedFragments((current) => current.filter((item) => item !== id));
+    if (commentFragmentId === id) setCommentFragmentId(null);
+  }
+
+  function addMySecret(content: string) {
+    if (!content.trim()) return;
+    setMySecretItems((current) => [
+      {
+        id: `secret_me_${Date.now()}`,
+        content: content.trim(),
+        createdAt: '刚刚',
+      },
+      ...current,
+    ]);
+  }
+
+  function deleteMySecret(id: string) {
+    setMySecretItems((current) => current.filter((item) => item.id !== id));
+  }
+
+  function saveMyProfile(nextProfile: UserHomeProfile) {
+    setMyProfile({
+      ...nextProfile,
+      id: currentUser.id,
+      secretBoxItems: mySecretItems,
+    });
+    setSelectedUserId(currentUser.id);
+    setDetailView(editProfileReturnView === 'account' ? 'settingsAccount' : null);
+    setMineNotice('资料已保存');
   }
 
   function openConversation(id: string) {
@@ -701,6 +877,7 @@ export default function Home() {
                 discoverDetailOpen &&
                 'heartbox-detail-stage',
               view === 'messages' && 'messages-stage',
+              view === 'mine' && 'mine-stage',
             )}
           >
             {!detailView && view !== 'discover' && view !== 'messages' && (
@@ -781,6 +958,221 @@ export default function Home() {
                   onTopic={setSelectedTopicId}
                   onExplore={() => switchView('discover')}
                   onOpenProfile={openUserProfile}
+                />
+              )}
+              {detailView === 'myMoments' && (
+                <MyMomentsView
+                  moments={myMoments}
+                  likedFragments={likedFragments}
+                  comments={localComments}
+                  onBack={() => setDetailView(null)}
+                  onCreate={publishMyMoment}
+                  onDelete={deleteMyMoment}
+                />
+              )}
+              {detailView === 'mySecrets' && (
+                <MySecretsView
+                  items={mySecretItems}
+                  onBack={() => setDetailView(null)}
+                  onCreate={addMySecret}
+                  onDelete={deleteMySecret}
+                />
+              )}
+              {detailView === 'editProfile' && (
+                <EditProfileView
+                  profile={mySelfProfile}
+                  onBack={() =>
+                    setDetailView(
+                      editProfileReturnView === 'account'
+                        ? 'settingsAccount'
+                        : null,
+                    )
+                  }
+                  onSave={saveMyProfile}
+                />
+              )}
+              {detailView === 'settings' && (
+                <SettingsView
+                  onBack={() => setDetailView(null)}
+                  onAccount={() => setDetailView('settingsAccount')}
+                  onPrivacy={() => setDetailView('settingsPrivacy')}
+                  onNotifications={() => setDetailView('settingsNotifications')}
+                  onHelp={() => setDetailView('settingsHelp')}
+                  onAbout={() => setDetailView('settingsAbout')}
+                />
+              )}
+              {detailView === 'settingsAccount' && (
+                <SettingsAccountView
+                  profile={mySelfProfile}
+                  onBack={() => setDetailView('settings')}
+                  onEditProfile={() => {
+                    setEditProfileReturnView('account');
+                    setDetailView('editProfile');
+                  }}
+                  onPassword={() => setDetailView('passwordPlaceholder')}
+                />
+              )}
+              {detailView === 'settingsPrivacy' && (
+                <SettingsPrivacyView
+                  momentPrivacy={momentPrivacy}
+                  blacklistCount={0}
+                  onBack={() => setDetailView('settings')}
+                  onToggleMomentPrivacy={() =>
+                    setMomentPrivacy((current) =>
+                      current === 'all' ? 'related' : 'all',
+                    )
+                  }
+                  onBlacklist={() => setDetailView('settingsBlacklist')}
+                />
+              )}
+              {detailView === 'settingsNotifications' && (
+                <SettingsNotificationsView
+                  prefs={notificationPrefs}
+                  onBack={() => setDetailView('settings')}
+                  onToggle={(key) =>
+                    setNotificationPrefs((current) => ({
+                      ...current,
+                      [key]: !current[key],
+                    }))
+                  }
+                />
+              )}
+              {detailView === 'settingsHelp' && (
+                <SettingsHelpView
+                  onBack={() => setDetailView('settings')}
+                  onFaq={() => setDetailView('helpFaq')}
+                  onFeedback={() => setDetailView('helpFeedback')}
+                  onContact={() => setDetailView('helpContact')}
+                />
+              )}
+              {detailView === 'settingsAbout' && (
+                <SettingsAboutView
+                  onBack={() => setDetailView('settings')}
+                  onTerms={() => setDetailView('aboutTerms')}
+                  onPrivacy={() => setDetailView('aboutPrivacy')}
+                />
+              )}
+              {detailView === 'settingsBlacklist' && (
+                <SettingsBlacklistView
+                  onBack={() => setDetailView('settingsPrivacy')}
+                />
+              )}
+              {detailView === 'passwordPlaceholder' && (
+                <SettingsPlaceholderView
+                  title="修改密码"
+                  body="账户安全能力后续接入。"
+                  onBack={() => setDetailView('settingsAccount')}
+                />
+              )}
+              {detailView === 'helpFaq' && (
+                <SettingsTextPage
+                  title="常见问题"
+                  body="更多回答会随着内测逐步补充。"
+                  onBack={() => setDetailView('settingsHelp')}
+                />
+              )}
+              {detailView === 'helpFeedback' && (
+                <SettingsTextPage
+                  title="意见反馈"
+                  body="你的反馈会帮助 SELE 变得更完整。"
+                  onBack={() => setDetailView('settingsHelp')}
+                />
+              )}
+              {detailView === 'helpContact' && (
+                <SettingsTextPage
+                  title="联系 SELE"
+                  body="内测阶段的联系入口会在正式发布前补充。"
+                  onBack={() => setDetailView('settingsHelp')}
+                />
+              )}
+              {detailView === 'aboutTerms' && (
+                <SettingsTextPage
+                  title="SELE 用户协议"
+                  body={'Beta 内测阶段的完整协议内容\n将在正式发布前更新。'}
+                  onBack={() => setDetailView('settingsAbout')}
+                />
+              )}
+              {detailView === 'aboutPrivacy' && (
+                <SettingsTextPage
+                  title="SELE 隐私政策"
+                  body={'Beta 内测阶段的完整隐私说明\n将在正式发布前更新。'}
+                  onBack={() => setDetailView('settingsAbout')}
+                />
+              )}
+              {detailView === 'heartIntro' && (
+                <HeartIntroView
+                  onBack={() => setDetailView(null)}
+                  onBenefits={() => setDetailView('heartBenefits')}
+                />
+              )}
+              {detailView === 'heartBenefits' && (
+                <HeartBenefitsView
+                  status={heartStatus}
+                  onBack={() =>
+                    setDetailView(
+                      heartStatus === 'inactive' ? 'heartIntro' : 'heartStatus',
+                    )
+                  }
+                  onStatus={() => setDetailView('heartStatus')}
+                  onCredits={() => setDetailView('heartCredits')}
+                  onHeartPlus={() => {
+                    setHeartReturnView('heartBenefits');
+                    setDetailView('heartPlus');
+                  }}
+                  onHeartPlan={() => setDetailView('heartPlan')}
+                />
+              )}
+              {detailView === 'heartPlus' && (
+                <HeartPlusView
+                  onBack={() => setDetailView(heartReturnView)}
+                  onPlan={() => setDetailView('heartPlusPlan')}
+                />
+              )}
+              {detailView === 'heartCredits' && (
+                <BoxCreditsView
+                  credits={boxCredits}
+                  onBack={() => setDetailView('heartStatus')}
+                  onSelect={(amount) => setBoxCredits(amount)}
+                />
+              )}
+              {detailView === 'heartStatus' && (
+                <HeartStatusView
+                  status={heartStatus}
+                  credits={boxCredits}
+                  onBack={() => setDetailView(null)}
+                  onBenefits={() => setDetailView('heartBenefits')}
+                  onHeartPlan={() => setDetailView('heartPlan')}
+                  onHeartPlus={() => {
+                    setHeartReturnView('heartStatus');
+                    setDetailView('heartPlus');
+                  }}
+                  onCredits={() => setDetailView('heartCredits')}
+                />
+              )}
+              {detailView === 'heartPlan' && (
+                <HeartPlanPage
+                  title="Heart 方案"
+                  planName="Heart"
+                  plans={[
+                    { id: 'heart_1', label: '1 个月', price: '¥28' },
+                    { id: 'heart_3', label: '3 个月', price: '¥68' },
+                    { id: 'heart_12', label: '12 个月', price: '¥198' },
+                  ]}
+                  onBack={() => setDetailView('heartBenefits')}
+                  onConfirm={() => setHeartStatus('heart')}
+                />
+              )}
+              {detailView === 'heartPlusPlan' && (
+                <HeartPlanPage
+                  title="Heart+ 方案"
+                  planName="Heart+"
+                  plans={[
+                    { id: 'heart_plus_1', label: '1 个月', price: '¥68' },
+                    { id: 'heart_plus_3', label: '3 个月', price: '¥168' },
+                    { id: 'heart_plus_12', label: '12 个月', price: '¥498' },
+                  ]}
+                  onBack={() => setDetailView('heartPlus')}
+                  onConfirm={() => setHeartStatus('heart_plus')}
                 />
               )}
               {!detailView && view === 'discover' &&
@@ -922,16 +1314,36 @@ export default function Home() {
               )}
               {!detailView && view === 'mine' && (
                 <MineView
-                  profile={myProfile}
-                  card={myCard}
-                  freeOpens={freeOpens}
-                  hearts={hearts}
-                  onConversion={() => setShowConversion(true)}
+                  profile={mySelfProfile}
+                  notice={mineNotice}
+                  latestMoment={latestMyMoment}
+                  onEdit={() => {
+                    setMineNotice(null);
+                    setEditProfileReturnView('mine');
+                    setDetailView('editProfile');
+                  }}
+                  onViewPublicHome={() => {
+                    setMineNotice(null);
+                    setSelectedUserId(mySelfProfile.id);
+                    setDetailView('home');
+                  }}
+                  onContent={() => setDetailView('myMoments')}
+                  onSecretBox={() => setDetailView('mySecrets')}
+                  onHeart={() => {
+                    setMineNotice(null);
+                    setDetailView(
+                      heartStatus === 'inactive' ? 'heartIntro' : 'heartStatus',
+                    );
+                  }}
                   onInvite={() => {
+                    setMineNotice(null);
                     setInviteStep('create');
                     switchView('create');
                   }}
-                  onReset={resetDemo}
+                  onSettings={() => {
+                    setMineNotice(null);
+                    setDetailView('settings');
+                  }}
                 />
               )}
             </div>
@@ -2247,6 +2659,7 @@ function UserProfileView({
   onExplore: () => void;
   onOpenProfile: (userId: string) => void;
 }) {
+  const isSelf = profile.id === currentUser.id;
   const sortedMoments = [...moments].sort(
     (a, b) => getMomentSortValue(b) - getMomentSortValue(a),
   );
@@ -2262,12 +2675,17 @@ function UserProfileView({
         <div className="profile-copy">
           <div className="profile-name-row">
             <h2>{profile.name}</h2>
-            <button
-              className={cx('profile-follow', followed && 'profile-following')}
-              onClick={onFollow}
-            >
-              {followed ? '已关注' : '关注'}
-            </button>
+            {!isSelf && (
+              <button
+                className={cx(
+                  'profile-follow',
+                  followed && 'profile-following',
+                )}
+                onClick={onFollow}
+              >
+                {followed ? '已关注' : '关注'}
+              </button>
+            )}
           </div>
           <p className="profile-meta">
             {profile.age} · {profile.city}
@@ -2289,7 +2707,7 @@ function UserProfileView({
 
       <section className="profile-section">
         <div className="profile-section-title">
-          <h2>TA 的此刻</h2>
+          <h2>{isSelf ? '此刻' : 'TA 的此刻'}</h2>
           <button onClick={onAllMoments}>查看全部 ›</button>
         </div>
         <div className="profile-moment-list">
@@ -2313,7 +2731,7 @@ function UserProfileView({
       </section>
 
       <section className="profile-section profile-fragments">
-        <h2>关于 TA 的一点点</h2>
+        <h2>{isSelf ? '关于我的一点点' : '关于 TA 的一点点'}</h2>
         {profile.personalityFragments.slice(0, 3).map((item) => (
           <div className="profile-qa" key={item.question}>
             <p>{item.question}</p>
@@ -3277,123 +3695,1414 @@ function MessagesView({
   );
 }
 
-function MineView({
-  profile,
-  card,
-  freeOpens,
-  hearts,
-  onConversion,
-  onInvite,
-  onReset,
+function MyMomentsView({
+  moments,
+  likedFragments,
+  comments,
+  onBack,
+  onCreate,
+  onDelete,
 }: {
-  profile: (typeof profiles)[number];
-  card: (typeof personalityCards)[number];
-  freeOpens: number;
-  hearts: number;
-  onConversion: () => void;
-  onInvite: () => void;
-  onReset: () => void;
+  moments: PersonalityFragment[];
+  likedFragments: string[];
+  comments: PostComment[];
+  onBack: () => void;
+  onCreate: (content: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  const [writing, setWriting] = useState(false);
+  const [draft, setDraft] = useState('');
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  function submitMoment() {
+    if (!draft.trim()) return;
+    onCreate(draft);
+    setDraft('');
+    setWriting(false);
+  }
+
+  function confirmDelete() {
+    if (!confirmDeleteId) return;
+    onDelete(confirmDeleteId);
+    setConfirmDeleteId(null);
+    setOpenMenuId(null);
+  }
+
+  return (
+    <section className="mine-detail-page">
+      <MineDetailHeader title="我的此刻" action="写此刻" onBack={onBack} onAction={() => setWriting(true)} />
+
+      {writing && (
+        <Panel className="mine-compose-panel">
+          <textarea
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            maxLength={160}
+            placeholder="写下此刻真实的一句话。"
+          />
+          <div className="mine-compose-actions">
+            <span>{draft.length}/160</span>
+            <button type="button" onClick={() => setWriting(false)}>
+              取消
+            </button>
+            <button type="button" disabled={!draft.trim()} onClick={submitMoment}>
+              写入
+            </button>
+          </div>
+        </Panel>
+      )}
+
+      <div className="mine-moment-list">
+        {moments.map((moment) => {
+          const commentCount = Math.max(
+            moment.comments,
+            comments.filter((comment) => comment.fragmentId === moment.id)
+              .length,
+          );
+          const resonanceCount = likedFragments.includes(moment.id)
+            ? moment.likes + 1
+            : moment.likes;
+
+          return (
+            <article className="mine-manage-card" key={moment.id}>
+              <button
+                type="button"
+                className="mine-card-more"
+                aria-label="更多"
+                onClick={() =>
+                  setOpenMenuId((current) =>
+                    current === moment.id ? null : moment.id,
+                  )
+                }
+              >
+                <MoreHorizontal />
+              </button>
+              {openMenuId === moment.id && (
+                <div className="mine-card-menu">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpenMenuId(null);
+                      setConfirmDeleteId(moment.id);
+                    }}
+                  >
+                    删除
+                  </button>
+                </div>
+              )}
+              <time>{moment.createdAt}</time>
+              <p>“{moment.answer}”</p>
+              <div className="mine-card-tags">
+                {moment.tags.slice(0, 3).map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </div>
+              <div className="mine-card-meta">
+                <span>
+                  <MessageCircle /> {commentCount} 回声
+                </span>
+                <span>
+                  <Heart /> {resonanceCount} 共鸣
+                </span>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      {confirmDeleteId && (
+        <MineConfirm
+          title="删除这一条此刻？"
+          body="删除后会从我的此刻中移除。"
+          confirmLabel="删除"
+          onCancel={() => setConfirmDeleteId(null)}
+          onConfirm={confirmDelete}
+        />
+      )}
+    </section>
+  );
+}
+
+function MySecretsView({
+  items,
+  onBack,
+  onCreate,
+  onDelete,
+}: {
+  items: SecretBoxItem[];
+  onBack: () => void;
+  onCreate: (content: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  const [writing, setWriting] = useState(false);
+  const [draft, setDraft] = useState('');
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  function submitSecret() {
+    if (!draft.trim()) return;
+    onCreate(draft);
+    setDraft('');
+    setWriting(false);
+  }
+
+  function confirmDelete() {
+    if (!confirmDeleteId) return;
+    onDelete(confirmDeleteId);
+    setConfirmDeleteId(null);
+    setOpenMenuId(null);
+  }
+
+  return (
+    <section className="mine-detail-page mine-secret-page">
+      <MineDetailHeader title="我的暗格" action="写一段" onBack={onBack} onAction={() => setWriting(true)} />
+
+      {writing ? (
+        <Panel className="mine-compose-panel mine-secret-compose">
+          <textarea
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            maxLength={180}
+            placeholder="有些话，可以只先留在这里。"
+          />
+          <div className="mine-compose-actions">
+            <span>{draft.length}/180</span>
+            <button type="button" onClick={() => setWriting(false)}>
+              取消
+            </button>
+            <button type="button" disabled={!draft.trim()} onClick={submitSecret}>
+              写入
+            </button>
+          </div>
+        </Panel>
+      ) : (
+        <div className="mine-secret-list">
+          {items.map((item) => (
+            <article className="mine-secret-card" key={item.id}>
+              <LockKeyhole aria-hidden="true" />
+              <button
+                type="button"
+                className="mine-card-more"
+                aria-label="更多"
+                onClick={() =>
+                  setOpenMenuId((current) =>
+                    current === item.id ? null : item.id,
+                  )
+                }
+              >
+                <MoreHorizontal />
+              </button>
+              {openMenuId === item.id && (
+                <div className="mine-card-menu">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpenMenuId(null);
+                      setConfirmDeleteId(item.id);
+                    }}
+                  >
+                    删除
+                  </button>
+                </div>
+              )}
+              <p>{item.content}</p>
+              <time>{item.createdAt}</time>
+            </article>
+          ))}
+        </div>
+      )}
+
+      {confirmDeleteId && (
+        <MineConfirm
+          title="删除这一段暗格？"
+          body="删除后会从我的暗格中移除。"
+          confirmLabel="删除"
+          onCancel={() => setConfirmDeleteId(null)}
+          onConfirm={confirmDelete}
+        />
+      )}
+    </section>
+  );
+}
+
+function MineDetailHeader({
+  title,
+  action,
+  onBack,
+  onAction,
+}: {
+  title: string;
+  action?: string;
+  onBack: () => void;
+  onAction?: () => void;
 }) {
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
-      <section className="space-y-5">
-        <Panel className="p-5 sm:p-7">
-          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p className="eyebrow">Personality card</p>
-              <h2 className="mt-2 text-lg font-medium">{card.alias}</h2>
-              <p className="mt-2 text-[var(--soft-ink)]">
-                {profile.ageRange} · {profile.city} · {card.archetype}
-              </p>
-              <p className="mt-4 max-w-2xl text-base leading-7">
-                “{card.quote}”
-              </p>
-            </div>
-            <div className="rounded-[24px] bg-white/55 p-4 text-center">
-              <p className="text-lg font-medium text-[var(--wine)]">
-                {card.completeness}%
-              </p>
-              <p className="text-sm text-[var(--muted-ink)]">人格卡完整度</p>
-            </div>
-          </div>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {[...card.interests, ...card.relationshipValues].map((item) => (
-              <span className="chip" key={item}>
-                {item}
-              </span>
-            ))}
-          </div>
-        </Panel>
-      </section>
-      <aside className="space-y-5">
-        <Panel className="p-5">
-          <p className="eyebrow">Opens</p>
-          <h3 className="mt-2 text-lg font-medium">我的次数</h3>
-          <div className="mt-4 grid gap-3">
-            <MiniStat label="今日免费拆盒" value={`${freeOpens}/3`} />
-            <MiniStat label="Heart" value={String(hearts)} />
-            <MiniStat label="Heart+" value="未开通" />
-          </div>
-          <button className="pill-primary mt-5 w-full" onClick={onConversion}>
-            查看继续探索方式
+    <header className="mine-detail-header">
+      <button type="button" className="mine-detail-back" onClick={onBack} aria-label="返回">
+        <ChevronLeft />
+      </button>
+      <h1>{title}</h1>
+      {action && onAction ? (
+        <button type="button" className="mine-detail-action" onClick={onAction}>
+          {action}
+        </button>
+      ) : (
+        <span aria-hidden="true" />
+      )}
+    </header>
+  );
+}
+
+function MineConfirm({
+  title,
+  body,
+  cancelLabel = '取消',
+  confirmLabel,
+  onCancel,
+  onConfirm,
+}: {
+  title: string;
+  body: string;
+  cancelLabel?: string;
+  confirmLabel: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="mine-confirm-backdrop" role="presentation">
+      <div className="mine-confirm-dialog" role="alertdialog" aria-modal="true">
+        <h2>{title}</h2>
+        <p>{body}</p>
+        <div>
+          <button type="button" onClick={onCancel}>
+            {cancelLabel}
           </button>
-        </Panel>
-        <Panel className="p-5">
-          <p className="eyebrow">Invite</p>
-          <h3 className="mt-2 text-lg font-medium">我的邀请</h3>
-          <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
-            3 位朋友打开，2 位完成人格卡，1 个奖励待领取。
-          </p>
-          <button className="pill-secondary mt-4 w-full" onClick={onInvite}>
-            继续邀请
+          <button type="button" onClick={onConfirm}>
+            {confirmLabel}
           </button>
-          <div className="mt-4 space-y-2">
-            {referralRewards.map((reward) => (
-              <div key={reward.id} className="reward-row">
-                <span>{reward.title}</span>
-                <strong>
-                  {reward.status === 'ready'
-                    ? '可领取'
-                    : reward.status === 'claimed'
-                      ? '已领取'
-                      : '待完成'}
-                </strong>
-              </div>
-            ))}
-          </div>
-        </Panel>
-        <Panel className="p-5">
-          <p className="eyebrow">Privacy</p>
-          <h3 className="mt-2 text-lg font-medium">安全与隐私</h3>
-          <div className="mt-4 space-y-3 text-sm leading-6 text-[var(--soft-ink)]">
-            <p>
-              <ShieldCheck className="mr-2 inline h-4 w-4 text-[var(--berry)]" />
-              18+ 成年人限定
-            </p>
-            <p>
-              <LockKeyhole className="mr-2 inline h-4 w-4 text-[var(--berry)]" />
-              揭晓必须双方同意
-            </p>
-            <p>
-              <Flag className="mr-2 inline h-4 w-4 text-[var(--berry)]" />
-              举报拉黑常驻可用
-            </p>
-          </div>
-        </Panel>
-        <Panel className="p-5">
-          <p className="eyebrow">Reset</p>
-          <h3 className="mt-2 text-lg font-medium">体验重置</h3>
-          <p className="mt-2 text-sm leading-6 text-[var(--soft-ink)]">
-            测试入口会恢复 onboarding、免费次数、第一只盲盒、回声状态、关系
-            Journey 和邀请流程。
-          </p>
-          <button className="pill-secondary mt-4 w-full" onClick={onReset}>
-            <RefreshCw className="h-4 w-4" />
-            Reset Demo / 重新体验
-          </button>
-        </Panel>
-      </aside>
+        </div>
+      </div>
     </div>
+  );
+}
+
+function EditProfileView({
+  profile,
+  onBack,
+  onSave,
+}: {
+  profile: UserHomeProfile;
+  onBack: () => void;
+  onSave: (profile: UserHomeProfile) => void;
+}) {
+  const [draft, setDraft] = useState({
+    avatar: profile.avatar,
+    name: profile.name,
+    bio: profile.bio,
+    age: String(profile.age),
+    city: profile.city,
+    tags: profile.tags.slice(0, 3),
+  });
+  const [tagDraft, setTagDraft] = useState('');
+  const [addingTag, setAddingTag] = useState(false);
+  const [confirmLeave, setConfirmLeave] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const avatarOptions = ['林', '月', 'S', 'L'];
+  const normalizedName = draft.name.trim();
+  const normalizedBio = draft.bio.trim();
+  const normalizedAge = Number(draft.age);
+  const normalizedCity = draft.city.trim();
+  const normalizedTags = draft.tags
+    .map((tag) => tag.trim())
+    .filter(Boolean)
+    .slice(0, 3);
+  const hasChanges =
+    draft.avatar !== profile.avatar ||
+    normalizedName !== profile.name ||
+    normalizedBio !== profile.bio ||
+    normalizedAge !== profile.age ||
+    normalizedCity !== profile.city ||
+    normalizedTags.join('|') !== profile.tags.slice(0, 3).join('|');
+
+  function updateDraft(key: keyof typeof draft, value: string) {
+    setError(null);
+    setDraft((current) => ({ ...current, [key]: value }));
+  }
+
+  function changeAvatar() {
+    setDraft((current) => {
+      const currentIndex = avatarOptions.indexOf(current.avatar);
+      const nextAvatar = avatarOptions[(currentIndex + 1) % avatarOptions.length];
+      return { ...current, avatar: nextAvatar };
+    });
+  }
+
+  function addTag() {
+    const nextTag = tagDraft.trim().replace(/^#/, '').slice(0, 6);
+    if (!nextTag || draft.tags.includes(nextTag) || draft.tags.length >= 3) {
+      setTagDraft('');
+      setAddingTag(false);
+      return;
+    }
+    setDraft((current) => ({ ...current, tags: [...current.tags, nextTag] }));
+    setTagDraft('');
+    setAddingTag(false);
+  }
+
+  function removeTag(tag: string) {
+    setDraft((current) => ({
+      ...current,
+      tags: current.tags.filter((item) => item !== tag),
+    }));
+  }
+
+  function requestBack() {
+    if (!hasChanges) {
+      onBack();
+      return;
+    }
+    setConfirmLeave(true);
+  }
+
+  function saveProfile() {
+    if (!normalizedName) {
+      setError('名字需要留下一点痕迹。');
+      return;
+    }
+    if (!normalizedCity) {
+      setError('城市不能为空。');
+      return;
+    }
+    if (!Number.isInteger(normalizedAge) || normalizedAge < 18 || normalizedAge > 99) {
+      setError('年龄需要是 18 到 99 之间的整数。');
+      return;
+    }
+    onSave({
+      ...profile,
+      id: currentUser.id,
+      avatar: draft.avatar,
+      name: normalizedName.slice(0, 12),
+      bio: normalizedBio.slice(0, 60),
+      age: normalizedAge,
+      city: normalizedCity.slice(0, 12),
+      tags: normalizedTags,
+    });
+  }
+
+  return (
+    <section className="mine-detail-page edit-profile-page">
+      <MineDetailHeader
+        title="编辑资料"
+        action="保存"
+        onBack={requestBack}
+        onAction={saveProfile}
+      />
+
+      <div className="edit-avatar-block">
+        <button type="button" className="edit-avatar" onClick={changeAvatar}>
+          <span>{draft.avatar}</span>
+          <i aria-hidden="true">
+            <Camera />
+          </i>
+        </button>
+        <button type="button" className="edit-avatar-change" onClick={changeAvatar}>
+          更换头像
+        </button>
+      </div>
+
+      <div className="edit-profile-fields">
+        <label className="edit-field">
+          <span>名字</span>
+          <div className="edit-input-wrap">
+            <input
+              value={draft.name}
+              maxLength={12}
+              onChange={(event) => updateDraft('name', event.target.value)}
+            />
+            <small>{draft.name.length}/12</small>
+          </div>
+        </label>
+
+        <label className="edit-field">
+          <span>一句自我描述</span>
+          <div className="edit-input-wrap edit-textarea-wrap">
+            <textarea
+              value={draft.bio}
+              maxLength={60}
+              onChange={(event) => updateDraft('bio', event.target.value)}
+            />
+            <small>{draft.bio.length}/60</small>
+          </div>
+        </label>
+
+        <label className="edit-field">
+          <span>年龄</span>
+          <div className="edit-input-wrap">
+            <input
+              value={draft.age}
+              inputMode="numeric"
+              maxLength={2}
+              onChange={(event) =>
+                updateDraft('age', event.target.value.replace(/\D/g, ''))
+              }
+            />
+          </div>
+        </label>
+
+        <label className="edit-field">
+          <span>城市</span>
+          <div className="edit-input-wrap">
+            <input
+              value={draft.city}
+              maxLength={12}
+              onChange={(event) => updateDraft('city', event.target.value)}
+            />
+          </div>
+        </label>
+
+        <div className="edit-field edit-tags-field">
+          <span>
+            标签 <small>最多选择 3 个</small>
+          </span>
+          <div className="edit-tag-box">
+            {draft.tags.map((tag) => (
+              <button
+                type="button"
+                className="edit-tag"
+                key={tag}
+                onClick={() => removeTag(tag)}
+              >
+                {tag}
+                <X />
+              </button>
+            ))}
+            {addingTag ? (
+              <span className="edit-tag-input">
+                <input
+                  value={tagDraft}
+                  maxLength={6}
+                  autoFocus
+                  onChange={(event) => setTagDraft(event.target.value)}
+                  onBlur={addTag}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') addTag();
+                    if (event.key === 'Escape') {
+                      setTagDraft('');
+                      setAddingTag(false);
+                    }
+                  }}
+                />
+              </span>
+            ) : (
+              draft.tags.length < 3 && (
+                <button
+                  type="button"
+                  className="edit-tag-add"
+                  onClick={() => setAddingTag(true)}
+                >
+                  <Plus />
+                </button>
+              )
+            )}
+          </div>
+        </div>
+      </div>
+
+      {error && <p className="edit-profile-error">{error}</p>}
+
+      {confirmLeave && (
+        <MineConfirm
+          title="放弃这次修改？"
+          body="未保存的内容不会同步到我的页。"
+          cancelLabel="继续编辑"
+          confirmLabel="放弃"
+          onCancel={() => setConfirmLeave(false)}
+          onConfirm={onBack}
+        />
+      )}
+    </section>
+  );
+}
+
+function SettingsView({
+  onBack,
+  onAccount,
+  onPrivacy,
+  onNotifications,
+  onHelp,
+  onAbout,
+}: {
+  onBack: () => void;
+  onAccount: () => void;
+  onPrivacy: () => void;
+  onNotifications: () => void;
+  onHelp: () => void;
+  onAbout: () => void;
+}) {
+  return (
+    <section className="mine-detail-page settings-page">
+      <MineDetailHeader title="设置" onBack={onBack} />
+      <p className="settings-intro">
+        一些偏好，
+        <br />
+        让这里更适合你。
+      </p>
+      <div className="settings-list">
+        <SettingsEntry
+          icon={UserRound}
+          title="账号"
+          note="个人信息与账户管理"
+          onClick={onAccount}
+        />
+        <SettingsEntry
+          icon={LockKeyhole}
+          title="隐私"
+          note="谁可以看到你，如何被看见"
+          onClick={onPrivacy}
+        />
+        <SettingsEntry
+          icon={Bell}
+          title="通知"
+          note="消息与提醒偏好"
+          onClick={onNotifications}
+        />
+        <SettingsEntry
+          icon={CircleHelp}
+          title="帮助"
+          note="常见问题与反馈"
+          onClick={onHelp}
+        />
+        <SettingsEntry
+          icon={Info}
+          title="关于 SELE"
+          note="版本、协议与产品信息"
+          onClick={onAbout}
+        />
+      </div>
+    </section>
+  );
+}
+
+function SettingsAccountView({
+  profile,
+  onBack,
+  onEditProfile,
+  onPassword,
+}: {
+  profile: UserHomeProfile;
+  onBack: () => void;
+  onEditProfile: () => void;
+  onPassword: () => void;
+}) {
+  const profileRows = [
+    { title: '名字', value: profile.name },
+    { title: '一句自我描述', value: profile.bio },
+    { title: '年龄', value: String(profile.age) },
+    { title: '城市', value: profile.city },
+    { title: '标签', value: profile.tags.join(' · ') },
+  ];
+
+  return (
+    <section className="mine-detail-page settings-page settings-account-page">
+      <MineDetailHeader title="账号" onBack={onBack} />
+      <div className="settings-account-identity">
+        <div className="settings-account-avatar" aria-hidden="true">
+          {profile.avatar}
+        </div>
+        <div>
+          <h2>{profile.name}</h2>
+          <p>
+            {profile.age} · {profile.city}
+          </p>
+          <span>{profile.tags.join(' · ')}</span>
+        </div>
+      </div>
+
+      <div className="settings-list settings-plain-list">
+        {profileRows.map((item) => (
+          <SettingsValueRow
+            key={item.title}
+            title={item.title}
+            value={item.value}
+            onClick={onEditProfile}
+          />
+        ))}
+      </div>
+
+      <div className="settings-soft-block">
+        <SettingsEntry
+          icon={KeyRound}
+          title="修改密码"
+          note="账户安全能力后续接入"
+          onClick={onPassword}
+        />
+      </div>
+    </section>
+  );
+}
+
+function SettingsPrivacyView({
+  momentPrivacy,
+  blacklistCount,
+  onBack,
+  onToggleMomentPrivacy,
+  onBlacklist,
+}: {
+  momentPrivacy: MomentPrivacy;
+  blacklistCount: number;
+  onBack: () => void;
+  onToggleMomentPrivacy: () => void;
+  onBlacklist: () => void;
+}) {
+  return (
+    <section className="mine-detail-page settings-page">
+      <MineDetailHeader title="隐私" onBack={onBack} />
+      <p className="settings-intro">
+        你可以决定，
+        <br />
+        如何在这里被看见。
+      </p>
+      <div className="settings-list settings-plain-list">
+        <SettingsValueRow
+          title="谁可以看到我的此刻"
+          value={momentPrivacy === 'all' ? '所有人' : '仅建立有效关系的人'}
+          onClick={onToggleMomentPrivacy}
+        />
+        <SettingsValueRow
+          title="谁可以查看我的暗格"
+          value="仅我"
+        />
+        <SettingsValueRow
+          title="黑名单"
+          value={`${blacklistCount} 人`}
+          onClick={onBlacklist}
+        />
+      </div>
+    </section>
+  );
+}
+
+function SettingsNotificationsView({
+  prefs,
+  onBack,
+  onToggle,
+}: {
+  prefs: NotificationPrefs;
+  onBack: () => void;
+  onToggle: (key: keyof NotificationPrefs) => void;
+}) {
+  const rows: {
+    key: keyof NotificationPrefs;
+    title: string;
+    note: string;
+  }[] = [
+    { key: 'messages', title: '新消息', note: '有人认真回复你时提醒' },
+    { key: 'echoes', title: '新回声', note: '此刻收到回声时提醒' },
+    { key: 'resonance', title: '共鸣提醒', note: '轻轻知道有人靠近过' },
+    { key: 'system', title: '系统通知', note: '必要的产品与安全信息' },
+  ];
+
+  return (
+    <section className="mine-detail-page settings-page">
+      <MineDetailHeader title="通知" onBack={onBack} />
+      <div className="settings-list settings-plain-list">
+        {rows.map((item) => (
+          <button
+            type="button"
+            className="settings-toggle-row"
+            key={item.key}
+            onClick={() => onToggle(item.key)}
+          >
+            <span>
+              <strong>{item.title}</strong>
+              <small>{item.note}</small>
+            </span>
+            <i className={cx(prefs[item.key] && 'is-on')} aria-hidden="true" />
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SettingsHelpView({
+  onBack,
+  onFaq,
+  onFeedback,
+  onContact,
+}: {
+  onBack: () => void;
+  onFaq: () => void;
+  onFeedback: () => void;
+  onContact: () => void;
+}) {
+  return (
+    <section className="mine-detail-page settings-page">
+      <MineDetailHeader title="帮助" onBack={onBack} />
+      <div className="settings-list settings-plain-list">
+        <SettingsTextEntry
+          title="常见问题"
+          note="关于使用 SELE 的一些回答"
+          onClick={onFaq}
+        />
+        <SettingsTextEntry
+          title="意见反馈"
+          note="告诉我们哪里还不够好"
+          onClick={onFeedback}
+        />
+        <SettingsTextEntry
+          title="联系 SELE"
+          note="需要的时候，可以找到我们"
+          onClick={onContact}
+        />
+      </div>
+    </section>
+  );
+}
+
+function SettingsAboutView({
+  onBack,
+  onTerms,
+  onPrivacy,
+}: {
+  onBack: () => void;
+  onTerms: () => void;
+  onPrivacy: () => void;
+}) {
+  return (
+    <section className="mine-detail-page settings-page">
+      <MineDetailHeader title="关于 SELE" onBack={onBack} />
+      <div className="settings-about">
+        <h2>SELE</h2>
+        <p>Beta v1.0</p>
+        <strong>
+          先认识一点，
+          <br />
+          再决定要不要靠近。
+        </strong>
+      </div>
+      <div className="settings-list settings-plain-list">
+        <SettingsLinkRow title="用户协议" onClick={onTerms} />
+        <SettingsLinkRow title="隐私政策" onClick={onPrivacy} />
+      </div>
+    </section>
+  );
+}
+
+function SettingsTextPage({
+  title,
+  body,
+  onBack,
+}: {
+  title: string;
+  body: string;
+  onBack: () => void;
+}) {
+  return (
+    <section className="mine-detail-page settings-page">
+      <MineDetailHeader title={title} onBack={onBack} />
+      <div className="settings-text-panel">
+        <p>{body}</p>
+      </div>
+    </section>
+  );
+}
+
+function SettingsBlacklistView({ onBack }: { onBack: () => void }) {
+  return (
+    <section className="mine-detail-page settings-page">
+      <MineDetailHeader title="黑名单" onBack={onBack} />
+      <div className="settings-empty-state">
+        <UserX />
+        <h2>暂时没有人被留在这里。</h2>
+        <p>被加入黑名单的人，将无法继续靠近你。</p>
+      </div>
+    </section>
+  );
+}
+
+function SettingsPlaceholderView({
+  title,
+  body,
+  onBack,
+}: {
+  title: string;
+  body: string;
+  onBack: () => void;
+}) {
+  return (
+    <section className="mine-detail-page settings-page">
+      <MineDetailHeader title={title} onBack={onBack} />
+      <div className="settings-empty-state">
+        <KeyRound />
+        <h2>{body}</h2>
+        <p>这里会在真实账号系统接入后继续完善。</p>
+      </div>
+    </section>
+  );
+}
+
+function SettingsEntry({
+  icon: Icon,
+  title,
+  note,
+  onClick,
+}: {
+  icon: ElementType;
+  title: string;
+  note: string;
+  onClick: () => void;
+}) {
+  return (
+    <button type="button" className="settings-entry" onClick={onClick}>
+      <Icon aria-hidden="true" />
+      <span>
+        <strong>{title}</strong>
+        <small>{note}</small>
+      </span>
+      <ArrowRight aria-hidden="true" />
+    </button>
+  );
+}
+
+function SettingsValueRow({
+  title,
+  value,
+  onClick,
+}: {
+  title: string;
+  value: string;
+  onClick?: () => void;
+}) {
+  if (!onClick) {
+    return (
+      <div className="settings-value-row settings-value-row-static">
+        <span>{title}</span>
+        <small>{value}</small>
+      </div>
+    );
+  }
+
+  return (
+    <button type="button" className="settings-value-row" onClick={onClick}>
+      <span>{title}</span>
+      <small>{value}</small>
+      <ArrowRight aria-hidden="true" />
+    </button>
+  );
+}
+
+function SettingsTextEntry({
+  title,
+  note,
+  onClick,
+}: {
+  title: string;
+  note: string;
+  onClick: () => void;
+}) {
+  return (
+    <button type="button" className="settings-text-entry" onClick={onClick}>
+      <span>
+        <strong>{title}</strong>
+        <small>{note}</small>
+      </span>
+      <ArrowRight aria-hidden="true" />
+    </button>
+  );
+}
+
+function SettingsLinkRow({
+  title,
+  onClick,
+}: {
+  title: string;
+  onClick: () => void;
+}) {
+  return (
+    <button type="button" className="settings-link-row" onClick={onClick}>
+      <span>{title}</span>
+      <ArrowRight aria-hidden="true" />
+    </button>
+  );
+}
+
+function HeartIntroView({
+  onBack,
+  onBenefits,
+}: {
+  onBack: () => void;
+  onBenefits: () => void;
+}) {
+  const benefits = [
+    {
+      title: '更多机会',
+      note: '解锁更多心动盲盒与互动次数',
+      icon: Heart,
+    },
+    {
+      title: '更稳定的体验',
+      note: '减少限制，保持更连续的连接',
+      icon: CheckCircle2,
+    },
+    {
+      title: '支持 SELE',
+      note: '让这个空间走得更远',
+      icon: HeartHandshake,
+    },
+  ];
+
+  return (
+    <section className="mine-detail-page heart-page heart-intro-page">
+      <MineDetailHeader title="Heart" onBack={onBack} />
+      <div className="heart-hero-copy">
+        <h2>
+          保留更多
+          <br />
+          靠近的可能。
+        </h2>
+        <p>
+          有些遇见，值得多一些机会。Heart 是为认真靠近准备的选项，
+          让好的对话不轻易中断。
+        </p>
+      </div>
+      <div className="heart-benefit-list">
+        {benefits.map((item) => (
+          <div className="heart-benefit-row" key={item.title}>
+            <item.icon aria-hidden="true" />
+            <span>
+              <strong>{item.title}</strong>
+              <small>{item.note}</small>
+            </span>
+          </div>
+        ))}
+      </div>
+      <button type="button" className="heart-primary-link" onClick={onBenefits}>
+        查看权益
+        <ArrowRight aria-hidden="true" />
+      </button>
+    </section>
+  );
+}
+
+function HeartBenefitsView({
+  status,
+  onBack,
+  onStatus,
+  onCredits,
+  onHeartPlus,
+  onHeartPlan,
+}: {
+  status: HeartStatus;
+  onBack: () => void;
+  onStatus: () => void;
+  onCredits: () => void;
+  onHeartPlus: () => void;
+  onHeartPlan: () => void;
+}) {
+  const statusLabel =
+    status === 'heart_plus' ? 'Heart+' : status === 'heart' ? 'Heart' : '当前未启用';
+  const rights = [
+    '更多心动盲盒机会',
+    '更连续的互动体验',
+    '后续增强能力承载',
+  ];
+
+  return (
+    <section className="mine-detail-page heart-page">
+      <MineDetailHeader title="权益" onBack={onBack} />
+      <div className="heart-light-tabs" aria-label="权益类型">
+        <button type="button" onClick={onCredits}>
+          Box Credits
+        </button>
+        <button type="button" className="is-active" onClick={onStatus}>
+          Heart
+        </button>
+        <button type="button" onClick={onHeartPlus}>
+          Heart+
+        </button>
+      </div>
+      <section className="heart-status-panel">
+        <span>当前状态</span>
+        <h2>{statusLabel}</h2>
+        <p>保留更多靠近的可能。</p>
+      </section>
+      <div className="heart-section-label">当前权益</div>
+      <ul className="heart-check-list">
+        {rights.map((item) => (
+          <li key={item}>
+            <CheckCircle2 />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+      <button type="button" className="heart-text-link" onClick={onHeartPlan}>
+        查看 Heart 方案
+        <ArrowRight aria-hidden="true" />
+      </button>
+    </section>
+  );
+}
+
+function HeartPlusView({
+  onBack,
+  onPlan,
+}: {
+  onBack: () => void;
+  onPlan: () => void;
+}) {
+  const benefits = [
+    '包含 Heart 基础权益',
+    '更高频的可用次数',
+    '更稳定的体验',
+    '后续高级能力承载',
+  ];
+
+  return (
+    <section className="mine-detail-page heart-page">
+      <MineDetailHeader title="Heart+" onBack={onBack} />
+      <div className="heart-hero-copy heart-plus-copy">
+        <h2>
+          让一些可能，
+          <br />
+          停留得久一点。
+        </h2>
+        <p>适合希望更稳定使用，遇见更深共鸣的你。</p>
+      </div>
+      <ul className="heart-check-list">
+        {benefits.map((item) => (
+          <li key={item}>
+            <CheckCircle2 />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+      <button type="button" className="heart-text-link" onClick={onPlan}>
+        查看 Heart+ 方案
+        <ArrowRight aria-hidden="true" />
+      </button>
+    </section>
+  );
+}
+
+function BoxCreditsView({
+  credits,
+  onBack,
+  onSelect,
+}: {
+  credits: number;
+  onBack: () => void;
+  onSelect: (amount: number) => void;
+}) {
+  const [selected, setSelected] = useState(3);
+  const [note, setNote] = useState<string | null>(null);
+  const plans = [
+    { amount: 3, price: '¥8' },
+    { amount: 10, price: '¥18' },
+    { amount: 30, price: '¥45' },
+  ];
+
+  return (
+    <section className="mine-detail-page heart-page">
+      <MineDetailHeader title="Box Credits" onBack={onBack} />
+      <div className="heart-hero-copy heart-credits-copy">
+        <h2>从一次心动开始。</h2>
+        <p>按需购买，灵活使用。</p>
+      </div>
+      <section className="heart-credit-status">
+        <span>当前剩余</span>
+        <strong>{credits} 次</strong>
+        <p>可用于心动盲盒等需要额外次数的场景。</p>
+      </section>
+      <div className="heart-section-label">补充次数</div>
+      <div className="heart-credit-list">
+        {plans.map((plan) => (
+          <button
+            type="button"
+            className={cx(selected === plan.amount && 'is-selected')}
+            key={plan.amount}
+            onClick={() => setSelected(plan.amount)}
+          >
+            <span>{plan.amount} 次</span>
+            <strong>{plan.price}</strong>
+            <small>{selected === plan.amount ? '已选择' : ''}</small>
+          </button>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="heart-primary-link heart-plan-confirm"
+        onClick={() => {
+          onSelect(selected);
+          setNote('Beta 演示状态，暂未接入真实支付。');
+        }}
+      >
+        继续
+        <ArrowRight aria-hidden="true" />
+      </button>
+      {note && <p className="heart-beta-note">{note}</p>}
+    </section>
+  );
+}
+
+function HeartStatusView({
+  status,
+  credits,
+  onBack,
+  onBenefits,
+  onHeartPlan,
+  onHeartPlus,
+  onCredits,
+}: {
+  status: HeartStatus;
+  credits: number;
+  onBack: () => void;
+  onBenefits: () => void;
+  onHeartPlan: () => void;
+  onHeartPlus: () => void;
+  onCredits: () => void;
+}) {
+  const statusLabel =
+    status === 'heart_plus' ? 'Heart+' : status === 'heart' ? 'Heart' : '当前未启用';
+
+  return (
+    <section className="mine-detail-page heart-page">
+      <MineDetailHeader title="我的权益" onBack={onBack} />
+      <section className="heart-current-card">
+        <Heart aria-hidden="true" />
+        <span>当前权益</span>
+        <h2>{statusLabel}</h2>
+        <p>{status === 'inactive' ? '当前未启用' : '2026.10.07 到期'}</p>
+      </section>
+      <div className="heart-route-list">
+        <button type="button" onClick={onCredits}>
+          <span>
+            <strong>Box Credits</strong>
+            <small>{credits} 次可用</small>
+          </span>
+          <ArrowRight aria-hidden="true" />
+        </button>
+        <button type="button" onClick={onHeartPlus}>
+          <span>
+            <strong>Heart+ 说明</strong>
+            <small>了解更稳定的增强体验</small>
+          </span>
+          <ArrowRight aria-hidden="true" />
+        </button>
+        <button type="button" onClick={onBenefits}>
+          <span>
+            <strong>Heart 权益</strong>
+            <small>查看当前权益说明</small>
+          </span>
+          <ArrowRight aria-hidden="true" />
+        </button>
+      </div>
+      <button type="button" className="heart-text-link" onClick={onHeartPlan}>
+        查看 Heart 方案
+        <ArrowRight aria-hidden="true" />
+      </button>
+    </section>
+  );
+}
+
+function HeartPlanPage({
+  title,
+  planName,
+  plans,
+  onBack,
+  onConfirm,
+}: {
+  title: string;
+  planName: string;
+  plans: { id: string; label: string; price: string }[];
+  onBack: () => void;
+  onConfirm: () => void;
+}) {
+  const [selectedId, setSelectedId] = useState(plans[0]?.id ?? '');
+  const [notice, setNotice] = useState<string | null>(null);
+
+  return (
+    <section className="mine-detail-page heart-page">
+      <MineDetailHeader title={title} onBack={onBack} />
+      <section className="heart-plan-block">
+      <div className="heart-plan-title">
+        <h3>{planName}</h3>
+        <p>价格为 Beta Mock，暂未接入真实支付。</p>
+      </div>
+      <div className="heart-plan-list">
+        {plans.map((plan) => (
+          <button
+            type="button"
+            className={cx(selectedId === plan.id && 'is-selected')}
+            key={plan.id}
+            onClick={() => setSelectedId(plan.id)}
+          >
+            <span>{plan.label}</span>
+            <strong>{plan.price}</strong>
+            <small>{selectedId === plan.id ? '已选择' : ''}</small>
+          </button>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="heart-primary-link heart-plan-confirm"
+        onClick={() => {
+          onConfirm();
+          setNotice('Beta 演示状态，暂未接入真实支付。');
+        }}
+      >
+        继续
+        <ArrowRight aria-hidden="true" />
+      </button>
+      {notice && <p className="heart-beta-note">{notice}</p>}
+      </section>
+    </section>
+  );
+}
+
+function MineView({
+  profile,
+  notice,
+  latestMoment,
+  onEdit,
+  onViewPublicHome,
+  onContent,
+  onSecretBox,
+  onHeart,
+  onInvite,
+  onSettings,
+}: {
+  profile: UserHomeProfile;
+  notice: string | null;
+  latestMoment?: PersonalityFragment;
+  onEdit: () => void;
+  onViewPublicHome: () => void;
+  onContent: () => void;
+  onSecretBox: () => void;
+  onHeart: () => void;
+  onInvite: () => void;
+  onSettings: () => void;
+}) {
+  const heartLabel = initialWallet.heartPlus.active
+    ? initialWallet.heartPlus.label
+    : 'Heart';
+
+  return (
+    <section className="mine-home">
+      <div className="mine-identity">
+        <div className="mine-identity-main">
+          <div className="mine-avatar" aria-hidden="true">
+            {profile.avatar}
+          </div>
+          <div className="mine-profile-copy">
+            <div className="mine-name-row">
+              <h2>{profile.name}</h2>
+              <button
+                type="button"
+                className="mine-text-button"
+                onClick={onEdit}
+              >
+                编辑
+              </button>
+            </div>
+            <p className="mine-bio">{profile.bio}</p>
+            <p className="mine-meta">
+              {profile.age} · {profile.city}
+            </p>
+            <div className="mine-tags" aria-label="标签">
+              {profile.tags.map((tag) => (
+                <span key={tag}>{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        className="mine-row mine-public-row"
+        onClick={onViewPublicHome}
+      >
+        <span>
+          <strong>看看别人眼中的我</strong>
+          <small>进入我的主页</small>
+        </span>
+        <ArrowRight />
+      </button>
+
+      <Panel className="mine-recent-panel">
+        <p className="mine-section-title">你最近留下的</p>
+        <p className="mine-recent-text">
+          {latestMoment?.answer ?? '有时候不是想认识谁，\n只是不想那么快离开。'}
+        </p>
+        <p className="mine-recent-meta">
+          此刻 · {latestMoment?.createdAt ?? '2 小时前'}
+        </p>
+        <button
+          type="button"
+          className="mine-row mine-content-row"
+          onClick={onContent}
+        >
+          <span>
+            <strong>全部我的此刻</strong>
+            <small>查看和管理你发布的此刻</small>
+          </span>
+          <ArrowRight />
+        </button>
+      </Panel>
+
+      <button
+        type="button"
+        className="mine-row mine-secret-row"
+        onClick={onSecretBox}
+      >
+        <span>
+          <strong>暗格</strong>
+          <small>有些话，只留在这里。</small>
+        </span>
+        <ArrowRight />
+      </button>
+
+      <button
+        type="button"
+        className="mine-row mine-heart-row"
+        onClick={onHeart}
+      >
+        <span>
+          <strong>{heartLabel}</strong>
+          <small>保留更多靠近的可能</small>
+        </span>
+        <ArrowRight />
+      </button>
+
+      <div className="mine-secondary-list">
+        <button
+          type="button"
+          className="mine-secondary-entry"
+          aria-label="邀请，分享给特别的人"
+          onClick={onInvite}
+        >
+          <span className="mine-secondary-copy">
+            <span>邀请</span>
+            <small>分享给特别的人</small>
+          </span>
+        </button>
+        <button
+          type="button"
+          className="mine-secondary-entry"
+          aria-label="设置，账号与偏好"
+          onClick={onSettings}
+        >
+          <span className="mine-secondary-copy">
+            <span>设置</span>
+            <small>账号与偏好</small>
+          </span>
+        </button>
+      </div>
+
+      {notice && <p className="mine-feedback">{notice}</p>}
+    </section>
   );
 }
 
