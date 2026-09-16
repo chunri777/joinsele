@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import {
   OfficialLayout,
   SectionHeader,
@@ -25,9 +24,9 @@ export default function HomePage() {
           <p>一个关于人与人之间真实连接的探索。</p>
           <p>先认识一点，再决定要不要靠近。</p>
         </div>
-        <Link className="official-button" href="/about">
+        <a className="official-button" href="/about">
           了解 SELE
-        </Link>
+        </a>
       </section>
 
       <section className="official-section official-intro-section" id="intro">
@@ -39,9 +38,9 @@ export default function HomePage() {
           </p>
           <p>在 SELE，人们可以先通过有限的信息了解彼此，再决定是否继续认识。</p>
         </div>
-        <Link className="official-text-link" href="/about">
+        <a className="official-text-link" href="/about">
           了解更多
-        </Link>
+        </a>
       </section>
 
       <section className="official-section">
@@ -67,9 +66,9 @@ export default function HomePage() {
             我们正在邀请少量成年用户参与第一阶段体验，并通过真实反馈持续完善产品。
           </p>
         </div>
-        <Link className="official-text-link" href="/beta">
+        <a className="official-text-link" href="/beta">
           了解内测计划
-        </Link>
+        </a>
       </section>
 
       <section className="official-section official-age-note">

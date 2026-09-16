@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 const navItems = [
@@ -21,15 +20,15 @@ export function OfficialLayout({ children }: { children: ReactNode }) {
       <div className="grain" />
       <div className="official-shell">
         <header className="official-header">
-          <Link className="official-brand" href="/" aria-label="SELE 首页">
+          <a className="official-brand" href="/" aria-label="SELE 首页">
             <SeleMark />
             <span>SELE</span>
-          </Link>
+          </a>
           <nav className="official-nav" aria-label="主导航">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
+              <a key={item.href} href={item.href}>
                 {item.label}
-              </Link>
+              </a>
             ))}
           </nav>
         </header>
@@ -41,9 +40,9 @@ export function OfficialLayout({ children }: { children: ReactNode }) {
           </div>
           <nav className="official-footer-links" aria-label="页脚导航">
             {footerLinks.map((item) => (
-              <Link key={item.href} href={item.href}>
+              <a key={item.href} href={item.href}>
                 {item.label}
-              </Link>
+              </a>
             ))}
           </nav>
           <div className="official-records">

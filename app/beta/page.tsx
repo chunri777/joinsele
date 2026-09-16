@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { DocumentPage } from '../official-components';
 
 export const metadata = {
@@ -24,9 +23,9 @@ export default function BetaPage() {
       <section className="official-document-section">
         <h2>关于隐私</h2>
         <p>我们仅在提供测试服务所必要的范围内收集信息，并按照 SELE 隐私政策进行处理。</p>
-        <Link className="official-text-link" href="/privacy">
+        <a className="official-text-link" href="/privacy">
           查看隐私政策
-        </Link>
+        </a>
       </section>
       <section className="official-document-section official-beta-status">
         <p>内测即将开放</p>
