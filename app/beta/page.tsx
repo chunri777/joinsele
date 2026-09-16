@@ -1,193 +1,36 @@
-'use client';
-
 import Link from 'next/link';
-import {
-  ArrowRight,
-  Check,
-  HeartHandshake,
-  LockKeyhole,
-  PenLine,
-  PackageOpen,
-  ShieldCheck,
-  Sparkles,
-} from 'lucide-react';
+import { DocumentPage } from '../official-components';
 
-const BETA_FORM_URL =
-  'https://my.feishu.cn/share/base/form/shrcnXhe8ikq2Wk15JTTNwzHPdd';
+export const metadata = {
+  title: 'SELE Beta｜joinsele.cn',
+  description: 'SELE 正在准备第一阶段小范围内测，当前申请流程尚未开放。',
+};
 
-const testerFit = [
-  '18 岁以上',
-  '愿意认真表达',
-  '愿意给未知留一点时间',
-];
-
-const betaFlow = [
-  {
-    title: '写下一件小事',
-    body: '不用介绍完整的你，只留一件小事。',
-  },
-  {
-    title: '拆开一只盲盒',
-    body: '先看见片刻，再决定要不要继续。',
-  },
-  {
-    title: '留下一段回声',
-    body: '有一点好奇，就轻轻回应一句。',
-  },
-];
-
-export default function PrivateBetaPage() {
+export default function BetaPage() {
   return (
-    <main className="beta-shell">
-      <div className="grain" />
-      <section className="beta-frame">
-        <nav className="beta-nav">
-          <Link className="brand-lockup" href="./">
-            <span className="brand-mark">S</span>
-            <span>
-              <span className="block text-sm font-medium">SELE</span>
-              <span className="block text-xs text-[var(--muted-ink)]">
-                Heartbox
-              </span>
-            </span>
-          </Link>
-          <a className="beta-back-link" href="#join-beta">
-            Private Beta
-          </a>
-        </nav>
-
-        <div className="beta-hero">
-          <div className="beta-hero-copy">
-            <p className="eyebrow">SELE private beta</p>
-            <h1>
-              有一段话，
-              <br />
-              还没有被打开。
-            </h1>
-            <div className="beta-hero-rule" aria-hidden="true" />
-            <div className="beta-envelope-mini">
-              <HeartHandshake className="h-5 w-5" />
-              <span>一段回声正在靠近</span>
-              <span className="echo-dots" aria-hidden="true">
-                <span>·</span>
-                <span>·</span>
-                <span>·</span>
-              </span>
-            </div>
-          </div>
-          <div className="beta-invite-card" aria-label="Heartbox beta card">
-            <div className="beta-door" aria-hidden="true">
-              <span />
-            </div>
-          </div>
-        </div>
-
-        <section className="beta-intro-card">
-          <div>
-            <p className="eyebrow">SELE private beta</p>
-            <h2>有些人，适合晚一点看见。</h2>
-            <p className="beta-hero-subtitle">
-              <span>先认识一点，再决定要不要靠近。</span>
-              <strong>SELE 正在邀请第一批体验者。</strong>
-            </p>
-          </div>
-          <div className="beta-actions">
-            <a className="pill-primary" href="#join-beta">
-              申请内测
-              <ArrowRight className="h-4 w-4" />
-            </a>
-            <Link className="pill-secondary" href="./">
-              直接体验 Demo
-              <PackageOpen className="h-4 w-4" />
-            </Link>
-          </div>
-        </section>
-
-        <section className="beta-panel beta-flow-panel">
-          <div>
-            <p className="eyebrow">First time</p>
-            <h2>第一次，可以这样开始</h2>
-          </div>
-          <div className="beta-flow">
-            {betaFlow.map((item, index) => (
-              <article key={item.title}>
-                <span>{index + 1}</span>
-                {index === 0 ? (
-                  <PenLine className="beta-flow-icon h-6 w-6" />
-                ) : index === 1 ? (
-                  <PackageOpen className="beta-flow-icon h-6 w-6" />
-                ) : (
-                  <HeartHandshake className="beta-flow-icon h-6 w-6" />
-                )}
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="beta-grid">
-          <div className="beta-panel">
-            <p className="eyebrow">For whom</p>
-            <h2>适合这样的人</h2>
-            <div className="beta-list">
-              {testerFit.map((item) => (
-                <p key={item}>
-                  <Check className="h-4 w-4" />
-                  {item}
-                </p>
-              ))}
-            </div>
-          </div>
-          <div className="beta-panel">
-            <p className="eyebrow">Pace</p>
-            <h2>慢一点，也可以</h2>
-            <div className="beta-list">
-              <p>
-                <ShieldCheck className="h-4 w-4" />
-                匿名开始
-              </p>
-              <p>
-                <LockKeyhole className="h-4 w-4" />
-                双方同意后才靠近
-              </p>
-              <p>
-                <Sparkles className="h-4 w-4" />
-                真实信息不默认公开
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="beta-panel" id="join-beta">
-          <div className="beta-join">
-            <div>
-              <p className="eyebrow">Join beta</p>
-              <h2>留下一种可以联系你的方式</h2>
-              <p>申请会通过飞书完成，只用于内测联系。</p>
-            </div>
-            <div className="beta-form">
-              <a
-                className="pill-primary"
-                href={BETA_FORM_URL}
-                target="_blank"
-                rel="noreferrer"
-              >
-                打开申请表
-                <ArrowRight className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <footer className="beta-signoff" aria-label="SELE beta signoff">
-          <div className="beta-signoff-rule" aria-hidden="true" />
-          <div>
-            <p>SELE</p>
-            <span>有些相遇，本来就应该慢一点。</span>
-          </div>
-        </footer>
+    <DocumentPage title="SELE Beta">
+      <section className="official-document-section">
+        <p>SELE 正在准备第一阶段小范围内测。</p>
+        <p>
+          第一阶段内测主要用于观察产品体验、理解用户真实感受，并发现尚未解决的问题。
+        </p>
+        <p>我们计划邀请少量年满 18 周岁的用户参与测试。</p>
       </section>
-    </main>
+      <section className="official-document-section">
+        <h2>内测会发生什么</h2>
+        <p>参与者将在获得邀请后体验 SELE 的部分功能，并可以自愿向我们提供产品反馈。</p>
+        <p>测试期间，部分功能可能调整、暂停或更新。</p>
+      </section>
+      <section className="official-document-section">
+        <h2>关于隐私</h2>
+        <p>我们仅在提供测试服务所必要的范围内收集信息，并按照 SELE 隐私政策进行处理。</p>
+        <Link className="official-text-link" href="/privacy">
+          查看隐私政策
+        </Link>
+      </section>
+      <section className="official-document-section official-beta-status">
+        <p>内测即将开放</p>
+      </section>
+    </DocumentPage>
   );
 }

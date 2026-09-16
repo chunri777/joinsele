@@ -15,21 +15,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://heartbox-blind-dating.vipg1888.chatgpt.site'),
-  title: 'SELE | Heartbox 心动盲盒',
-  description: '面向年轻成年用户的匿名人格探索、恋爱盲盒与关系成长产品。',
+  metadataBase: new URL('https://joinsele.cn'),
+  title: 'SELE｜有些人，适合晚一点看见',
+  description:
+    'SELE 是一个关于人与人如何认识彼此的互联网产品探索。先认识一点，再决定要不要靠近。',
   icons: {
     icon: `${assetBasePath}/favicon.svg`,
   },
   openGraph: {
-    title: 'SELE | Heartbox 心动盲盒',
-    description: '通过人格碎片、拆盲盒和匿名关系 Journey，拆开一个未知的人。',
+    title: 'SELE｜有些人，适合晚一点看见',
+    description:
+      'SELE 是一个关于人与人如何认识彼此的互联网产品探索。先认识一点，再决定要不要靠近。',
     images: ['/og.png'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SELE | Heartbox 心动盲盒',
-    description: '通过人格碎片、拆盲盒和匿名关系 Journey，拆开一个未知的人。',
+    title: 'SELE｜有些人，适合晚一点看见',
+    description:
+      'SELE 是一个关于人与人如何认识彼此的互联网产品探索。先认识一点，再决定要不要靠近。',
     images: ['/og.png'],
   },
 };
