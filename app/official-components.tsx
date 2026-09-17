@@ -54,6 +54,15 @@ export function OfficialLayout({ children }: { children: ReactNode }) {
             >
               沪ICP备2026046102号-1
             </a>
+            <a
+              className="official-public-security-record"
+              href="https://beian.mps.gov.cn/#/query/webSearch?code=31010702010753"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src="/beian-icon.png" alt="" width="14" height="16" />
+              <span>沪公网安备31010702010753号</span>
+            </a>
           </div>
         </footer>
       </div>

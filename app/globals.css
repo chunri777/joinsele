@@ -8670,6 +8670,19 @@ button {
     overflow-wrap: anywhere;
   }
 
+  .official-public-security-record {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .official-public-security-record img {
+    flex: 0 0 auto;
+    width: 14px;
+    height: 16px;
+    object-fit: contain;
+  }
+
   @media (max-width: 720px) {
     .official-shell {
       padding: 0 20px;
